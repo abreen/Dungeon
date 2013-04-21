@@ -4,6 +4,9 @@ import java.net.*;
 
 import dungeon.*;
 
+/* TODO: add ability to deserialize from saved universe */
+/* TODO: universe validity checker (exit directions) */
+
 public class DungeonServer {
   public static DungeonUniverse universe;
 
