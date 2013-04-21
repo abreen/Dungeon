@@ -28,6 +28,8 @@ public class Player implements Describable, Serializable {
     this.setWriter(out);
   }
 
+  public int getInventorySize() { return this.inventory.size(); }
+
   public Iterator<Item> getInventoryIterator() {
     return this.inventory.values().iterator();
   }

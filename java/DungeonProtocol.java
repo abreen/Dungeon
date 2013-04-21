@@ -9,16 +9,18 @@ public class DungeonProtocol {
   public static final double VERSION = 0.1;
 
   public static enum Action {
-    MOVE, TAKE, GIVE, LOOK, EXITS, SAY, YELL, WHISPER, USE, HELP, QUIT
+    MOVE, TAKE, GIVE, LOOK, INVENTORY, EXITS, SAY, YELL, WHISPER, USE,
+    HELP, QUIT
   }
 
   public static final String[] ACTION_STRINGS = {
-    "m", "t", "g", "l", "e", "s", "y", "w", "u", "h", "q",
+    "m", "t", "g", "l", "i", "e", "s", "y", "w", "u", "h", "q",
 
     "move", "go", "walk",
     "take", "get",
     "give",
     "look", "describe",
+    "inventory",
     "exits",
     "say", "talk",
     "yell", "shout",
@@ -29,14 +31,15 @@ public class DungeonProtocol {
   };
 
   public static final Action[] ACTION_ENUMS = {
-    Action.MOVE, Action.TAKE, Action.GIVE, Action.LOOK, Action.EXITS,
-    Action.SAY, Action.YELL, Action.WHISPER, Action.USE, Action.HELP,
-    Action.QUIT,
+    Action.MOVE, Action.TAKE, Action.GIVE, Action.LOOK, Action.INVENTORY,
+    Action.EXITS, Action.SAY, Action.YELL, Action.WHISPER, Action.USE,
+    Action.HELP, Action.QUIT,
 
     Action.MOVE, Action.MOVE, Action.MOVE,
     Action.TAKE, Action.TAKE,
     Action.GIVE,
     Action.LOOK, Action.LOOK,
+    Action.INVENTORY,
     Action.EXITS,
     Action.SAY, Action.SAY,
     Action.YELL, Action.YELL,
@@ -79,10 +82,11 @@ public class DungeonProtocol {
     if (p.wantsQuit && ACTION_ENUMS[k] != Action.QUIT)
       p.wantsQuit = false;
 
+    /* Start string for output */
+    String str = "";
+
     switch (ACTION_ENUMS[k]) {
       case MOVE:
-
-        String str = "";
 
         try {
           Space.Direction dir = Space.getDirectionFromString(tokens[1]);
@@ -179,8 +183,50 @@ public class DungeonProtocol {
         try {
           return p.here().getItemByName(tokens[1]).describe();
         } catch (NoSuchItemException e) {
-          return ">> No such item '" + tokens[1] + "'.";
+          return ">>> No such item '" + tokens[1] + "'.";
         }
+
+      case INVENTORY:
+        int size = p.getInventorySize();
+
+        if (size == 0)
+          return ">>> You aren't carrying anything.";
+
+        Iterator <Item> iter = p.getInventoryIterator();
+
+        str = ">>> ";
+        
+        if (size > 1) {
+          str += size + " items: ";
+        } else {
+          Item i = iter.next();
+          str += "Only " + i.getArticle() + " " + i.getName() + ".";
+          return str;
+        }
+        
+        int count = 1;
+        while (iter.hasNext()) {
+          Item i = iter.next();
+
+          str += i.getArticle() + " " + i.getName();
+
+          if (count == size - 1) {
+            if (size == 2) {
+              str += " and ";
+            } else {
+              str += ", and ";
+            }
+          } else if (count != size) {
+            str += ", ";
+          }
+
+
+          count++;
+        }
+
+        str += ".";
+
+        return str;
 
       case EXITS:
         return p.here().describeExits();
@@ -219,6 +265,7 @@ public class DungeonProtocol {
            "{t,take,get}         <object>\n" +
            "{g,give}             <object>      to <player>\n" +
            "{l,look,describe}    [<object>]\n" +
+           "{i,inventory}\n" +
            "{e,exits}\n" +
            "{s,say,talk}         [<string>]\n" +
            "{y,yell,shout}       <string>\n" +

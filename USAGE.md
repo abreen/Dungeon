@@ -15,6 +15,7 @@ item from its comma-separated list can be chosen.
     {t,take,get}              <object>
     {g,give}                  <object>      to <player>
     {l,look,describe}         [<object>]
+    {i,inventory}
     {e,exits}
     {s,say,talk}              [<string>]
     {y,yell,shout}            <string>
