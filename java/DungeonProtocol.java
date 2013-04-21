@@ -13,7 +13,7 @@ public class DungeonProtocol {
     MOVE, TAKE, GIVE, LOOK, EXITS, SAY, YELL, WHISPER, USE, HELP, QUIT
   }
 
-  public static final String[] actionTokens = {
+  public static final String[] ACTION_STRINGS = {
     "m", "move", "go", "walk", "ride",
     "t", "take", "get",
     "g", "give",
@@ -27,7 +27,7 @@ public class DungeonProtocol {
     "q", "quit"
   };
 
-  public static final Action[] actionEnums = {
+  public static final Action[] ACTION_ENUMS = {
     Action.MOVE, Action.MOVE, Action.MOVE, Action.MOVE, Action.MOVE,
     Action.TAKE, Action.TAKE, Action.TAKE,
     Action.GIVE, Action.GIVE,
@@ -60,8 +60,8 @@ public class DungeonProtocol {
     
     int k = -1;
     /* Parse the action or return an error */
-    for (int i = 0; i < actionTokens.length; i++) {
-      if (tokens[0].equals(actionTokens[i])) {
+    for (int i = 0; i < ACTION_STRINGS.length; i++) {
+      if (tokens[0].equals(ACTION_STRINGS[i])) {
         k = i;
         break;
       }
@@ -71,7 +71,7 @@ public class DungeonProtocol {
       return ">>> Unsure what is meant by '" + tokens[0] + "'.\n" +
              ">>> Try 'help' to get a list of actions.";
 
-    switch (actionEnums[k]) {
+    switch (ACTION_ENUMS[k]) {
       case MOVE:
         if (p.wantsQuit) p.wantsQuit = false;
 
@@ -141,7 +141,8 @@ public class DungeonProtocol {
 
       case EXITS:
         if (p.wantsQuit) p.wantsQuit = false;
-        return "go exits";
+
+        return "got exits";
       case SAY:
         if (p.wantsQuit) p.wantsQuit = false;
         return "got say";
