@@ -4,7 +4,6 @@ import dungeon.*;
 import dungeon.exceptions.*;
 
 /* TODO: write tests */
-/* TODO: place abbreviated actions closer to 0 */
 
 public class DungeonProtocol {
   public static final double VERSION = 0.1;
@@ -14,31 +13,37 @@ public class DungeonProtocol {
   }
 
   public static final String[] ACTION_STRINGS = {
-    "m", "move", "go", "walk", "ride",
-    "t", "take", "get",
-    "g", "give",
-    "l", "look", "describe",
-    "e", "exits",
-    "s", "say", "talk",
-    "y", "yell", "shout",
-    "w", "whisper",
-    "u", "use",
-    "h", "help",
-    "q", "quit"
+    "m", "t", "g", "l", "e", "s", "y", "w", "u", "h", "q",
+
+    "move", "go", "walk",
+    "take", "get",
+    "give",
+    "look", "describe",
+    "exits",
+    "say", "talk",
+    "yell", "shout",
+    "whisper",
+    "use",
+    "help",
+    "quit"
   };
 
   public static final Action[] ACTION_ENUMS = {
-    Action.MOVE, Action.MOVE, Action.MOVE, Action.MOVE, Action.MOVE,
-    Action.TAKE, Action.TAKE, Action.TAKE,
-    Action.GIVE, Action.GIVE,
-    Action.LOOK, Action.LOOK, Action.LOOK,
-    Action.EXITS, Action.EXITS,
-    Action.SAY, Action.SAY, Action.SAY,
-    Action.YELL, Action.YELL, Action.YELL,
-    Action.WHISPER, Action.WHISPER,
-    Action.USE, Action.USE,
-    Action.HELP, Action.HELP,
-    Action.QUIT, Action.QUIT
+    Action.MOVE, Action.TAKE, Action.GIVE, Action.LOOK, Action.EXITS,
+    Action.SAY, Action.YELL, Action.WHISPER, Action.USE, Action.HELP,
+    Action.QUIT,
+
+    Action.MOVE, Action.MOVE, Action.MOVE,
+    Action.TAKE, Action.TAKE,
+    Action.GIVE,
+    Action.LOOK, Action.LOOK,
+    Action.EXITS,
+    Action.SAY, Action.SAY,
+    Action.YELL, Action.YELL,
+    Action.WHISPER,
+    Action.USE,
+    Action.HELP,
+    Action.QUIT
   };
 
   /*
