@@ -98,15 +98,17 @@ public class DungeonProtocol {
                   continue;
 
                 if (d.keyFits((Key)i)) {
-                  str += "I used the key to unlock the door and closed it " +
-                         "behind me.";
+                  str += "You use your key to unlock the door and lock it " +
+                         "behind you.";
                   p.move((Room)d.to(tokens[1]));
                   break;
                 }
               }
+
+              return "The door is locked, and you don't have the key.";
               
             } else {
-              str += "I slipped through the unlocked door.\n";
+              str += "You close the door behind you.";
               p.move((Room)d.to(tokens[1]));
             }
           }
