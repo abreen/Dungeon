@@ -5,8 +5,6 @@ import java.io.*;
 
 import dungeon.exceptions.*;
 
-/* TODO: Add description to player */
-
 public class Player implements Describable, Serializable {
   private String name;
   private Room here;

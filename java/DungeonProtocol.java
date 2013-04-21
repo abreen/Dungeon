@@ -3,8 +3,6 @@ import java.io.*;
 import dungeon.*;
 import dungeon.exceptions.*;
 
-/* TODO: write tests */
-/* TODO: handle looking at objects with spaces */
 
 public class DungeonProtocol {
   public static final double VERSION = 0.1;
@@ -147,8 +145,6 @@ public class DungeonProtocol {
         } catch (NoSuchItemException e) {
           return ">> No such item '" + tokens[1] + "'.";
         }
-
-        // TODO: check for players in this room
 
       case EXITS:
         if (p.wantsQuit) p.wantsQuit = false;
