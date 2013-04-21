@@ -3,8 +3,6 @@ package dungeon;
 import java.util.Hashtable;
 import dungeon.exceptions.*;
 
-/* TODO: exits should use Direction enum for direction, not strings */
-
 public abstract class Space implements Describable {
   public static enum Direction {
     NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST,
@@ -30,7 +28,7 @@ public abstract class Space implements Describable {
   protected String name;
   protected String description;
 
-  protected Hashtable<String, Space> exits;
+  protected Hashtable<Direction, Space> exits;
 
   public String describe() {
     return this.name + "\n\n" + this.description;
@@ -38,10 +36,44 @@ public abstract class Space implements Describable {
 
   public String getName() { return this.name; }
 
-  public void addExit(String direction, Space sp) {
-    if (direction == null || direction.isEmpty())
-      throw new IllegalArgumentException("exit must have direction");
+  public static Direction getDirectionFromString(String s)
+    throws NoSuchDirectionException {
 
+    if (s == null)
+      throw new IllegalArgumentException("direction must be non-null");
+
+    int k = -1;
+    for (int i = 0; i < DIRECTION_STRINGS.length; i++) {
+      if (s.equals(DIRECTION_STRINGS[i])) {
+        k = i;
+        break;
+      }
+    }
+
+    if (k == -1)
+      throw new NoSuchDirectionException();
+
+    return DIRECTION_ENUMS[k];
+  }
+
+  public static String getStringFromDirection(Direction d) {
+    switch (d) {
+      case NORTH:     return "north";
+      case NORTHEAST: return "northeast";
+      case EAST:      return "east";
+      case SOUTHEAST: return "southeast";
+      case SOUTH:     return "south";
+      case SOUTHWEST: return "southwest";
+      case WEST:      return "west";
+      case NORTHWEST: return "northwest";
+      case UP:        return "up";
+      case DOWN:      return "down";
+    }
+
+    return "nowhere";
+  }
+
+  public void addExit(Direction direction, Space sp) {
     if (sp == null)
       throw new IllegalArgumentException("space must be non-null");
 
@@ -51,11 +83,11 @@ public abstract class Space implements Describable {
     this.exits.put(direction, sp);
   }
 
-  public Space to(String direction) throws NoSuchDirectionException {
+  public Space to(Direction direction) throws NoSuchExitException {
     Space newDirection = this.exits.get(direction);
 
     if (newDirection == null)
-      throw new NoSuchDirectionException();
+      throw new NoSuchExitException();
 
     return newDirection;
   }
@@ -63,13 +95,13 @@ public abstract class Space implements Describable {
   public Space(String n, String d) {
     this.name = n;
     this.description = d;
-    this.exits = new Hashtable<String, Space>(Space.DEFAULT_EXITS_SIZE);
+    this.exits = new Hashtable<Direction, Space>(Space.DEFAULT_EXITS_SIZE);
   }
 
   public Space(String n, String d, int size) {
     this.name = n;
     this.description = d;
-    this.exits = new Hashtable<String, Space>(size);
+    this.exits = new Hashtable<Direction, Space>(size);
   }
 
 }

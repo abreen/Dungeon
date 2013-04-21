@@ -27,14 +27,14 @@ public class Room extends Space {
    * exit direction from this room to the next room. Uses 'backward'
    * as exit direction from 'dest' to this room. Locks the door using 'k'.
    */
-  public Door addDoor(String forward, Room dest, String backward, Key k) {
+  public Door addDoor(Direction forward, Room dest, Direction back, Key k) {
     Door d = this.addDoor(forward, dest, k);
     
     /* Add exit from door to this room */
-    d.addExit(backward, this);
+    d.addExit(back, this);
 
     /* Add exit from destination room to door */
-    dest.addExit(backward, d);
+    dest.addExit(back, d);
 
     return d;
   }
@@ -43,7 +43,7 @@ public class Room extends Space {
    * Adds a one-way door from this room to 'dest'. Uses 'forward' as
    * exit direction from this room to the next room. Locks door with 'k'.
    */
-  public Door addDoor(String forward, Room dest, Key k) {
+  public Door addDoor(Direction forward, Room dest, Key k) {
     Door d = new Door(k);
     d.addExit(forward, dest);
 
@@ -99,11 +99,13 @@ public class Room extends Space {
     else
       str += "Only ";
 
-    Iterator<Map.Entry<String, Space>> iter = this.exits.entrySet().iterator();
+    Iterator<Map.Entry<Direction, Space>> i = this.exits.entrySet().iterator();
 
-    while (iter.hasNext()) {
-      Map.Entry<String, Space> e = iter.next();
-      str += e.getKey() + " to ";
+    while (i.hasNext()) {
+      Map.Entry<Direction, Space> e = i.next();
+
+      String dir = Space.getStringFromDirection(e.getKey());
+      str += dir + " to ";
 
       Space s = e.getValue();
       if (s instanceof Room)
@@ -117,7 +119,7 @@ public class Room extends Space {
           str += "an unlocked " + d.getName();
       }
 
-      if (iter.hasNext())
+      if (i.hasNext())
         str += ", ";
       else
         str += ".";

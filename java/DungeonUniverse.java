@@ -16,8 +16,8 @@ public class DungeonUniverse implements Serializable {
 
     Room a = new Room("train platform", "An empty train platform.");
     Room b = new Room("lobby", "An empty train station lobby.");
-    a.addExit("east", b);
-    b.addExit("west", a);
+    a.addExit(Space.Direction.EAST, b);
+    b.addExit(Space.Direction.WEST, a);
 
     Item x = new Item("flashlight", "A heavy flashlight.");
     Item y = new Item("aerosol can", "Shaving cream. Seems empty.");
@@ -27,8 +27,8 @@ public class DungeonUniverse implements Serializable {
     b.addItem(z);
 
     Room c = new Room("broom closet", "A dark broom closet.");
-    a.addExit("north", c);
-    c.addExit("south", a);
+    a.addExit(Space.Direction.NORTH, c);
+    c.addExit(Space.Direction.SOUTH, a);
 
     Item p = new Item("broom", "Standard-looking broom.");
     c.addItem(p);

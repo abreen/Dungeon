@@ -4,6 +4,7 @@ import dungeon.*;
 import dungeon.exceptions.*;
 
 /* TODO: write tests */
+/* TODO: handle looking at objects with spaces */
 
 public class DungeonProtocol {
   public static final double VERSION = 0.1;
@@ -83,7 +84,8 @@ public class DungeonProtocol {
         String str = "";
 
         try {
-          Space dest = p.here().to(tokens[1]);
+          Space.Direction dir = Space.getDirectionFromString(tokens[1]);
+          Space dest = p.here().to(dir);
           
           if (dest instanceof Room) {
             p.move((Room)dest);
@@ -105,7 +107,7 @@ public class DungeonProtocol {
                 if (d.keyFits((Key)i)) {
                   str += "You use your key to unlock the door and lock it " +
                          "behind you.";
-                  p.move((Room)d.to(tokens[1]));
+                  p.move((Room)d.to(dir));
                   break;
                 }
               }
@@ -114,13 +116,15 @@ public class DungeonProtocol {
               
             } else {
               str += "You close the door behind you.";
-              p.move((Room)d.to(tokens[1]));
+              p.move((Room)d.to(dir));
             }
           }
 
           return str + p.here().describe();
 
         } catch (NoSuchDirectionException e) {
+          return ">>> '" + tokens[1] + "' is not a direction.";
+        } catch (NoSuchExitException e) {
           return ">>> That's not a way out of here.";
         } catch (ArrayIndexOutOfBoundsException e) {
           return ">>> Specify a direction in which to move.";
