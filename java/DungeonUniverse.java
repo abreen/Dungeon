@@ -1,6 +1,8 @@
 import java.util.*;
 import java.io.*;
+
 import dungeon.*;
+import dungeon.exceptions.*;
 
 public class DungeonUniverse implements Serializable {
   private ArrayList<Space> spaces;
@@ -27,8 +29,10 @@ public class DungeonUniverse implements Serializable {
     b.addItem(z);
 
     Room c = new Room("broom closet", "A dark broom closet.");
-    a.addExit(Space.Direction.NORTH, c);
-    c.addExit(Space.Direction.SOUTH, a);
+    Key k = new Key("skeleton key", "A skeleton key.");
+    a.addItem(k);
+
+    Door d = a.addDoor(Space.Direction.NORTH, c, Space.Direction.SOUTH, k);
 
     Item p = new Item("broom", "Standard-looking broom.");
     c.addItem(p);

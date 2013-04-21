@@ -96,6 +96,7 @@ public class DungeonProtocol {
               /* Does the player have the correct key? */
               Iterator<Item> iter = p.getInventoryIterator();
 
+              boolean found = false;
               while (iter.hasNext()) {
                 Item i = iter.next();
 
@@ -103,17 +104,19 @@ public class DungeonProtocol {
                   continue;
 
                 if (d.keyFits((Key)i)) {
+                  found = true;
                   str += "You use your key to unlock the door and lock it " +
-                         "behind you.";
+                         "behind you.\n";
                   p.move((Room)d.to(dir));
                   break;
                 }
               }
 
-              return "The door is locked, and you don't have the key.";
+              if (!found)
+                return "The door is locked, and you don't have the key.";
               
             } else {
-              str += "You close the door behind you.";
+              str += "You close the door behind you.\n";
               p.move((Room)d.to(dir));
             }
           }
@@ -130,7 +133,40 @@ public class DungeonProtocol {
         
       case TAKE:
         if (p.wantsQuit) p.wantsQuit = false;
-        return "got take";
+        
+        if (tokens.length < 2) {
+          return ">>> Specify which item to take.";
+        } else {
+
+          int i;
+          if (tokens[1].equalsIgnoreCase("the"))
+            i = 2;
+          else
+            i = 1;
+
+          String obj = "";
+          for ( ; i < tokens.length; i++) {
+            obj += tokens[i];
+            
+            if (i != (tokens.length - 1))
+              obj += " ";
+          }
+
+          /* Search room for this item */
+          Item item = null;
+          try {
+            item = p.here().removeItemByName(obj);
+          } catch (NoSuchItemException e) {
+            return ">>> No such item by the name '" + obj + "' here.";
+          }
+
+          /* Add item to player's inventory */
+          p.addToInventory(item);
+
+          return ">>> Taken.";
+          
+        }
+        
       case GIVE:
         if (p.wantsQuit) p.wantsQuit = false;
         return "got give";

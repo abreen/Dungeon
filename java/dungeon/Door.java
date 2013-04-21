@@ -49,6 +49,10 @@ public class Door extends Space {
     this.locked = false;
   }
 
+  /*
+   * Constructs a new door with a lock mechanism that fits the specified
+   * key. Locks the door by default.
+   */
   public Door(Key k) {
     /* 
      * Let the Space constructor make a space whose hashtable size is
@@ -59,5 +63,6 @@ public class Door extends Space {
       throw new IllegalArgumentException("key must be non-null");
 
     this.key = k;
+    this.locked = true;
   }
 }

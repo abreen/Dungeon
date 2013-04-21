@@ -13,6 +13,15 @@ public class Room extends Space {
     this.items.put(i.getName(), i);
   }
 
+  public Item removeItemByName(String name) throws NoSuchItemException {
+    Item i = this.items.remove(name);
+    
+    if (i == null)
+      throw new NoSuchItemException();
+
+    return i;
+  }
+
   public Item getItemByName(String name) throws NoSuchItemException {
     Item i = this.items.get(name);
 
