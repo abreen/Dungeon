@@ -3,6 +3,8 @@ package dungeon;
 import java.util.Hashtable;
 import dungeon.exceptions.*;
 
+/* TODO: exits should use Direction enum for direction, not strings */
+
 public abstract class Space implements Describable {
   public static enum Direction {
     NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST,
@@ -28,7 +30,7 @@ public abstract class Space implements Describable {
   protected String name;
   protected String description;
 
-  private Hashtable<String, Space> exits;
+  protected Hashtable<String, Space> exits;
 
   public String describe() {
     return this.name + "\n\n" + this.description;

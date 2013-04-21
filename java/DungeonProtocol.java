@@ -143,8 +143,8 @@ public class DungeonProtocol {
 
       case EXITS:
         if (p.wantsQuit) p.wantsQuit = false;
+        return p.here().describeExits();
 
-        return "got exits";
       case SAY:
         if (p.wantsQuit) p.wantsQuit = false;
         return "got say";
