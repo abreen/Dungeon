@@ -1,5 +1,9 @@
 package dungeon.exceptions;
 
+/*
+ * Thrown when a player specifies an item that is not in the room
+ * or in the inventory.
+ */
 public class NoSuchItemException extends DungeonException {
 
 }
