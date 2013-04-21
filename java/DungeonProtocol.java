@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+
 import dungeon.*;
 import dungeon.exceptions.*;
 
@@ -75,9 +76,11 @@ public class DungeonProtocol {
       return ">>> Unsure what is meant by '" + tokens[0] + "'.\n" +
              ">>> Try 'help' to get a list of actions.";
 
+    if (p.wantsQuit && ACTION_ENUMS[k] != Action.QUIT)
+      p.wantsQuit = false;
+
     switch (ACTION_ENUMS[k]) {
       case MOVE:
-        if (p.wantsQuit) p.wantsQuit = false;
 
         String str = "";
 
@@ -132,7 +135,6 @@ public class DungeonProtocol {
         }
         
       case TAKE:
-        if (p.wantsQuit) p.wantsQuit = false;
         
         if (tokens.length < 2) {
           return ">>> Specify which item to take.";
@@ -168,10 +170,8 @@ public class DungeonProtocol {
         }
         
       case GIVE:
-        if (p.wantsQuit) p.wantsQuit = false;
         return "got give";
       case LOOK:
-        if (p.wantsQuit) p.wantsQuit = false;
         
         if (tokens.length == 1)
           return p.here().describe();
@@ -183,23 +183,17 @@ public class DungeonProtocol {
         }
 
       case EXITS:
-        if (p.wantsQuit) p.wantsQuit = false;
         return p.here().describeExits();
 
       case SAY:
-        if (p.wantsQuit) p.wantsQuit = false;
         return "got say";
       case YELL:
-        if (p.wantsQuit) p.wantsQuit = false;
         return "got yell";
       case WHISPER:
-        if (p.wantsQuit) p.wantsQuit = false;
         return "got whisper";
       case USE:
-        if (p.wantsQuit) p.wantsQuit = false;
         return "got use";
       case HELP:
-        if (p.wantsQuit) p.wantsQuit = false;
         return usage();
       case QUIT:
         if (p.wantsQuit) {
