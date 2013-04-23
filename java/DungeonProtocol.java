@@ -184,7 +184,7 @@ public class DungeonProtocol {
         
         String toLook = getTokensAfterAction(tokens);
 
-        if (toLook == null)
+        if (toLook == null || toLook.equalsIgnoreCase("here"))
           return p.here().describe();
 
         try {
