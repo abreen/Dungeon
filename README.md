@@ -30,6 +30,12 @@ I'll get around to authoring a small universe demoing the features that
 `Dungeon` has to offer. If you poke around, you could probably guess how to
 manually construct universes inside the `DungeonServer.java` file.
 
+## Building
+
+There's a small `build.xml` file for Apache Ant. As long as you have Ant
+installed, just run `ant` in the base directory. The default target should
+build all the classes to a directory called `classes`. Change to the 
+directory and start the server with `java DungeonServer`.
 
 ## Known bugs
 
