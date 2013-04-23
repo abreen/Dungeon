@@ -188,10 +188,18 @@ public class DungeonProtocol {
           return p.here().describe();
 
         try {
-          return p.here().getItemByName(toLook).describe();
+          str = p.here().getItemByName(toLook).describe();
         } catch (NoSuchItemException e) {
-          return ">>> No such item '" + toLook + "'.";
+          try {
+            str = p.getFromInventoryByName(toLook).describe();
+            str += " (in your inventory)";
+          } catch (NoSuchItemException f) {
+            str = ">>> No such item '" + toLook + "' in this room or your " +
+                  "inventory.";
+          }
         }
+
+        return str;
 
       case INVENTORY:
         int size = p.getInventorySize();

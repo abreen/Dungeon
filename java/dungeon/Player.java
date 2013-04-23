@@ -54,6 +54,15 @@ public class Player implements Describable, Serializable {
     this.inventory.put(i.getName().toLowerCase(), i);
   }
 
+  public Item getFromInventoryByName(String name) throws NoSuchItemException {
+    Item i = this.inventory.get(name.toLowerCase());
+
+    if (i == null)
+      throw new NoSuchItemException();
+
+    return i;
+  }
+
   public Room here() { return this.here; }
 
   public void move(Room r) {
