@@ -11,47 +11,35 @@ public class DungeonProtocol {
   public static final String BANGS = "!!! ";
 
   public static enum Action {
-    MOVE, TAKE, DROP, GIVE, LOOK, INVENTORY, EXITS, SAY, YELL, WHISPER, USE,
-    HELP, QUIT
+    MOVE("m", "move", "go", "walk"), 
+    TAKE("t", "take", "get"),
+    DROP("d", "drop"),
+    GIVE("g", "give"),
+    LOOK("l", "look", "describe"),
+    INVENTORY("i", "inventory"),
+    EXITS("e", "exits"),
+    SAY("s", "say", "talk"), 
+    YELL("y", "yell", "shout"),
+    WHISPER("w", "whisper"),
+    USE("u", "use"),
+    HELP("h", "help"),
+    QUIT("q", "quit");
+    
+    private String[] keys;
+    
+    Action(String... keys) {
+    	this.keys = keys;
+    }
+    
+    public boolean isAction(String str) {
+    	for(String key : keys) {
+    		if(key.equalsIgnoreCase(str)) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
   }
-
-  public static final String[] ACTION_STRINGS = {
-    "m", "t", "d", "g", "l", "i", "e", "s", "y", "w", "u", "h", "q",
-
-    "move", "go", "walk",
-    "take", "get",
-    "drop",
-    "give",
-    "look", "describe",
-    "inventory",
-    "exits",
-    "say", "talk",
-    "yell", "shout",
-    "whisper",
-    "use",
-    "help",
-    "quit"
-  };
-
-  public static final Action[] ACTION_ENUMS = {
-    Action.MOVE, Action.TAKE, Action.DROP, Action.GIVE, Action.LOOK,
-    Action.INVENTORY, Action.EXITS, Action.SAY, Action.YELL,
-    Action.WHISPER, Action.USE, Action.HELP, Action.QUIT,
-
-    Action.MOVE, Action.MOVE, Action.MOVE,
-    Action.TAKE, Action.TAKE,
-    Action.DROP,
-    Action.GIVE,
-    Action.LOOK, Action.LOOK,
-    Action.INVENTORY,
-    Action.EXITS,
-    Action.SAY, Action.SAY,
-    Action.YELL, Action.YELL,
-    Action.WHISPER,
-    Action.USE,
-    Action.HELP,
-    Action.QUIT
-  };
 
   /*
    * This method is called by the server when it recieves a string
@@ -70,26 +58,26 @@ public class DungeonProtocol {
     /* Split into tokens */
     String[] tokens = input.split("\\s");
     
-    int k = -1;
+    Action action = null;
     /* Parse the action or return an error */
-    for (int i = 0; i < ACTION_STRINGS.length; i++) {
-      if (tokens[0].equalsIgnoreCase(ACTION_STRINGS[i])) {
-        k = i;
-        break;
-      }
+    for(Action act : Action.values()) {
+    	if(act.isAction(tokens[0])) {
+    		action = act;
+    		break;
+    	}
     }
 
-    if (k == -1)
+    if (action == null)
       return CHEVRONS + "Unsure what is meant by '" + tokens[0] + "'.\n" +
              CHEVRONS + "Try 'help' to get a list of actions.";
 
-    if (p.wantsQuit && ACTION_ENUMS[k] != Action.QUIT)
+    if (p.wantsQuit && action != Action.QUIT)
       p.wantsQuit = false;
 
     /* Start string for output */
     String str = "";
 
-    switch (ACTION_ENUMS[k]) {
+    switch (action) {
       case MOVE:
 
         try {

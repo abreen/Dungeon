@@ -5,23 +5,40 @@ import dungeon.exceptions.*;
 
 public abstract class Space implements Describable {
   public static enum Direction {
-    NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST,
-    UP, DOWN
+    NORTH("north", "n"),
+    NORTHEAST("northeast", "ne"),
+    EAST("east", "e"),
+    SOUTHEAST("southeast", "se"),
+    SOUTH("south", "s"),
+    SOUTHWEST("southwest", "sw"),
+    WEST("west", "w"),
+    NORTHWEST("northwest", "nw"),
+    UP("up"),
+    DOWN("down");
+    
+    private String fullName;
+    private String[] names;
+    
+    Direction(String fullName, String... abbreviations) {
+    	this.fullName = fullName;
+    	this.names = abbreviations;
+    }
+    
+    public boolean isThisDirection(String nm) {
+    	if(nm.equalsIgnoreCase(fullName))
+    		return true;
+    	for(String name : names) {
+    		if(name.equalsIgnoreCase(nm)) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    public String getName() {
+    	return fullName;
+    }
   }
-
-  public static final String[] DIRECTION_STRINGS = {
-    "n", "ne", "e", "se", "s", "sw", "w", "nw", "north", "northeast",
-    "east", "southeast", "south", "southwest", "west", "northwest",
-    "up", "down"
-  };
-
-  public static final Direction[] DIRECTION_ENUMS = {
-    Direction.NORTH, Direction.NORTHEAST, Direction.EAST, Direction.SOUTHEAST,
-    Direction.SOUTH, Direction.SOUTHWEST, Direction.WEST, Direction.NORTHWEST,
-    Direction.NORTH, Direction.NORTHEAST, Direction.EAST, Direction.SOUTHEAST,
-    Direction.SOUTH, Direction.SOUTHWEST, Direction.WEST, Direction.NORTHWEST,
-    Direction.UP, Direction.DOWN
-  };
 
   public static final int DEFAULT_EXITS_SIZE = 6;
 
@@ -42,35 +59,27 @@ public abstract class Space implements Describable {
     if (s == null)
       throw new IllegalArgumentException("direction must be non-null");
 
-    int k = -1;
-    for (int i = 0; i < DIRECTION_STRINGS.length; i++) {
-      if (s.equalsIgnoreCase(DIRECTION_STRINGS[i])) {
-        k = i;
-        break;
-      }
+    Direction dir = null;
+    for (Direction direction : Direction.values()) {
+    	if(direction.isThisDirection(s)) {
+    		dir = direction;
+    		break;
+    	}
     }
 
-    if (k == -1)
+    if (dir == null)
       throw new NoSuchDirectionException();
 
-    return DIRECTION_ENUMS[k];
+    return dir;
   }
 
+  /**
+   * @deprecated Use {@code d.getName()} instead
+   * @param d the direction
+   * @return the name of the direction
+   */
   public static String getStringFromDirection(Direction d) {
-    switch (d) {
-      case NORTH:     return "north";
-      case NORTHEAST: return "northeast";
-      case EAST:      return "east";
-      case SOUTHEAST: return "southeast";
-      case SOUTH:     return "south";
-      case SOUTHWEST: return "southwest";
-      case WEST:      return "west";
-      case NORTHWEST: return "northwest";
-      case UP:        return "up";
-      case DOWN:      return "down";
-    }
-
-    return "nowhere";
+    return d.getName();
   }
 
   public void addExit(Direction direction, Space sp) {
