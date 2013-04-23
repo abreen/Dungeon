@@ -23,7 +23,7 @@ public class DungeonProtocol {
     WHISPER("w", "whisper"),
     USE("u", "use"),
     HELP("h", "help"),
-    QUIT("q, quit");
+    QUIT("q", "quit");
     
     private String[] keys;
     
