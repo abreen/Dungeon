@@ -9,15 +9,16 @@ public class DungeonProtocol {
   public static final double VERSION = 0.1;
 
   public static enum Action {
-    MOVE, TAKE, GIVE, LOOK, INVENTORY, EXITS, SAY, YELL, WHISPER, USE,
+    MOVE, TAKE, DROP, GIVE, LOOK, INVENTORY, EXITS, SAY, YELL, WHISPER, USE,
     HELP, QUIT
   }
 
   public static final String[] ACTION_STRINGS = {
-    "m", "t", "g", "l", "i", "e", "s", "y", "w", "u", "h", "q",
+    "m", "t", "d", "g", "l", "i", "e", "s", "y", "w", "u", "h", "q",
 
     "move", "go", "walk",
     "take", "get",
+    "drop",
     "give",
     "look", "describe",
     "inventory",
@@ -31,12 +32,13 @@ public class DungeonProtocol {
   };
 
   public static final Action[] ACTION_ENUMS = {
-    Action.MOVE, Action.TAKE, Action.GIVE, Action.LOOK, Action.INVENTORY,
-    Action.EXITS, Action.SAY, Action.YELL, Action.WHISPER, Action.USE,
-    Action.HELP, Action.QUIT,
+    Action.MOVE, Action.TAKE, Action.DROP, Action.GIVE, Action.LOOK,
+    Action.INVENTORY, Action.EXITS, Action.SAY, Action.YELL,
+    Action.WHISPER, Action.USE, Action.HELP, Action.QUIT,
 
     Action.MOVE, Action.MOVE, Action.MOVE,
     Action.TAKE, Action.TAKE,
+    Action.DROP,
     Action.GIVE,
     Action.LOOK, Action.LOOK,
     Action.INVENTORY,
@@ -140,38 +142,41 @@ public class DungeonProtocol {
         
       case TAKE:
         
-        if (tokens.length < 2) {
-          return ">>> Specify which item to take.";
-        } else {
+        String toTake = getTokensAfterAction(tokens);
 
-          int i;
-          if (tokens[1].equalsIgnoreCase("the"))
-            i = 2;
-          else
-            i = 1;
+        if (toTake == null)
+          return ">>> Specify an object to take.";
 
-          String obj = "";
-          for ( ; i < tokens.length; i++) {
-            obj += tokens[i];
-            
-            if (i != (tokens.length - 1))
-              obj += " ";
-          }
-
-          /* Search room for this item */
-          Item item = null;
-          try {
-            item = p.here().removeItemByName(obj);
-          } catch (NoSuchItemException e) {
-            return ">>> No such item by the name '" + obj + "' here.";
-          }
-
-          /* Add item to player's inventory */
-          p.addToInventory(item);
-
-          return ">>> Taken.";
-          
+        /* Search room for this item */
+        Item item = null;
+        try {
+          item = p.here().removeItemByName(toTake);
+        } catch (NoSuchItemException e) {
+          return ">>> No such item by the name '" + toTake + "' here.";
         }
+
+        /* Add item to player's inventory */
+        p.addToInventory(item);
+
+        return ">>> Taken.";
+        
+      case DROP:
+
+        String toDrop = getTokensAfterAction(tokens);
+        
+        if (toDrop == null)
+          return ">>> Specify an object to drop.";
+
+        try {
+          Item i = p.dropFromInventoryByName(toDrop);
+          p.here().addItem(i);
+
+        } catch (NoSuchItemException e) {
+          return ">>> No such item by the name '" + toDrop +
+                 "' in your inventory.";
+        }
+        
+        return ">>> Dropped.";
         
       case GIVE:
         return "got give";
@@ -259,10 +264,36 @@ public class DungeonProtocol {
     return "!!! Unexpected server error.";
   }
 
+  /*
+   * Returns all the tokens after the action as a space-separated
+   * string. Returns null if there are no tokens after the action.
+   */
+  private static String getTokensAfterAction(String[] tokens) {
+    if (tokens.length < 2)
+      return null;
+
+    int i;
+    if (tokens[1].equalsIgnoreCase("the"))
+      i = 2;
+    else
+      i = 1;
+    
+    String obj = "";
+    for ( ; i < tokens.length; i++) {
+      obj += tokens[i];
+      
+      if (i != (tokens.length - 1))
+        obj += " ";
+    }
+    
+    return obj;
+  }
+
   private static String usage() {
     return "ACTION               OBJECT        INDIRECT OBJECT\n" +
            "[{m,move,go,walk}]   <direction>\n" +
            "{t,take,get}         <object>\n" +
+           "{d,drop}\n" +
            "{g,give}             <object>      to <player>\n" +
            "{l,look,describe}    [<object>]\n" +
            "{i,inventory}\n" +

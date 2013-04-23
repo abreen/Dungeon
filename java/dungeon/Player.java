@@ -34,11 +34,20 @@ public class Player implements Describable, Serializable {
     return this.inventory.values().iterator();
   }
 
-  public void dropFromInventory(Item i) throws NoSuchItemException {
+  public Item dropFromInventory(Item i) throws NoSuchItemException {
     if (!this.inventory.contains(i))
       throw new NoSuchItemException();
 
-    this.inventory.remove(i.getName());
+    return this.inventory.remove(i.getName());
+  }
+
+  public Item dropFromInventoryByName(String name) throws NoSuchItemException {
+    Item i = this.inventory.remove(name);
+
+    if (i == null)
+      throw new NoSuchItemException();
+
+    return i;
   }
 
   public void addToInventory(Item i) {

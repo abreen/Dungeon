@@ -13,6 +13,7 @@ item from its comma-separated list can be chosen.
     ACTION                    OBJECT        INDIRECT OBJECT
     [{m,move,go,walk}]        <direction>
     {t,take,get}              <object>
+    {d,drop}
     {g,give}                  <object>      to <player>
     {l,look,describe}         [<object>]
     {i,inventory}
