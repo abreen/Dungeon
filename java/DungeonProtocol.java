@@ -7,10 +7,10 @@ import dungeon.exceptions.*;
 
 public class DungeonProtocol {
   public static final double VERSION = 0.1;
-  public static final String CHEVRONS = ">>> ";
-  public static final String BANGS = "!!! ";
+  private static final String CHEVRONS = ">>> ";
+  private static final String BANGS = "!!! ";
 
-  public static enum Action {
+  private static enum Action {
     MOVE("m", "move", "go", "walk"), 
     TAKE("t", "take", "get"),
     DROP("d", "drop"),
