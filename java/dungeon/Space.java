@@ -1,6 +1,6 @@
 package dungeon;
 
-import java.util.Hashtable;
+import java.util.*;
 import dungeon.exceptions.*;
 
 public abstract class Space implements Describable {
@@ -81,6 +81,14 @@ public abstract class Space implements Describable {
       throw new IllegalArgumentException("already an exit in this direction");
 
     this.exits.put(direction, sp);
+  }
+
+  public Iterator<Map.Entry<Direction, Space>> getExitsIterator() {
+    return this.exits.entrySet().iterator();
+  }
+
+  public int getNumberOfExits() {
+    return this.exits.size();
   }
 
   public Space to(Direction direction) throws NoSuchExitException {

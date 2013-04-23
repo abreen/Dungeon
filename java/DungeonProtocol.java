@@ -234,7 +234,48 @@ public class DungeonProtocol {
         return str;
 
       case EXITS:
-        return p.here().describeExits();
+        Room h = p.here();
+        int numberOfExits = h.getNumberOfExits();
+
+        if (numberOfExits == 0)
+          return ">>> There is no way out.";
+
+        str = ">>> ";
+
+        if (numberOfExits > 1)
+          str += numberOfExits + " exits: ";
+        else
+          str += "Only ";
+
+        Iterator<Map.Entry<Space.Direction, Space>> i = h.getExitsIterator();
+
+        while (i.hasNext()) {
+          Map.Entry<Space.Direction, Space> e = i.next();
+
+          String dir = Space.getStringFromDirection(e.getKey());
+          str += dir + " to ";
+
+          Space s = e.getValue();
+
+          if (s instanceof Room)
+            str += "the " + s.getName();
+
+          if (s instanceof Door) {
+            Door d = (Door)s;
+
+            if (d.isLocked())
+              str += "a locked " + d.getName();
+            else
+              str += "an unlocked " + d.getName();
+          }
+
+          if (i.hasNext())
+            str += ", ";
+          else
+            str += ".";
+        }
+
+        return str;
 
       case SAY:
         return "got say";
