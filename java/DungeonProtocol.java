@@ -252,7 +252,7 @@ public class DungeonProtocol {
         while (i.hasNext()) {
           Map.Entry<Space.Direction, Space> e = i.next();
 
-          String dir = Space.getStringFromDirection(e.getKey());
+          String dir = e.getKey().getName();
           str += dir + " to ";
 
           Space s = e.getValue();

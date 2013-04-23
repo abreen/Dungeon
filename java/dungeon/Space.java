@@ -73,15 +73,6 @@ public abstract class Space implements Describable {
     return dir;
   }
 
-  /**
-   * @deprecated Use {@code d.getName()} instead
-   * @param d the direction
-   * @return the name of the direction
-   */
-  public static String getStringFromDirection(Direction d) {
-    return d.getName();
-  }
-
   public void addExit(Direction direction, Space sp) {
     if (sp == null)
       throw new IllegalArgumentException("space must be non-null");
