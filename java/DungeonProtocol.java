@@ -182,13 +182,15 @@ public class DungeonProtocol {
         return "got give";
       case LOOK:
         
-        if (tokens.length == 1)
+        String toLook = getTokensAfterAction(tokens);
+
+        if (toLook == null)
           return p.here().describe();
 
         try {
-          return p.here().getItemByName(tokens[1]).describe();
+          return p.here().getItemByName(toLook).describe();
         } catch (NoSuchItemException e) {
-          return ">>> No such item '" + tokens[1] + "'.";
+          return ">>> No such item '" + toLook + "'.";
         }
 
       case INVENTORY:
