@@ -16,6 +16,7 @@ public class DungeonProtocol {
     DROP("d", "drop"),
     GIVE("g", "give"),
     LOOK("l", "look", "describe"),
+    CUSTOMIZE("c", "customize"),
     INVENTORY("i", "inventory"),
     EXITS("e", "exits"),
     SAY("s", "say", "talk"), 
@@ -23,6 +24,7 @@ public class DungeonProtocol {
     WHISPER("w", "whisper"),
     USE("u", "use"),
     HELP("h", "help"),
+    FINISH_MESSAGE("end"),
     QUIT("q", "quit");
     
     private String[] keys;
@@ -53,7 +55,7 @@ public class DungeonProtocol {
       throw new IllegalArgumentException("recieved null");
 
     /* Ignore blank input */
-    if (input.isEmpty()) return "";
+    if (input.isEmpty()) return "ignore";
 
     /* Split into tokens */
     String[] tokens = input.split("\\s");
@@ -67,9 +69,14 @@ public class DungeonProtocol {
     	}
     }
 
-    if (action == null)
+    if (action == null) {
+      if(p.lastMessage != null) {
+        p.lastMessage.append(input).append("\n");
+        return "";
+      }
       return CHEVRONS + "Unsure what is meant by '" + tokens[0] + "'.\n" +
              CHEVRONS + "Try 'help' to get a list of actions.";
+    }
 
     if (p.wantsQuit && action != Action.QUIT)
       p.wantsQuit = false;
@@ -171,11 +178,13 @@ public class DungeonProtocol {
       case GIVE:
         return "got give";
       case LOOK:
-        
         String toLook = getTokensAfterAction(tokens);
 
         if (toLook == null || toLook.equalsIgnoreCase("here"))
           return p.here().describe();
+        
+        if(toLook.equalsIgnoreCase("at myself"))
+          return p.describe();
 
         try {
           str = p.here().getItemByName(toLook).describe();
@@ -232,7 +241,10 @@ public class DungeonProtocol {
         str += ".";
 
         return str;
-
+      case CUSTOMIZE:
+        p.lastMessageCommand = "customize";
+        p.lastMessage = new StringBuilder("");
+        return "Describe yourself, then type 'end'";
       case EXITS:
         Room h = p.here();
         int numberOfExits = h.getNumberOfExits();
@@ -287,6 +299,14 @@ public class DungeonProtocol {
         return "got use";
       case HELP:
         return usage();
+      case FINISH_MESSAGE:
+        if("customize".equals(p.lastMessageCommand.toString())) {
+          p.setDescription(p.lastMessage.toString());
+          p.lastMessage = null;
+          return CHEVRONS + "Description Set";
+        }else {
+          return CHEVRONS + "That is not valid at this time";
+        }
       case QUIT:
         if (p.wantsQuit) {
           p.wantsQuit = false;
