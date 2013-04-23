@@ -23,12 +23,10 @@ public class DungeonConnectionThread extends Thread {
       System.err.print("DungeonServer: failed getting client streams\n");
       return;
     }
-
     String name = null;
     try {
       /* Expect the first data sent from the client to be the name */
       name = in.readLine();
-
       if (DungeonServer.universe == null)
         throw new NoUniverseException();
 
@@ -54,7 +52,7 @@ public class DungeonConnectionThread extends Thread {
         /* Protocol indicates that the client wants to disconnect */
         if (fromProtocol == null)
           break;
-        else if (fromProtocol.isEmpty())
+        else if (fromProtocol.equals("ignore"))
           continue;
         else
           out.println(fromProtocol);

@@ -88,10 +88,10 @@ public static void main(String[] args) {
       out.flush();
       while ((fromServer = in.readLine()) != null) {
         while(in.ready()) {
-          fromServer += in.readLine();
-          fromServer += "\n";
+          fromServer += "\n" + in.readLine();
         }
-        System.out.println(fromServer);
+        if(!fromServer.isEmpty())
+          System.out.println(fromServer);
         toServer = cons.readLine();
         out.println(toServer);
         out.flush();
