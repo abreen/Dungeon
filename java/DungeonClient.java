@@ -62,7 +62,7 @@ public static void main(String[] args) {
       return;
     }
     long timeTakenMS = System.currentTimeMillis() - startTime;
-    System.out.println("Successfully connected (" + timeTakenMS + ")");
+    System.out.println("Successfully connected as " + name + " (" + timeTakenMS + "ms)");
     playGame(socket);
   }
 
@@ -85,13 +85,18 @@ public static void main(String[] args) {
       String fromServer;
       /* Send username */
       out.println(name);
+      out.flush();
       while ((fromServer = in.readLine()) != null) {
+        while(in.ready()) {
+          fromServer += in.readLine();
+          fromServer += "\n";
+        }
         System.out.println(fromServer);
-
         toServer = cons.readLine();
         out.println(toServer);
+        out.flush();
       }
-
+      System.out.println("Quitting");
       out.close();
       in.close();
       cons.close();
