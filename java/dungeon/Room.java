@@ -10,11 +10,11 @@ public class Room extends Space {
   private Hashtable<String, Item> items;
 
   public void addItem(Item i) {
-    this.items.put(i.getName(), i);
+    this.items.put(i.getName().toLowerCase(), i);
   }
 
   public Item removeItemByName(String name) throws NoSuchItemException {
-    Item i = this.items.remove(name);
+    Item i = this.items.remove(name.toLowerCase());
     
     if (i == null)
       throw new NoSuchItemException();
@@ -23,7 +23,7 @@ public class Room extends Space {
   }
 
   public Item getItemByName(String name) throws NoSuchItemException {
-    Item i = this.items.get(name);
+    Item i = this.items.get(name.toLowerCase());
 
     if (i == null)
       throw new NoSuchItemException();

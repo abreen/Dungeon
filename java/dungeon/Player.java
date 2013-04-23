@@ -38,11 +38,11 @@ public class Player implements Describable, Serializable {
     if (!this.inventory.contains(i))
       throw new NoSuchItemException();
 
-    return this.inventory.remove(i.getName());
+    return this.inventory.remove(i.getName().toLowerCase());
   }
 
   public Item dropFromInventoryByName(String name) throws NoSuchItemException {
-    Item i = this.inventory.remove(name);
+    Item i = this.inventory.remove(name.toLowerCase());
 
     if (i == null)
       throw new NoSuchItemException();
@@ -51,7 +51,7 @@ public class Player implements Describable, Serializable {
   }
 
   public void addToInventory(Item i) {
-    this.inventory.put(i.getName(), i);
+    this.inventory.put(i.getName().toLowerCase(), i);
   }
 
   public Room here() { return this.here; }

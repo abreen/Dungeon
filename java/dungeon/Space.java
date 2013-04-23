@@ -44,7 +44,7 @@ public abstract class Space implements Describable {
 
     int k = -1;
     for (int i = 0; i < DIRECTION_STRINGS.length; i++) {
-      if (s.equals(DIRECTION_STRINGS[i])) {
+      if (s.equalsIgnoreCase(DIRECTION_STRINGS[i])) {
         k = i;
         break;
       }

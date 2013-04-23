@@ -71,7 +71,7 @@ public class DungeonProtocol {
     int k = -1;
     /* Parse the action or return an error */
     for (int i = 0; i < ACTION_STRINGS.length; i++) {
-      if (tokens[0].equals(ACTION_STRINGS[i])) {
+      if (tokens[0].equalsIgnoreCase(ACTION_STRINGS[i])) {
         k = i;
         break;
       }
