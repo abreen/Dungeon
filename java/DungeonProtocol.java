@@ -7,6 +7,8 @@ import dungeon.exceptions.*;
 
 public class DungeonProtocol {
   public static final double VERSION = 0.1;
+  public static final String CHEVRONS = ">>> ";
+  public static final String BANGS = "!!! ";
 
   public static enum Action {
     MOVE, TAKE, DROP, GIVE, LOOK, INVENTORY, EXITS, SAY, YELL, WHISPER, USE,
@@ -78,8 +80,8 @@ public class DungeonProtocol {
     }
 
     if (k == -1)
-      return ">>> Unsure what is meant by '" + tokens[0] + "'.\n" +
-             ">>> Try 'help' to get a list of actions.";
+      return CHEVRONS + "Unsure what is meant by '" + tokens[0] + "'.\n" +
+             CHEVRONS + "Try 'help' to get a list of actions.";
 
     if (p.wantsQuit && ACTION_ENUMS[k] != Action.QUIT)
       p.wantsQuit = false;
@@ -114,8 +116,8 @@ public class DungeonProtocol {
 
                 if (d.keyFits((Key)i)) {
                   found = true;
-                  str += "You use your key to unlock the door and lock it " +
-                         "behind you.\n";
+                  str = "You use your key to unlock the door and lock it " +
+                        "behind you.\n";
                   p.move((Room)d.to(dir));
                   break;
                 }
@@ -125,7 +127,7 @@ public class DungeonProtocol {
                 return "The door is locked, and you don't have the key.";
               
             } else {
-              str += "You close the door behind you.\n";
+              str = "You close the door behind you.\n";
               p.move((Room)d.to(dir));
             }
           }
@@ -133,11 +135,11 @@ public class DungeonProtocol {
           return str + p.here().describe();
 
         } catch (NoSuchDirectionException e) {
-          return ">>> '" + tokens[1] + "' is not a direction.";
+          return CHEVRONS + "'" + tokens[1] + "' is not a direction.";
         } catch (NoSuchExitException e) {
-          return ">>> That's not a way out of here.";
+          return CHEVRONS + "That's not a way out of here.";
         } catch (ArrayIndexOutOfBoundsException e) {
-          return ">>> Specify a direction in which to move.";
+          return CHEVRONS + "Specify a direction in which to move.";
         }
         
       case TAKE:
@@ -145,38 +147,38 @@ public class DungeonProtocol {
         String toTake = getTokensAfterAction(tokens);
 
         if (toTake == null)
-          return ">>> Specify an object to take.";
+          return CHEVRONS + "Specify an object to take.";
 
         /* Search room for this item */
         Item item = null;
         try {
           item = p.here().removeItemByName(toTake);
         } catch (NoSuchItemException e) {
-          return ">>> No such item by the name '" + toTake + "' here.";
+          return CHEVRONS + "No such item by the name '" + toTake + "' here.";
         }
 
         /* Add item to player's inventory */
         p.addToInventory(item);
 
-        return ">>> Taken.";
+        return CHEVRONS + "Taken.";
         
       case DROP:
 
         String toDrop = getTokensAfterAction(tokens);
         
         if (toDrop == null)
-          return ">>> Specify an object to drop.";
+          return CHEVRONS + "Specify an object to drop.";
 
         try {
           Item i = p.dropFromInventoryByName(toDrop);
           p.here().addItem(i);
 
         } catch (NoSuchItemException e) {
-          return ">>> No such item by the name '" + toDrop +
+          return CHEVRONS + "No such item by the name '" + toDrop +
                  "' in your inventory.";
         }
         
-        return ">>> Dropped.";
+        return CHEVRONS + "Dropped.";
         
       case GIVE:
         return "got give";
@@ -191,11 +193,11 @@ public class DungeonProtocol {
           str = p.here().getItemByName(toLook).describe();
         } catch (NoSuchItemException e) {
           try {
-            str = p.getFromInventoryByName(toLook).describe();
-            str += " (in your inventory)";
+            str = "You rummage around in your bag.\n";
+            str += p.getFromInventoryByName(toLook).describe();
           } catch (NoSuchItemException f) {
-            str = ">>> No such item '" + toLook + "' in this room or your " +
-                  "inventory.";
+            str = CHEVRONS + "No such item '" + toLook + "' in this room " +
+                  "or your inventory.";
           }
         }
 
@@ -205,11 +207,11 @@ public class DungeonProtocol {
         int size = p.getInventorySize();
 
         if (size == 0)
-          return ">>> You aren't carrying anything.";
+          return CHEVRONS + "You aren't carrying anything.";
 
         Iterator <Item> iter = p.getInventoryIterator();
 
-        str = ">>> ";
+        str = CHEVRONS;
         
         if (size > 1) {
           str += size + " items: ";
@@ -248,9 +250,9 @@ public class DungeonProtocol {
         int numberOfExits = h.getNumberOfExits();
 
         if (numberOfExits == 0)
-          return ">>> There is no way out.";
+          return CHEVRONS + "There is no way out.";
 
-        str = ">>> ";
+        str = CHEVRONS;
 
         if (numberOfExits > 1)
           str += numberOfExits + " exits: ";
@@ -306,13 +308,13 @@ public class DungeonProtocol {
           return null;
         } else {
           p.wantsQuit = true;
-          return ">>> Are you sure you want to quit?\n" +
-                 ">>> Type 'q' or 'quit' again to quit.";
+          return CHEVRONS + "Are you sure you want to quit?\n" +
+                 CHEVRONS + "Type 'q' or 'quit' again to quit.";
         }
 
     }
 
-    return "!!! Unexpected server error.";
+    return BANGS + "Unexpected server error.";
   }
 
   /*
