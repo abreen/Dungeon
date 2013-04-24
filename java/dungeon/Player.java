@@ -13,9 +13,9 @@ public class Player implements Describable, Serializable {
 
   public boolean wantsQuit;
 
-  public String describe() {
-    return this.name;
-  }
+  public String describe() { return this.name; }
+
+  public String getName() { return this.name; }
 
   public Player(String name, Room spawn) {
     this.name = name;

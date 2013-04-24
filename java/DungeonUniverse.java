@@ -6,7 +6,7 @@ import dungeon.exceptions.*;
 
 public class DungeonUniverse implements Serializable {
   private ArrayList<Space> spaces;
-  private ArrayList<Player> players;
+  private Hashtable<String, Player> players;
   private Room spawnPoint;
 
   /*
@@ -14,7 +14,7 @@ public class DungeonUniverse implements Serializable {
    */
   public DungeonUniverse() {
     this.spaces = new ArrayList<Space>();
-    this.players = new ArrayList<Player>();
+    this.players = new Hashtable<String, Player>();
 
     Room a = new Room("train platform", "An empty train platform.");
     Room b = new Room("lobby", "An empty train station lobby.");
@@ -60,7 +60,7 @@ public class DungeonUniverse implements Serializable {
    */
   public Player register(String name, PrintWriter w) {
     Player p = new Player(name, this.spawnPoint, w);
-    this.players.add(p);
+    this.players.put(name, p);
     return p;
   }
 
@@ -70,9 +70,15 @@ public class DungeonUniverse implements Serializable {
    */
   public void retire(Player p) {
     // serialize the Player object and save to disk
-    this.players.remove(p);
+    this.players.remove(p.getName());
   }
 
   public Room getSpawn() { return this.spawnPoint; }
+
+  public Iterator<Player> getPlayers() {
+    return this.players.values().iterator();
+  }
+
+  public int getNumberOfPlayers() { return this.players.size(); }
 
 }

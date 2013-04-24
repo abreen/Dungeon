@@ -22,8 +22,10 @@ public class DungeonProtocol {
     YELL("y", "yell", "shout"),
     WHISPER("w", "whisper"),
     USE("u", "use"),
-    HELP("h", "help"),
-    QUIT("q", "quit");
+
+    HELP("help"),
+    WHO("who"),
+    QUIT("quit");
     
     private String[] keys;
     
@@ -287,6 +289,26 @@ public class DungeonProtocol {
         return "got use";
       case HELP:
         return usage();
+      case WHO:
+        Iterator<Player> players = DungeonServer.universe.getPlayers();
+        int numPlayers = DungeonServer.universe.getNumberOfPlayers();
+
+        str = CHEVRONS + numPlayers + " online:\n";
+        
+        while (players.hasNext()) {
+          Player pl = players.next();
+
+          if (p == pl)
+            str += CHEVRONS + "\t" + pl.getName() + " (you)";
+          else
+            str += CHEVRONS + "\t" + pl.getName();
+
+          if (players.hasNext())
+            str += "\n";
+        }
+
+        return str;
+
       case QUIT:
         if (p.wantsQuit) {
           p.wantsQuit = false;
@@ -297,7 +319,7 @@ public class DungeonProtocol {
         } else {
           p.wantsQuit = true;
           return CHEVRONS + "Are you sure you want to quit?\n" +
-                 CHEVRONS + "Type 'q' or 'quit' again to quit.";
+                 CHEVRONS + "Type 'quit' again to disconnect.";
         }
 
     }
@@ -343,7 +365,10 @@ public class DungeonProtocol {
            "{y,yell,shout}       <string>\n" +
            "{w,whisper}          <string>      to <player>\n" +
            "{u,use}              <object in inventory>\n" +
-           "{h,help}\n" +
-           "{q,quit}";
+           "\n" + 
+           "SERVER ACTION\n" + 
+           "help\n" +
+           "who\n" + 
+           "quit";
   }
 }
