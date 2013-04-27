@@ -50,7 +50,7 @@ public class DungeonUniverse implements Serializable {
    * will deserialize the object and assign it a fresh output stream
    * writer.
    */
-  public Player restore(String name, PrintWriter w) {
+  public synchronized Player restore(String name, PrintWriter w) {
     return null;
   }
 
@@ -58,7 +58,7 @@ public class DungeonUniverse implements Serializable {
    * If this player is new, a new Player object will be created
    * and an output stream writer will be assigned to it.
    */
-  public Player register(String name, PrintWriter w) {
+  public synchronized Player register(String name, PrintWriter w) {
     Player p = new Player(name, this.spawnPoint, w);
     this.players.put(name, p);
     return p;
@@ -68,7 +68,7 @@ public class DungeonUniverse implements Serializable {
    * Removes the player from the universe and serializes
    * the player object.
    */
-  public void retire(Player p) {
+  public synchronized void retire(Player p) {
     // serialize the Player object and save to disk
     this.players.remove(p.getName());
   }
