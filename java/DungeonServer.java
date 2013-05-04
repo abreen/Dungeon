@@ -5,7 +5,8 @@ import java.net.*;
 import dungeon.*;
 
 public class DungeonServer {
-  public static DungeonUniverse universe;
+  public static DungeonUniverse universe;     // reference to universe instance
+  public static DungeonDispatcher events;     // reference to event queue
 
   public static void main(String[] args) throws IOException {
 
@@ -19,16 +20,6 @@ public class DungeonServer {
       System.exit(1);
     }
 
-    /* Load universe */
-    try {
-      universe = new DungeonUniverse();
-    } catch (Exception e) {
-      System.err.println("DungeonServer: failed loading universe");
-      System.exit(2);
-    }
-
-    System.out.println("loaded universe");
-
     /* Attempt to bind to port */
     ServerSocket server = null;
     try {
@@ -39,6 +30,27 @@ public class DungeonServer {
     }
 
     System.out.printf("bound to port %d\n", port);
+
+    /* Load universe */
+    try {
+      universe = new DungeonUniverse();
+    } catch (Exception e) {
+      System.err.println("DungeonServer: failed loading universe");
+      System.exit(2);
+    }
+
+    System.out.println("loaded universe");
+
+    /* Start accepting events */
+    try {
+      events = new DungeonDispatcher();
+      events.start();
+    } catch (Exception e) {
+      System.err.println("DungeonServer: failed starting event queue");
+      System.exit(3);
+    }
+
+    System.out.println("started event queue");
 
     /* Listen for clients */
     try {
