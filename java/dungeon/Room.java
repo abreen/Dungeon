@@ -8,6 +8,7 @@ public class Room extends Space {
   public static final int DEFAULT_ITEMS_SIZE = 11;
 
   private Hashtable<String, Item> items;
+  private Hashtable<String, Player> players;
 
   public void addItem(Item i) {
     this.items.put(i.getName().toLowerCase(), i);
@@ -29,6 +30,25 @@ public class Room extends Space {
       throw new NoSuchItemException();
 
     return i;
+  }
+
+  public void addPlayer(Player p) {
+    this.players.put(p.getName(), p);
+  }
+
+  public void removePlayer(Player p) {
+    this.players.remove(p.getName());
+  }
+
+  public Player[] getPlayers() {
+    Player[] ps = new Player[this.players.size()];
+    int i = 0;
+    for (Player p : this.players.values()) {
+      ps[i] = p;
+      i++;
+    }
+
+    return ps;
   }
 
   /*

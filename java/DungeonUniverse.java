@@ -81,6 +81,9 @@ public class DungeonUniverse implements Serializable {
 
   public int getNumberOfPlayers() { return this.players.size(); }
 
+  /*
+   * Returns an array of writers for every player connected.
+   */
   public synchronized PrintWriter[] getAllPlayerWriters() {
     PrintWriter[] ws = new PrintWriter[this.players.size()];
     int i = 0;
@@ -90,6 +93,47 @@ public class DungeonUniverse implements Serializable {
     }
 
     return ws;
+  }
+
+  /*
+   * Moves a player to the specified room.
+   */
+  public synchronized void movePlayer(Player p, Room dest) {
+    Room r = p.here();
+    r.removePlayer(p);
+    p.move(dest);
+    dest.addPlayer(p);
+  }
+
+  /*
+   * Returns true if the player has a key to the specified door.
+   */
+  public synchronized boolean hasKeyTo(Player p, Door d) {
+    Iterator<Item> iter = p.getInventoryIterator();
+
+    boolean found = false;
+    while (iter.hasNext()) {
+      Item i = iter.next();
+
+      if (!(i instanceof Key))
+        continue;
+
+      if (d.keyFits((Key)i)) {
+        return true;
+      }
+    }
+
+    if (!found)
+      return false;
+    else
+      return true;
+  }
+
+  /*
+   * Returns an array of players currently in the specified room.
+   */
+  public synchronized Player[] getPlayersInRoom(Room r) {
+    return r.getPlayers();
   }
 
 }
