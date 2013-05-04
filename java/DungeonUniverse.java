@@ -82,7 +82,14 @@ public class DungeonUniverse implements Serializable {
   public int getNumberOfPlayers() { return this.players.size(); }
 
   public synchronized PrintWriter[] getAllPlayerWriters() {
-    return null;
+    PrintWriter[] ws = new PrintWriter[this.players.size()];
+    int i = 0;
+    for (Player p : this.players.values()) {
+      ws[i] = p.getWriter();
+      i++;
+    }
+
+    return ws;
   }
 
 }

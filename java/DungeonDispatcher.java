@@ -18,7 +18,7 @@ public class DungeonDispatcher extends Thread {
   private static final String BANGS = "!!! ";       // used for server errors
 
   /* Base abstract class for all events. */
-  public abstract class Event {
+  private abstract class Event {
     protected PrintWriter[] writers;
     protected String output;
     
@@ -37,15 +37,19 @@ public class DungeonDispatcher extends Thread {
   }
   
   /* Narration event for one or more players. */
-  public class NarrationEvent extends Event {
+  private class NarrationEvent extends Event {
     public NarrationEvent(PrintWriter[] w, String s) {
       super(w, s);
     }
   }
 
+  public void addNarrationEvent(PrintWriter[] w, String s) {
+    this.addEvent(new NarrationEvent(w, s));
+  }
+
   /* Notification event for one or more players (prefixed by the server
    * chevrons). */
-  public class NotificationEvent extends Event {
+  private class NotificationEvent extends Event {
     public NotificationEvent(PrintWriter[] w, String s) {
       super(w, s);
     }
@@ -55,9 +59,13 @@ public class DungeonDispatcher extends Thread {
     }
   }
 
+  public void addNotificationEvent(PrintWriter[] w, String s) {
+    this.addEvent(new NotificationEvent(w, s));
+  }
+
   /* Server-wide notification event for all connected players (prefixed
    * by server asterisks). */
-  public class ServerNotificationEvent extends Event {
+  private class ServerNotificationEvent extends Event {
     public ServerNotificationEvent(String s) {
       super(DungeonServer.universe.getAllPlayerWriters(), s);
     }
@@ -67,10 +75,14 @@ public class DungeonDispatcher extends Thread {
     }
   }
 
+  public void addServerNotificationEvent(String s) {
+    this.addEvent(new ServerNotificationEvent(s));
+  }
+
   /* Server-wide error event for all connected players (prefixed by
    * exclamation points), only used when the server is starting, stopping,
    * or must halt due to an error. */
-  public class ServerErrorEvent extends ServerNotificationEvent {
+  private class ServerErrorEvent extends ServerNotificationEvent {
     public ServerErrorEvent(String s) {
       super(s);
     }
@@ -80,13 +92,17 @@ public class DungeonDispatcher extends Thread {
     }
   }
 
+  public void addServerErrorEvent(String s) {
+    this.addEvent(new ServerErrorEvent(s));
+  }
+
   private LinkedBlockingQueue<Event> eventQueue;
   
   public DungeonDispatcher() {
     this.eventQueue = new LinkedBlockingQueue<Event>();
   }
 
-  public synchronized void addEvent(Event event) {
+  private synchronized void addEvent(Event event) {
     try { 
       this.eventQueue.put(event);
     } catch (InterruptedException e) {

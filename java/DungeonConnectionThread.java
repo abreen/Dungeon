@@ -33,6 +33,8 @@ public class DungeonConnectionThread extends Thread {
         throw new NoUniverseException();
 
       System.out.printf("player '%s' connected (start of stream)\n", name);
+      String login = name + " connected.";
+      DungeonServer.events.addServerNotificationEvent(login);
 
       /* Try to access saved state in universe for this player */
       Player p = null;
@@ -62,6 +64,8 @@ public class DungeonConnectionThread extends Thread {
       }
       
       System.out.printf("player '%s' disconnected (quitting)\n", name);
+      String logout = name + " disconnected.";
+      DungeonServer.events.addServerNotificationEvent(logout);
 
       out.close();
       in.close();
