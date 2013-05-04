@@ -7,6 +7,7 @@ import dungeon.*;
 public class DungeonServer {
   public static DungeonUniverse universe;     // reference to universe instance
   public static DungeonDispatcher events;     // reference to event queue
+  public static DungeonNarrator narrator;     // reference to narrator
 
   public static void main(String[] args) throws IOException {
 
@@ -40,6 +41,16 @@ public class DungeonServer {
     }
 
     System.out.println("loaded universe");
+
+    /* Start narrator */
+    try {
+      narrator = new DungeonNarrator();
+    } catch (Exception e) {
+      System.err.println("DungeonServer: failed starting narrator");
+      System.exit(3);
+    }
+
+    System.out.println("started narrator");
 
     /* Start accepting events */
     try {
