@@ -6,6 +6,7 @@ import dungeon.exceptions.*;
 
 public class Room extends Space {
   public static final int DEFAULT_ITEMS_SIZE = 11;
+  public static final int DEFAULT_PLAYERS_SIZE = 36;
 
   private Hashtable<String, Item> items;
   private Hashtable<String, Player> players;
@@ -115,6 +116,7 @@ public class Room extends Space {
 
   public Room(String n, String d) {
     super(n, d);
+    this.players = new Hashtable<String, Player>(Room.DEFAULT_PLAYERS_SIZE);
     this.items = new Hashtable<String, Item>(Room.DEFAULT_ITEMS_SIZE);
   }
 }
