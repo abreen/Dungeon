@@ -45,22 +45,18 @@ public class DungeonConnectionThread extends Thread {
 
       out.println("Connected.");
 
-      /* Handle communications from client to protocol */
+      /* Contains string sent from client to protocol */
       String toProtocol;
-      String fromProtocol;
 
-      /* Read lines from client and wait for response from protocol */
+      /* Read lines from client and send to protocol */
       while ((toProtocol = in.readLine()) != null) {
-        fromProtocol = DungeonProtocol.process(p, toProtocol);
+        if (toProtocol.isEmpty()) continue;
 
-        /* Protocol indicates that the client wants to disconnect */
-        if (fromProtocol == null)
+        try {
+          DungeonProtocol.process(p, toProtocol);
+        } catch (PlayerIsQuittingException e) {
           break;
-        else if (fromProtocol.isEmpty())
-          continue;
-        else
-          out.println(fromProtocol);
-        
+        }
       }
       
       System.out.printf("player '%s' disconnected (quitting)\n", name);
