@@ -17,6 +17,9 @@ public class DungeonDispatcher extends Thread {
   private static final String ASTERISKS = "*** ";   // used for server notices
   private static final String BANGS = "!!! ";       // used for server errors
 
+  private static final String SERVER_CLOSING_MESSAGE = "Server closing...";
+  private static final String SERVER_RESTART_MESSAGE = "Server restarting...";
+
   /* Base abstract class for all events. */
   private abstract class Event {
     protected PrintWriter[] writers;
@@ -94,6 +97,14 @@ public class DungeonDispatcher extends Thread {
 
   public void addServerErrorEvent(String s) {
     this.addEvent(new ServerErrorEvent(s));
+  }
+
+  public void addServerClosingEvent() {
+    this.addEvent(new ServerNotificationEvent(SERVER_CLOSING_MESSAGE));
+  }
+
+  public void addServerRestartEvent() {
+    this.addEvent(new ServerNotificationEvent(SERVER_RESTART_MESSAGE));
   }
 
   private LinkedBlockingQueue<Event> eventQueue;
