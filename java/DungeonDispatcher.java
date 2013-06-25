@@ -4,13 +4,11 @@ import java.io.*;
 
 import dungeon.*;
 
-/*
- * The DungeonDispatcher class maintains an event queue that
- * stores and distributes events to connected players. Notifications
- * and narration triggered by the server or other players come here
- * to be sent to their destinations.
- *
- * Methods that mutate the event queue are synchronized.
+/**
+ * The DungeonDispatcher class maintains an event queue that stores and
+ * distributes events (strings intended as notifications, server notices, or
+ * narration) to connected players. When the server or universe needs to send
+ * strings to players, they are queued here before being sent over the network.
  */
 public class DungeonDispatcher extends Thread {
   private static final String CHEVRONS = ">>> ";    // used for notifications
@@ -20,7 +18,9 @@ public class DungeonDispatcher extends Thread {
   private static final String SERVER_CLOSING_MESSAGE = "Server closing...";
   private static final String SERVER_RESTART_MESSAGE = "Server restarting...";
 
-  /* Base abstract class for all events. */
+  /**
+   * Base abstract class for all dispatcher events.
+   */
   private abstract class Event {
     protected PrintWriter[] writers;
     protected String output;
@@ -39,19 +39,34 @@ public class DungeonDispatcher extends Thread {
     }
   }
   
-  /* Narration event for one or more players. */
+  /**
+   * The player-specific narration event that sends a message to one or
+   * several players. The message is narration and is not prefixed with any
+   * strings.
+   */
   private class NarrationEvent extends Event {
     public NarrationEvent(PrintWriter[] w, String s) {
       super(w, s);
     }
   }
 
+  /**
+   * Adds a narration event to the specified writers with the specified
+   * message.
+   * @param w The array of PrintWriters to which to send the message
+   * @param s The event message
+   */
   public void addNarrationEvent(PrintWriter[] w, String s) {
     this.addEvent(new NarrationEvent(w, s));
   }
 
-  /* Notification event for one or more players (prefixed by the server
-   * chevrons). */
+  /**
+   * The player-specific notification event that sends a message to one
+   * or several players. The message is prefixed by a string defined by
+   * the constant DungeonDispatcher.CHEVRONS.
+   * 
+   * @see DungeonDispatcher.CHEVRONS
+   */
   private class NotificationEvent extends Event {
     public NotificationEvent(PrintWriter[] w, String s) {
       super(w, s);
@@ -62,12 +77,23 @@ public class DungeonDispatcher extends Thread {
     }
   }
 
+  /**
+   * Adds a notification event to the specified writers with the specified
+   * message.
+   * @param w The array of PrintWriters to which to send the message
+   * @param s The event message
+   */
   public void addNotificationEvent(PrintWriter[] w, String s) {
     this.addEvent(new NotificationEvent(w, s));
   }
 
-  /* Server-wide notification event for all connected players (prefixed
-   * by server asterisks). */
+  /**
+   * The server-wide notification event that sends a message to all
+   * connected players. The message is prefixed by a string defined by
+   * the constant DungeonDispatcher.ASTERISKS.
+   * 
+   * @see DungeonDispatcher.ASTERISKS
+   */
   private class ServerNotificationEvent extends Event {
     public ServerNotificationEvent(String s) {
       super(DungeonServer.universe.getAllPlayerWriters(), s);
@@ -78,13 +104,22 @@ public class DungeonDispatcher extends Thread {
     }
   }
 
+  /**
+   * Adds a server notification event with the specified message.
+   * @param s The event message
+   */
   public void addServerNotificationEvent(String s) {
     this.addEvent(new ServerNotificationEvent(s));
   }
 
-  /* Server-wide error event for all connected players (prefixed by
-   * exclamation points), only used when the server is starting, stopping,
-   * or must halt due to an error. */
+  /**
+   * The server-wide error event that notifies all connected players, only
+   * used when the server is starting, stopping, or must halt due to an
+   * error. The message is prefixed by a string defined by the constant
+   * DungeonDispatcher.BANGS.
+   * 
+   * @see DungeonDispatcher.BANGS
+   */
   private class ServerErrorEvent extends ServerNotificationEvent {
     public ServerErrorEvent(String s) {
       super(s);
@@ -95,14 +130,26 @@ public class DungeonDispatcher extends Thread {
     }
   }
 
+  /**
+   * Adds a server error event with the specified message.
+   * @param s The event message
+   */
   public void addServerErrorEvent(String s) {
     this.addEvent(new ServerErrorEvent(s));
   }
 
+  /**
+   * Automatically inform all connected players that the server is
+   * immediately closing.
+   */
   public void addServerClosingEvent() {
     this.addEvent(new ServerNotificationEvent(SERVER_CLOSING_MESSAGE));
   }
 
+  /**
+   * Automatically inform all connected players that the server will
+   * restart.
+   */
   public void addServerRestartEvent() {
     this.addEvent(new ServerNotificationEvent(SERVER_RESTART_MESSAGE));
   }
@@ -120,10 +167,7 @@ public class DungeonDispatcher extends Thread {
       return;
     }
   }
-
-  /*
-   * Waits for incoming events and dispatches them in order.
-   */
+  
   public void run() {
     while (true) {
       try { 
