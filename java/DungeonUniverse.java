@@ -95,20 +95,69 @@ public class DungeonUniverse implements Serializable {
     return ws;
   }
 
-  /*
-   * Moves a player to the specified room.
+  /**
+   * @todo Finish implementing
+   * @param p
+   * @param dest 
    */
-  public synchronized void movePlayer(Player p, Room dest) {
+  public synchronized Room movePlayer(Player p, String dest)
+    throws NoSuchDirectionException, NoSuchExitException, 
+           LockedDoorException {
+    
+    Space.Direction direction = Space.getDirectionFromString(dest);
+    Space destination = p.here().to(direction);
+    
+    if (destination instanceof Room) {
+      unconditionallyMovePlayer(p, (Room)destination);
+      return (Room)destination;
+    }
+    
+    if (destination instanceof Door) {
+      Door d = (Door)destination;
+      
+      if (d.isLocked()) {
+        
+        if (hasKeyTo(p, d)) {
+          Room otherSide = (Room)d.to(direction);
+          
+          String unlock = "Your key unlocks the door. You lock it behind you.";
+          DungeonServer.events.addNotificationEvent(p.getWriter(), unlock);
+          unconditionallyMovePlayer(p, otherSide);
+          return otherSide;
+        } else {
+          throw new LockedDoorException();
+        }
+
+      }
+      
+    } // end if (destination instanceof Door)
+    
+    return null; // this isn't a good idea
+    
+  } // end movePlayer()
+  
+  /**
+   * Simply moves a player to another room.
+   * @param p The player to move
+   * @param dest The room into which the player is moved
+   */
+  private void unconditionallyMovePlayer(Player p, Room dest) {
     Room r = p.here();
     r.removePlayer(p);
     p.move(dest);
     dest.addPlayer(p);
   }
+  
 
-  /*
-   * Returns true if the player has a key to the specified door.
+  /**
+   * Scans a player's inventory for keys that fit the specified door. If
+   * the player has a matching key, this method returns true.
+   * 
+   * @param p The player whose inventory is searched
+   * @param d The door to which to find a key
+   * @return True if the player has a matching key to the door
    */
-  public synchronized boolean hasKeyTo(Player p, Door d) {
+  private boolean hasKeyTo(Player p, Door d) {
     Iterator<Item> iter = p.getInventoryIterator();
 
     boolean found = false;

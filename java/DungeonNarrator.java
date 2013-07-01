@@ -34,6 +34,150 @@ public class DungeonNarrator {
     System.out.println(n.narrateYell("Rachel", "Help me!"));
     System.out.println(n.narrateDistantYell("This is outrageous!"));
   }
+  
+  /**
+   * Returns the specified string with its first character as a capital letter.
+   * @param s The string
+   * @return The string, with a capitalized first character
+   */
+  public static String capitalize(String s) {
+    return s.substring(0, 1).toUpperCase() +
+           s.substring(1);
+  }
+  
+  /**
+   * Returns a String representation of a list of objects, in narrative
+   * style. Fully generalized to accept an array of any object type and
+   * uses the toString() method.
+   * @param a The array of objects
+   * @return The array's string representation
+   */
+  public static String toNaturalList(Object[] a) {
+    int size = a.length;
+    String str = "";
+    
+    if (size == 0)
+      return "Nothing.";
+    
+    str += capitalize(a[0].toString());
+    
+    if (size == 1)
+      return str + ".";
+    else
+      str += ", ";
+    
+    for (int i = 1; i < a.length; i++) {
+      
+      str += a[i].toString();
+      
+      if (!((i + 1) < a.length)) {
+        str += ".";
+        break;
+      } else {
+        str += ", ";
+      }
+    }
+    
+    return str;
+  }
+  
+  /**
+   * Returns a string representation of a list of items, in narrative style.
+   * @param a The list of items
+   * @return The list's string representation
+   */
+  public static String toNaturalList(List<Item> a) {
+    int size = a.size();
+    String str = "";
+    
+    if (size == 0)
+      return "No items.";
+    
+    Iterator<Item> iter = a.iterator();
+    Item i = iter.next();
+    
+    str += capitalize(i.getName());
+    
+    if (size == 1)
+      return str + ".";
+    else
+      str += ", ";
+    
+    while (true) {
+      i = iter.next();
+      
+      str += i.getName();
+      
+      if (!iter.hasNext()) {
+        str += ".";
+        break;
+      } else {
+        str += ", ";
+      }
+    }
+    
+    return str;
+  }
+  
+  public static String toNaturalList(Item[] a) {
+    return toNaturalList(Arrays.asList(a));
+  }
+  
+  /**
+   * Returns a string representation of a list of items, in narrative style,
+   * each item being listed with its article.
+   * @param a The list of items
+   * @return The list's string representation
+   */
+  public static String toNaturalListWithArticles(List<Item> a) {
+    int size = a.size();
+    String str = "";
+    
+    if (size == 0)
+      return "No items.";
+    
+    Iterator<Item> iter = a.iterator();
+    
+    Item i = iter.next();
+    str += capitalize(i.getArticle()) + " " + i.getName();
+    
+    if (size == 1) {
+      return str + ".";
+    } else {
+      if (size == 2) {
+        str += " and ";
+      } else {
+        str += ", ";
+      }
+    }
+
+    int count = 2;
+    while (iter.hasNext()) {
+      i = iter.next();
+
+      str += i.getArticle() + " " + i.getName();
+
+      if (count == size - 1) {
+        if (size == 2) {
+          str += " and ";
+        } else {
+          str += ", and ";
+        }
+      } else if (count != size) {
+        str += ", ";
+      }
+
+      count++;
+    }
+
+    str += ".";
+
+    return str;
+  }
+  
+  public static String toNaturalListWithArticles(Item[] a) {
+    return toNaturalListWithArticles(Arrays.asList(a));
+  }
 
   public String narrateMoveToRoom(String name, String dest) {
     Phrase p = getRandomPhrase(MOVE_TO_ROOM_PHRASES);

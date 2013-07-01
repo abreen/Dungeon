@@ -25,21 +25,47 @@ public abstract class Space implements Describable {
     }
     
     public boolean isThisDirection(String nm) {
-    	if(nm.equalsIgnoreCase(fullName))
+    	if (nm.equalsIgnoreCase(fullName))
     		return true;
-    	for(String name : names) {
-    		if(name.equalsIgnoreCase(nm)) {
+      
+    	for (String name : names) {
+    		if (name.equalsIgnoreCase(nm)) {
     			return true;
     		}
     	}
     	return false;
     }
     
+    /**
+     * @deprecated Use toString() instead
+     */
     public String getName() {
     	return fullName;
     }
+    
+    public String toString() {
+      return fullName;
+    }
+    
   }
 
+  public static String listValidDirections() {
+    String str = "";
+    
+    Direction[] dirs = Direction.values();
+    
+    for (int i = 0; i < dirs.length; i++) {
+      str += dirs[i].toString();
+      
+      if ((i + 1) < dirs.length)
+        str += ", ";
+      else
+        str += ".";
+    }
+    
+    return str;
+  }
+  
   public static final int DEFAULT_EXITS_SIZE = 6;
 
   protected String name;
@@ -51,7 +77,12 @@ public abstract class Space implements Describable {
     return this.name + "\n\n" + this.description;
   }
 
+  /**
+   * @deprecated Use toString() instead
+   */
   public String getName() { return this.name; }
+  
+  public String toString() { return this.name; }
 
   public static Direction getDirectionFromString(String s)
     throws NoSuchDirectionException {

@@ -59,6 +59,17 @@ public class DungeonDispatcher extends Thread {
   public void addNarrationEvent(PrintWriter[] w, String s) {
     this.addEvent(new NarrationEvent(w, s));
   }
+  
+  /**
+   * Adds a narration event to just one writer with the specified message.
+   * @param w The PrintWriter to which to send the message
+   * @param s The event message
+   */
+  public void addNarrationEvent(PrintWriter w, String s) {
+    PrintWriter[] temp = new PrintWriter[1];
+    temp[0] = w;
+    this.addNarrationEvent(temp, s);
+  }
 
   /**
    * The player-specific notification event that sends a message to one
@@ -87,6 +98,18 @@ public class DungeonDispatcher extends Thread {
     this.addEvent(new NotificationEvent(w, s));
   }
 
+  /**
+   * Adds a notification event to just one writer with the specified
+   * message.
+   * @param w The PrintWriter to which to send the message
+   * @param s The event message
+   */
+  public void addNotificationEvent(PrintWriter w, String s) {
+    PrintWriter[] temp = new PrintWriter[1];
+    temp[0] = w;
+    this.addNotificationEvent(temp, s);
+  }
+  
   /**
    * The server-wide notification event that sends a message to all
    * connected players. The message is prefixed by a string defined by
