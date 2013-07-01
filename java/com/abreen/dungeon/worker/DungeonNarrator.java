@@ -1,5 +1,7 @@
+package com.abreen.dungeon.worker;
+
 import java.util.*;
-import dungeon.*;
+import com.abreen.dungeon.model.Item;
 
 /*
  * Provides static methods that provide varied and interesting English

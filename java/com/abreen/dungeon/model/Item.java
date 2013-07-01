@@ -1,4 +1,4 @@
-package dungeon;
+package com.abreen.dungeon.model;
 
 public class Item implements Describable {
   public static final char[] VOWELS = {'a', 'e', 'i', 'o', 'u'};

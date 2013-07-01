@@ -1,8 +1,10 @@
+package com.abreen.dungeon.worker;
+
 import java.util.*;
 import java.io.*;
-
-import dungeon.*;
-import dungeon.exceptions.*;
+import com.abreen.dungeon.DungeonServer;
+import com.abreen.dungeon.exceptions.*;
+import com.abreen.dungeon.model.*;
 
 public class DungeonUniverse implements Serializable {
   private ArrayList<Space> spaces;

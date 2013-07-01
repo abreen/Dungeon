@@ -1,4 +1,4 @@
-package dungeon.exceptions;
+package com.abreen.dungeon.exceptions;
 
 /*
  * Thrown when a player tries to lock a door that is already locked.

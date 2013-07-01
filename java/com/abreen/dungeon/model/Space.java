@@ -1,7 +1,7 @@
-package dungeon;
+package com.abreen.dungeon.model;
 
 import java.util.*;
-import dungeon.exceptions.*;
+import com.abreen.dungeon.exceptions.*;
 
 public abstract class Space implements Describable {
   public static enum Direction {

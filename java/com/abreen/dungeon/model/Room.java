@@ -1,8 +1,7 @@
-package dungeon;
+package com.abreen.dungeon.model;
 
 import java.util.*;
-
-import dungeon.exceptions.*;
+import com.abreen.dungeon.exceptions.*;
 
 public class Room extends Space {
   public static final int DEFAULT_ITEMS_SIZE = 11;

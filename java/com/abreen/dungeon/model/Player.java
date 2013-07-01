@@ -1,9 +1,8 @@
-package dungeon;
+package com.abreen.dungeon.model;
 
 import java.util.*;
 import java.io.*;
-
-import dungeon.exceptions.*;
+import com.abreen.dungeon.exceptions.*;
 
 public class Player implements Describable, Serializable {
   private String name;

@@ -1,4 +1,4 @@
-package dungeon.exceptions;
+package com.abreen.dungeon.exceptions;
 
 /*
  * Thrown when a player decides to quit.

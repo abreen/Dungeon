@@ -1,4 +1,4 @@
-package dungeon;
+package com.abreen.dungeon.model;
 
 public class UseableItem extends Item implements Useable {
   private Useable useMethodObject;

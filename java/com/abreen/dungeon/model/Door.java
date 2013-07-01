@@ -1,6 +1,6 @@
-package dungeon;
+package com.abreen.dungeon.model;
 
-import dungeon.exceptions.*;
+import com.abreen.dungeon.exceptions.*;
 
 public class Door extends Space {
   public static final String DEFAULT_NAME = "door";

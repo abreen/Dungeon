@@ -1,4 +1,4 @@
-package dungeon.exceptions;
+package com.abreen.dungeon.exceptions;
 
 /*
  * Thrown when a player attempts to move through a door for which the

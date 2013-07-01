@@ -1,4 +1,4 @@
-package dungeon.exceptions;
+package com.abreen.dungeon.exceptions;
 
 /*
  * Thrown when a player specifies an item that is not in the room

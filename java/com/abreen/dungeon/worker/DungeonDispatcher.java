@@ -1,8 +1,8 @@
-import java.util.*;
+package com.abreen.dungeon.worker;
+
 import java.util.concurrent.*;
 import java.io.*;
-
-import dungeon.*;
+import com.abreen.dungeon.DungeonServer;
 
 /**
  * The DungeonDispatcher class maintains an event queue that stores and

@@ -1,8 +1,11 @@
-import java.util.*;
+package com.abreen.dungeon;
+
 import java.io.*;
 import java.net.*;
-
-import dungeon.*;
+import com.abreen.dungeon.worker.DungeonUniverse;
+import com.abreen.dungeon.worker.DungeonDispatcher;
+import com.abreen.dungeon.worker.DungeonNarrator;
+import com.abreen.dungeon.worker.DungeonConnectionThread;
 
 public class DungeonServer {
   public static DungeonUniverse universe;     // reference to universe instance

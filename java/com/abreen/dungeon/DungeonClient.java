@@ -1,8 +1,8 @@
+package com.abreen.dungeon;
+
 import java.util.*;
 import java.io.*;
 import java.net.*;
-
-import dungeon.*;
 
 public class DungeonClient {
   public static void main(String[] args) throws IOException {

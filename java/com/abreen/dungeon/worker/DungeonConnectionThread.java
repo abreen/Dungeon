@@ -1,8 +1,10 @@
+package com.abreen.dungeon.worker;
+
 import java.net.*;
 import java.io.*;
-
-import dungeon.*;
-import dungeon.exceptions.*;
+import com.abreen.dungeon.exceptions.*;
+import com.abreen.dungeon.DungeonServer;
+import com.abreen.dungeon.model.Player;
 
 public class DungeonConnectionThread extends Thread {
   private Socket client;
