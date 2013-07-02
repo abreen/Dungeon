@@ -213,7 +213,23 @@ public class DungeonProtocol {
     /**
      * @todo Implement look action
      */
-    if (action == Action.LOOK) { }
+    if (action == Action.LOOK) {
+      try {
+        String tokensAfter = getTokensAfterAction(tokens);
+        
+        if (tokensAfter == null)
+          u.look(p, "here");
+        else 
+          u.look(p, tokensAfter);
+        
+      } catch (NoSuchItemException e) {
+        String oops = "There's no such item by the name '" + tokens[1] + 
+                      "' in the room or your inventory.";
+        d.addNotificationEvent(playerWriter, oops);
+      } finally {
+        return;
+      }
+    }
     
     /**
      * @todo Implement inventory action

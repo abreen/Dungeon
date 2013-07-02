@@ -212,5 +212,42 @@ public class DungeonUniverse implements Serializable {
   public synchronized int getNumberOfPlayersInRoom(Room r) {
     return r.getNumberOfPlayers();
   }
+  
+  /**
+   * Responds to a player's intent to get a description of the room or
+   * an item in the room or the player's inventory.
+   * @param p The player
+   * @param s The name of the item, or "here" for the current room
+   * @throws NoSuchItemException If the specified item is nowhere to be found
+   */
+  public void look(Player p, String s) throws NoSuchItemException {
+    if (s == null)
+      throw new IllegalArgumentException();
+    
+    if (s.equals("here")) {
+      String desc = p.here().describe();
+      DungeonServer.events.addNotificationEvent(p.getWriter(), desc);
+    } else {
+      /*
+       * The player specified an object in the room or in the player's own
+       * inventory
+       */
+      try {
+        Item item = p.here().getItemByName(s);
+        DungeonServer.events.addNotificationEvent(p.getWriter(),
+                item.describe());
+        return;
+      } catch (NoSuchItemException e) {
+        /*
+         * Try looking in the player's inventory for the item
+         */
+        Item item = p.getFromInventoryByName(s);
+        DungeonServer.events.addNotificationEvent(p.getWriter(),
+                item.describe());
+        return;
+      }
+      
+    }
+  }
 
 }
