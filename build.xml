@@ -7,4 +7,9 @@
     <mkdir dir="classes"/>
     <javac includeantruntime="false" srcdir="." destdir="classes"/>
   </target>
+  <target name="server" description="run the server">
+    <java classname="com.abreen.dungeon.DungeonServer" classpath="classes">
+      <arg value="4444" />
+    </java>
+  </target>
 </project>
