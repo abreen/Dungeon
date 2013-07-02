@@ -161,11 +161,15 @@ public class DungeonProtocol {
       try {
         Room here  = p.here();
         Room there = u.movePlayer(p, tokens[1]);
-        
+
+        /*
+         * Do narration for players watching this player leave.
+         * Because getPlayersInRoom would include the moving player if it
+         * were called before the player moves, we send the narration here.
+         */
         Iterator<Player> playersHere = u.getPlayersInRoom(here);
         int numPlayersHere = u.getNumberOfPlayersInRoom(here);
 
-        /* Construct narration for players watching this player leave */
         String moveTo = n.narrateMoveToRoom(p.toString(), there.toString());
         d.addNarrationEvent(
                 DungeonDispatcher.playerIteratorToWriterArray(playersHere,

@@ -102,7 +102,11 @@ public class DungeonUniverse implements Serializable {
     
     if (destination instanceof Room) {
       
-      /* Do narration for players watching this player enter */
+      /* 
+       * Do narration for players watching this player enter. We do this before
+       * the player actually moves so that the call to getPlayersInRoom does
+       * not include the moving player.
+       */
       Iterator<Player> ps = getPlayersInRoom((Room)destination);
       int n = getNumberOfPlayersInRoom((Room)destination);
       
@@ -123,7 +127,11 @@ public class DungeonUniverse implements Serializable {
           String unlock = "Your key unlocks the door. You lock it behind you.";
           DungeonServer.events.addNotificationEvent(p.getWriter(), unlock);
           
-          /* Do narration for players watching this player enter */
+          /* 
+           * As before, do narration for players watching this player enter.
+           * We do this before the player actually moves so that the call to
+           * getPlayersInRoom does not include the moving player.
+           */
           Iterator<Player> ps = getPlayersInRoom((Room)otherSide);
           int n = getNumberOfPlayersInRoom((Room)otherSide);
 
