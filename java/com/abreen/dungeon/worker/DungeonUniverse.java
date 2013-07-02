@@ -98,9 +98,13 @@ public class DungeonUniverse implements Serializable {
   }
 
   /**
-   * @todo Finish implementing
-   * @param p
-   * @param dest 
+   * Responds to a player movement action.
+   * @param p The player who wants to move
+   * @param dest The player's direction input
+   * @return The room the player is moved to
+   * @throws NoSuchDirectionException If the direction input is invalid
+   * @throws NoSuchExitException If there is no exit in the specified direction
+   * @throws LockedDoorException When a player does not have the correct key
    */
   public synchronized Room movePlayer(Player p, String dest)
     throws NoSuchDirectionException, NoSuchExitException, 
@@ -112,13 +116,10 @@ public class DungeonUniverse implements Serializable {
     if (destination instanceof Room) {
       unconditionallyMovePlayer(p, (Room)destination);
       return (Room)destination;
-    }
-    
-    if (destination instanceof Door) {
+    } else if (destination instanceof Door) {
       Door d = (Door)destination;
       
       if (d.isLocked()) {
-        
         if (hasKeyTo(p, d)) {
           Room otherSide = (Room)d.to(direction);
           
@@ -129,14 +130,13 @@ public class DungeonUniverse implements Serializable {
         } else {
           throw new LockedDoorException();
         }
-
       }
       
-    } // end if (destination instanceof Door)
+    }
     
-    return null; // this isn't a good idea
+    return null;  // should be unreachable
     
-  } // end movePlayer()
+  }
   
   /**
    * Simply moves a player to another room.
