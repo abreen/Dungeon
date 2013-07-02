@@ -144,7 +144,7 @@ public class DungeonProtocol {
     PrintWriter playerWriter = p.getWriter();
 
     if (action == null) {
-      String unsure = "Unsure what is meant by '" + tokens[0] + "`. Try " +
+      String unsure = "Unsure what is meant by '" + tokens[0] + "'. Try " +
                       "'help' to get a list of valid actions.";
       DungeonServer.events.addNotificationEvent(playerWriter, unsure);
     }
