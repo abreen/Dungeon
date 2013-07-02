@@ -530,8 +530,7 @@ public class DungeonNarrator {
    */
   private final Phrase[] MOVE_HERE_PHRASES = {
     new Phrase("%s enters.", PhraseElement.SUBJECT),
-    new Phrase("%s arrives.", PhraseElement.SUBJECT),
-    new Phrase("%s comes.", PhraseElement.SUBJECT)
+    new Phrase("%s arrives.", PhraseElement.SUBJECT)
   };
 
   /**
