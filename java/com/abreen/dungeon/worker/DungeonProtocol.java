@@ -1,5 +1,6 @@
 package com.abreen.dungeon.worker;
 
+import java.util.*;
 import java.io.*;
 import com.abreen.dungeon.exceptions.*;
 import com.abreen.dungeon.model.*;
@@ -161,8 +162,11 @@ public class DungeonProtocol {
         Room here  = p.here();
         Room there = u.movePlayer(p, tokens[1]);
 
-        //String s = n.narrateMoveToRoom(p.toString(), there.toString());
-        //d.addNarrationEvent(u.getPlayersInRoom(here), s);
+        String s = n.narrateMoveToRoom(p.toString(), there.toString());
+        Iterator<Player> it = u.getPlayersInRoom(here);
+        int players = u.getNumberOfPlayersInRoom(here);
+        d.addNarrationEvent(
+                DungeonDispatcher.playerIteratorToWriterArray(it, players), s);
           
       } catch (NoSuchDirectionException e) {
         String oops = "Unsure which direction is meant "

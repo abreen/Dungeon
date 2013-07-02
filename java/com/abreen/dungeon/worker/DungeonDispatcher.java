@@ -1,8 +1,10 @@
 package com.abreen.dungeon.worker;
 
+import java.util.*;
 import java.util.concurrent.*;
 import java.io.*;
 import com.abreen.dungeon.DungeonServer;
+import com.abreen.dungeon.model.Player;
 
 /**
  * The DungeonDispatcher class maintains an event queue that stores and
@@ -18,6 +20,26 @@ public class DungeonDispatcher extends Thread {
   private static final String SERVER_CLOSING_MESSAGE = "Server closing...";
   private static final String SERVER_RESTART_MESSAGE = "Server restarting...";
 
+  /**
+   * Converts a player iterator (usually produced by methods from
+   * DungeonUniverse) to an array containing the player's writers (an ideal
+   * form for the inner classes of DungeonDispatcher).
+   * 
+   * @param it The player iterator with which to select players
+   * @param size The number of players over which to iterate
+   * @return An array containing all the players' writers
+   */
+  public static PrintWriter[] playerIteratorToWriterArray(Iterator<Player> it,
+                                                          int size) {
+    PrintWriter[] arr = new PrintWriter[size];
+    
+    int i = 0;
+    while (it.hasNext())
+      arr[i++] = it.next().getWriter();
+    
+    return arr;
+  }
+  
   /**
    * Base abstract class for all dispatcher events.
    */
@@ -119,7 +141,9 @@ public class DungeonDispatcher extends Thread {
    */
   private class ServerNotificationEvent extends Event {
     public ServerNotificationEvent(String s) {
-      super(DungeonServer.universe.getAllPlayerWriters(), s);
+      super(playerIteratorToWriterArray(
+              DungeonServer.universe.getPlayers(),
+              DungeonServer.universe.getNumberOfPlayers()), s);
     }
 
     public String toString() {

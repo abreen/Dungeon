@@ -40,16 +40,11 @@ public class Room extends Space {
     this.players.remove(p.getName());
   }
 
-  public Player[] getPlayers() {
-    Player[] ps = new Player[this.players.size()];
-    int i = 0;
-    for (Player p : this.players.values()) {
-      ps[i] = p;
-      i++;
-    }
-
-    return ps;
+  public Iterator<Player> getPlayers() {
+    return this.players.values().iterator();
   }
+  
+  public int getNumberOfPlayers() { return this.players.size(); }
 
   /*
    * Adds a door between this room and 'dest'. Uses 'forward' as

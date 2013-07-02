@@ -63,6 +63,7 @@ public class DungeonUniverse implements Serializable {
   public synchronized Player register(String name, PrintWriter w) {
     Player p = new Player(name, this.spawnPoint, w);
     this.players.put(name, p);
+    this.spawnPoint.addPlayer(p);
     return p;
   }
 
@@ -77,25 +78,11 @@ public class DungeonUniverse implements Serializable {
 
   public Room getSpawn() { return this.spawnPoint; }
 
-  public Iterator<Player> getPlayers() {
+  public synchronized Iterator<Player> getPlayers() {
     return this.players.values().iterator();
   }
 
-  public int getNumberOfPlayers() { return this.players.size(); }
-
-  /*
-   * Returns an array of writers for every player connected.
-   */
-  public synchronized PrintWriter[] getAllPlayerWriters() {
-    PrintWriter[] ws = new PrintWriter[this.players.size()];
-    int i = 0;
-    for (Player p : this.players.values()) {
-      ws[i] = p.getWriter();
-      i++;
-    }
-
-    return ws;
-  }
+  public synchronized int getNumberOfPlayers() { return this.players.size(); }
 
   /**
    * Responds to a player movement action.
@@ -180,11 +167,22 @@ public class DungeonUniverse implements Serializable {
       return true;
   }
 
-  /*
-   * Returns an array of players currently in the specified room.
+  /**
+   * Gets iterator over players in the specified room.
+   * @param r The room in which to look for players
+   * @return An iterator over players in the specified room
    */
-  public synchronized Player[] getPlayersInRoom(Room r) {
+  public synchronized Iterator<Player> getPlayersInRoom(Room r) {
     return r.getPlayers();
+  }
+  
+  /**
+   * Finds the number of players currently in the specified room.
+   * @param r The room in which to look for players
+   * @return The number of players in the room
+   */
+  public synchronized int getNumberOfPlayersInRoom(Room r) {
+    return r.getNumberOfPlayers();
   }
 
 }
