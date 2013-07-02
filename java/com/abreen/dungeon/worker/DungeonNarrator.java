@@ -186,7 +186,13 @@ public class DungeonNarrator {
     p.map(PhraseElement.SUBJECT, name);
     p.map(PhraseElement.DESTINATION, dest);
     return p.toString();
-  } 
+  }
+  
+  public String narrateMoveHere(String name) {
+    Phrase p = getRandomPhrase(MOVE_HERE_PHRASES);
+    p.map(PhraseElement.SUBJECT, name);
+    return p.toString();
+  }
 
   public String narrateMoveInDirection(String name, String dir) {
     Phrase p = getRandomPhrase(MOVE_DIRECTION_PHRASES);
@@ -498,6 +504,16 @@ public class DungeonNarrator {
     new Phrase("%s hesitates to speak.", PhraseElement.SUBJECT),
     new Phrase("%s doesn't say anything.", PhraseElement.SUBJECT),
     new Phrase("%s stays quiet.", PhraseElement.SUBJECT)
+  };
+  
+  /**
+   * Phrases printed when another player enters the room the observing
+   * player is in.
+   */
+  private final Phrase[] MOVE_HERE_PHRASES = {
+    new Phrase("%s enters.", PhraseElement.SUBJECT),
+    new Phrase("%s arrives.", PhraseElement.SUBJECT),
+    new Phrase("%s comes.", PhraseElement.SUBJECT)
   };
 
   /* Phrases for use when a player moves into a space whose name other
