@@ -80,7 +80,7 @@ public class Room extends Space {
     String str = this.description;
 
     if (!items.isEmpty()) {
-      str += "\n\nThere is ";
+      str += " There is ";
 
       Iterator<Item> iter = this.items.values().iterator();
       int i = 1, size = this.items.size();
@@ -103,6 +103,52 @@ public class Room extends Space {
       }
 
       str += " here.";
+    }
+    
+    return str;
+  }
+  
+  public String describePlayers(Player perspective) {
+    String str = "";
+    
+    int size;
+    if ((size = this.getNumberOfPlayers()) > 0) {
+      
+      if (size == 1)
+        str += "Player ";
+      else
+        str += "Players ";
+      
+      Iterator<Player> ps = this.getPlayers();
+      
+      int i = 1;
+      while (ps.hasNext()) {
+        Player p = ps.next();
+        
+        if (p == perspective)
+          str += p.toString() + " (you)";
+        else
+          str += p.toString();
+        
+        if (i == size - 1) {
+          if (size == 2) {
+            str += " and ";
+          } else {
+            str += ", and ";
+          }
+        } else if (i != size) {
+          str += ", ";
+        }
+        
+        i++;
+      }
+      
+      if (size == 1)
+        str += " is here.";
+      else
+        str += " are here.";
+    } else {
+      return null;  // if there are no players here
     }
 
     return str;
