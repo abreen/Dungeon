@@ -33,7 +33,7 @@ public class Room extends Space {
   }
 
   public void addPlayer(Player p) {
-    this.players.put(p.getName(), p);
+    this.players.put(p.toString(), p);
   }
 
   public void removePlayer(Player p) {
