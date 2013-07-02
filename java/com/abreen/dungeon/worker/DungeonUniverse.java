@@ -101,6 +101,16 @@ public class DungeonUniverse implements Serializable {
     Space destination = p.here().to(direction);
     
     if (destination instanceof Room) {
+      
+      /* Do narration for players watching this player enter */
+      Iterator<Player> ps = getPlayersInRoom((Room)destination);
+      int n = getNumberOfPlayersInRoom((Room)destination);
+      
+      String moveHere = DungeonServer.narrator.narrateMoveHere(p.toString());
+      DungeonServer.events.addNarrationEvent(
+              DungeonDispatcher.playerIteratorToWriterArray(ps,
+                n), moveHere);
+      
       unconditionallyMovePlayer(p, (Room)destination);
       return (Room)destination;
     } else if (destination instanceof Door) {
@@ -112,6 +122,16 @@ public class DungeonUniverse implements Serializable {
           
           String unlock = "Your key unlocks the door. You lock it behind you.";
           DungeonServer.events.addNotificationEvent(p.getWriter(), unlock);
+          
+          /* Do narration for players watching this player enter */
+          Iterator<Player> ps = getPlayersInRoom((Room)otherSide);
+          int n = getNumberOfPlayersInRoom((Room)otherSide);
+
+          String moveHere = DungeonServer.narrator.narrateMoveHere(p.toString());
+          DungeonServer.events.addNarrationEvent(
+                  DungeonDispatcher.playerIteratorToWriterArray(ps,
+                  n), moveHere);
+          
           unconditionallyMovePlayer(p, otherSide);
           return otherSide;
         } else {

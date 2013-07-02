@@ -161,12 +161,15 @@ public class DungeonProtocol {
       try {
         Room here  = p.here();
         Room there = u.movePlayer(p, tokens[1]);
+        
+        Iterator<Player> playersHere = u.getPlayersInRoom(here);
+        int numPlayersHere = u.getNumberOfPlayersInRoom(here);
 
-        String s = n.narrateMoveToRoom(p.toString(), there.toString());
-        Iterator<Player> it = u.getPlayersInRoom(here);
-        int players = u.getNumberOfPlayersInRoom(here);
+        /* Construct narration for players watching this player leave */
+        String moveTo = n.narrateMoveToRoom(p.toString(), there.toString());
         d.addNarrationEvent(
-                DungeonDispatcher.playerIteratorToWriterArray(it, players), s);
+                DungeonDispatcher.playerIteratorToWriterArray(playersHere,
+                  numPlayersHere), moveTo);
           
       } catch (NoSuchDirectionException e) {
         String oops = "Unsure which direction is meant "
