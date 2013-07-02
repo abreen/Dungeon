@@ -273,7 +273,9 @@ public class DungeonNarrator {
     return p.toString();
   }
 
-  /* Returns the starting index of a clause, or -1 if none was found. */
+  /**
+   * Returns the starting index of a clause, or -1 if none was found.
+   */
   private int getIndexOfClause(String s) {
     int k = -1;
     
@@ -301,26 +303,30 @@ public class DungeonNarrator {
     return k;
   }
 
-  /* Returns a random verb from a specified array of Verb objects. */
+  /**
+   * Returns a random verb from a specified array of Verb objects.
+   */
   private Verb getRandomVerb(Verb[] type) {
     int i = this.r.nextInt(type.length);
     return type[i];
   }
 
-  /* Returns a random phrase from a specified array of Phrase objects. */
+  /**
+   * Returns a random phrase from a specified array of Phrase objects.
+   */
   private Phrase getRandomPhrase(Phrase[] type) {
     int i = this.r.nextInt(type.length);
     return type[i];
   }
 
-  /*
-   * Types of conjunctions, used by the Conjunction class below.
+  /**
+   * Types of conjunctions, used by the Conjunction class.
    */
   private static enum ConjunctionType {
     COORDINATING, SUBORDINATING
   }
 
-  /*
+  /**
    * Representation of a conjunction. This class is used by the
    * narrator when a player speaks, so that the narrator can
    * determine where to splice the quotation with a verb.
@@ -353,7 +359,9 @@ public class DungeonNarrator {
     }
   }
 
-  /* Basic English conjunctions used to find clauses in sentences. */
+  /**
+   * Basic English conjunctions used to find clauses in sentences.
+   */
   private final Conjunction[] CONJUNCTIONS = {
     /*
      * English subordinating conjunctions
@@ -400,7 +408,7 @@ public class DungeonNarrator {
     new Conjunction("yet", ConjunctionType.COORDINATING)
   };
 
-  /*
+  /**
    * Representation of a verb. Instantiations of this class are used by
    * the narrator when a player speaks.
    */
@@ -418,7 +426,9 @@ public class DungeonNarrator {
     }
   }
 
-  /* Synonyms for use when a player performs the 'say' action. */
+  /**
+   * Synonyms for use when a player performs the 'say' action.
+   */
   private final Verb[] SAY_VERBS = {
     new Verb("says"),
     new Verb("reports"),
@@ -426,15 +436,19 @@ public class DungeonNarrator {
     new Verb("utters")
   };
 
-  /* Synonyms for use when a player performs the 'say' action and
-   * ends the sentence with a question mark. */
+  /**
+   * Synonyms for use when a player performs the 'say' action and
+   * ends the sentence with a question mark.
+   */
   private final Verb[] INTERROGATIVE_VERBS = {
     new Verb("asks"),
     new Verb("inquires"),
     new Verb("queries")
   };
 
-  /* Synonyms for use when a player performs the 'yell' action. */
+  /**
+   * Synonyms for use when a player performs the 'yell' action.
+   */
   private final Verb[] YELL_VERBS = {
     new Verb("yells"),
     new Verb("shouts"),
@@ -443,7 +457,9 @@ public class DungeonNarrator {
     new Verb("cries")
   };
 
-  /* Synonyms for use when a player performs the 'whisper' action. */
+  /**
+   * Synonyms for use when a player performs the 'whisper' action.
+   */
   private final Verb[] WHISPER_VERBS = {
     new Verb("whispers"),
     new Verb("mumbles"),
@@ -451,7 +467,7 @@ public class DungeonNarrator {
     new Verb("mutters")
   };
 
-  /*
+  /**
    * Types of phrase elements, to be used by the Phrase class below when
    * replacing conversion specifications in a format string.
    */
@@ -464,7 +480,7 @@ public class DungeonNarrator {
     QUOTATION,        // "Hey!" in: "Kathryn yells, 'Hey!'"
   }
 
-  /*
+  /**
    * Representation of a phrase that contains conversion
    * specifications.
    */
@@ -497,8 +513,10 @@ public class DungeonNarrator {
     }
   }
 
-  /* Phrases printed when a player uses 'say' with no sentence (e.g., 
-   * "John remains silent."). */
+  /**
+   * Phrases printed when a player uses 'say' with no sentence (e.g., 
+   * "John remains silent.").
+   */
   private final Phrase[] HESITATIONS = {
     new Phrase("%s remains silent.", PhraseElement.SUBJECT),
     new Phrase("%s hesitates to speak.", PhraseElement.SUBJECT),
@@ -516,9 +534,11 @@ public class DungeonNarrator {
     new Phrase("%s comes.", PhraseElement.SUBJECT)
   };
 
-  /* Phrases for use when a player moves into a space whose name other
+  /**
+   * Phrases for use when a player moves into a space whose name other
    * players cannot or are not allowed to see (e.g., "Martina moves
-   * northeast."). */
+   * northeast.").
+   */
   private final Phrase[] MOVE_DIRECTION_PHRASES = {
     new Phrase("%s moves %s.", PhraseElement.SUBJECT,
                PhraseElement.DIRECTION),
@@ -534,8 +554,10 @@ public class DungeonNarrator {
                PhraseElement.DIRECTION)
   };
 
-  /* Phrases printed when a player moves into an adjacent room (e.g.,
-   * "Friedrich enters the broom closet."). */
+  /**
+   * Phrases printed when a player moves into an adjacent room (e.g.,
+   * "Friedrich enters the broom closet.").
+   */
   private final Phrase[] MOVE_TO_ROOM_PHRASES = {
     new Phrase("%s walks to %s.", PhraseElement.SUBJECT,
                PhraseElement.DESTINATION),
@@ -547,8 +569,10 @@ public class DungeonNarrator {
                PhraseElement.DESTINATION)
   };
 
-  /* Phrases printed when a player takes an item (e.g., "Lauren takes
-   * the broomstick."). */
+  /**
+   * Phrases printed when a player takes an item (e.g., "Lauren takes
+   * the broomstick.").
+   */
   private final Phrase[] TAKE_PHRASES = {
     new Phrase("%s takes %s.", PhraseElement.SUBJECT, 
                PhraseElement.OBJECT),
@@ -560,8 +584,10 @@ public class DungeonNarrator {
                PhraseElement.OBJECT)
   };
 
-  /* Phrases printed when a player gives an item to another player (e.g.,
-   * "Stephen gives the cake to Ryan."). */
+  /**
+   * Phrases printed when a player gives an item to another player (e.g.,
+   * "Stephen gives the cake to Ryan.").
+   */
   private final Phrase[] GIVE_PHRASES = {
     new Phrase("%s gives %s to %s.", PhraseElement.SUBJECT, 
                PhraseElement.OBJECT, PhraseElement.INDIRECT_OBJECT),
@@ -573,8 +599,10 @@ public class DungeonNarrator {
                PhraseElement.INDIRECT_OBJECT, PhraseElement.OBJECT)
   };
 
-  /* Phrases printed when a player drops an item (e.g., "Kenneth leaves
-   * the ring."). */
+  /**
+   * Phrases printed when a player drops an item (e.g., "Kenneth leaves
+   * the ring.").
+   */
   private final Phrase[] DROP_PHRASES = {
     new Phrase("%s drops %s.", PhraseElement.SUBJECT, 
                PhraseElement.OBJECT),
@@ -586,8 +614,10 @@ public class DungeonNarrator {
                PhraseElement.OBJECT)
   };
 
-  /* Phrases printed when a player observes one player whispering to
-   * another (e.g., "Jason whispers to Raymond."). */
+  /**
+   * Phrases printed when a player observes one player whispering to
+   * another (e.g., "Jason whispers to Raymond.").
+   */
   private final Phrase[] WHISPER_OBSERVER_PHRASES = {
     new Phrase("%s whispers in %s ear.", PhraseElement.SUBJECT,
                PhraseElement.OBJECT),
@@ -605,7 +635,9 @@ public class DungeonNarrator {
                PhraseElement.OBJECT)
   };
 
-  /* Phrases printed when there is player movement in adjacent rooms. */
+  /**
+   * Phrases printed when there is player movement in adjacent rooms.
+   */
   private final Phrase[] DISTANT_MOVEMENT_PHRASES = {
     new Phrase("Footsteps in the distance."),
     new Phrase("Footsteps."),
@@ -616,7 +648,9 @@ public class DungeonNarrator {
     new Phrase("Sounds of movement.")
   };
 
-  /* Phrases printed when a faraway player yells. */
+  /**
+   * Phrases printed when a faraway player yells.
+   */
   private final Phrase[] DISTANT_YELL_PHRASES = {
     new Phrase("Someone in the distance yells, \"%s\"",
                PhraseElement.QUOTATION),
