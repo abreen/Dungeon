@@ -247,10 +247,21 @@ public class DungeonProtocol {
       }
     }
    
-    /**
-     * @todo Implement yell action
-     */
-    if (action == Action.YELL) { }
+    if (action == Action.YELL) {
+      try {
+        String tokensAfter = getTokensAfterAction(tokens);
+        
+        if (tokensAfter == null) {
+          String oops = "Supply something to yell.";
+          d.addNotificationEvent(playerWriter, oops);
+          return;
+        }
+        
+        u.yell(p, tokensAfter);
+      } finally {
+        return;
+      }
+    }
     
     /**
      * @todo Implement whisper action

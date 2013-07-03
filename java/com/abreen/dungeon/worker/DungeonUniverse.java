@@ -269,5 +269,33 @@ public class DungeonUniverse implements Serializable {
             DungeonDispatcher.playerIteratorToWriterArray(ps, n), narr);
     
   }
+  
+  public synchronized void yell(Player p, String s) {
+    String narr1 = DungeonServer.narrator.narrateYell(p.toString(), s);
+    String narr2 = DungeonServer.narrator.narrateDistantYell(s);
+    
+    Iterator<Player> ps = getPlayersInRoom(p.here());
+    int n = getNumberOfPlayersInRoom(p.here());
+    
+    /* Get players in adjacent rooms */
+    Iterator<Room> adjacentRooms = p.here().getAdjacentRooms();
+    ArrayList<Player> farPlayers = new ArrayList<Player>();
+    
+    while (adjacentRooms.hasNext()) {
+      Room r = adjacentRooms.next();
+      Iterator<Player> playersHere = r.getPlayers();
+      
+      while (playersHere.hasNext()) {
+        farPlayers.add(playersHere.next());
+      }
+    }
+    
+    DungeonServer.events.addNarrationEvent(
+            DungeonDispatcher.playerIteratorToWriterArray(ps, n), narr1);
+    DungeonServer.events.addNarrationEvent(
+            DungeonDispatcher.playerIteratorToWriterArray(farPlayers.iterator(),
+              farPlayers.size()), narr2);
+    
+  }
 
 }

@@ -75,6 +75,29 @@ public class Room extends Space {
 
     return d;
   }
+  
+  /**
+   * Returns rooms connected to this room through an exit not blocked by
+   * a door.
+   * @return An iterator over this room's adjacent rooms
+   */
+  public Iterator<Room> getAdjacentRooms() {
+    ArrayList<Room> list = new ArrayList<Room>(DEFAULT_EXITS_SIZE);
+    
+    Iterator<Map.Entry<Direction, Space>> it = this.getExitsIterator();
+    
+    while (it.hasNext()) {
+      Map.Entry<Direction, Space> i = it.next();
+      Space val = i.getValue();
+      
+      if (val instanceof Room) {
+        list.add((Room)val);
+      }
+    }
+    
+    return list.iterator();
+    
+  }
 
   public String describe() {
     String str = this.description;
