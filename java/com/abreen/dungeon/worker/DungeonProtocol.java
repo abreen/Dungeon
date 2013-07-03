@@ -238,10 +238,14 @@ public class DungeonProtocol {
      */
     if (action == Action.EXITS) { }
     
-    /**
-     * @todo Implement say action
-     */
-    if (action == Action.SAY) { }
+    if (action == Action.SAY) {
+      try {
+        String tokensAfter = getTokensAfterAction(tokens);
+        u.say(p, tokensAfter);
+      } finally {
+        return;
+      }
+    }
    
     /**
      * @todo Implement yell action

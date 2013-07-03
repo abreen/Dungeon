@@ -254,5 +254,20 @@ public class DungeonUniverse implements Serializable {
       
     }
   }
+  
+  public synchronized void say(Player p, String s) {
+    String narr;
+    if (s == null) {
+      narr = DungeonServer.narrator.narrateSay(p.toString(), "");
+    } else {
+      narr = DungeonServer.narrator.narrateSay(p.toString(), s);
+    }
+    
+    Iterator<Player> ps = getPlayersInRoom(p.here());
+    int n = getNumberOfPlayersInRoom(p.here());
+    DungeonServer.events.addNarrationEvent(
+            DungeonDispatcher.playerIteratorToWriterArray(ps, n), narr);
+    
+  }
 
 }
