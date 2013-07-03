@@ -1,5 +1,6 @@
 package com.abreen.dungeon.worker;
 
+import java.util.*;
 import java.net.*;
 import java.io.*;
 import com.abreen.dungeon.exceptions.*;
@@ -46,7 +47,16 @@ public class DungeonConnectionThread extends Thread {
         p = DungeonServer.universe.register(name, out);
 
       out.println("Connected.");
-
+      
+      String a = DungeonServer.narrator.narrateMaterialization(p.toString());
+      Iterator<Player> it = DungeonServer.universe.getPlayersInRoom(p.here());
+      int n = DungeonServer.universe.getNumberOfPlayersInRoom(p.here());
+      DungeonServer.events.addNarrationEvent(
+              DungeonDispatcher.playerIteratorToWriterArray(it, n), a);
+      
+      it = null;
+      a = null;
+      
       /* Contains string sent from client to protocol */
       String toProtocol;
 
@@ -60,6 +70,12 @@ public class DungeonConnectionThread extends Thread {
           break;
         }
       }
+      
+      String b = DungeonServer.narrator.narrateDematerialization(p.toString());
+      it = DungeonServer.universe.getPlayersInRoom(p.here());
+      n = DungeonServer.universe.getNumberOfPlayersInRoom(p.here());
+      DungeonServer.events.addNarrationEvent(
+              DungeonDispatcher.playerIteratorToWriterArray(it, n), b);
       
       System.out.printf("player '%s' disconnected (quitting)\n", name);
       String logout = name + " disconnected.";
