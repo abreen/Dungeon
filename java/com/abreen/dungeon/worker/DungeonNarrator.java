@@ -180,6 +180,18 @@ public class DungeonNarrator {
   public static String toNaturalListWithArticles(Item[] a) {
     return toNaturalListWithArticles(Arrays.asList(a));
   }
+  
+  public String narrateMaterialization(String name) {
+    Phrase p = getRandomPhrase(MATERIALIZATION_PHRASES);
+    p.map(PhraseElement.SUBJECT, name);
+    return p.toString();
+  }
+  
+  public String narrateDematerialization(String name) {
+    Phrase p = getRandomPhrase(DEMATERIALIZATION_PHRASES);
+    p.map(PhraseElement.SUBJECT, name);
+    return p.toString();
+  }
 
   public String narrateMoveToRoom(String name, String dest) {
     Phrase p = getRandomPhrase(MOVE_TO_ROOM_PHRASES);
@@ -513,6 +525,27 @@ public class DungeonNarrator {
     }
   }
 
+  /**
+   * Phrases printed when a player observes a player connecting to the
+   * server and appearing in the room.
+   */
+  private final Phrase[] MATERIALIZATION_PHRASES = {
+    new Phrase("%s appears out of thin air.", PhraseElement.SUBJECT),
+    new Phrase("%s materializes out of thin air.", PhraseElement.SUBJECT),
+    new Phrase("%s appears.", PhraseElement.SUBJECT),
+    new Phrase("Out of nowhere, %s appears.", PhraseElement.SUBJECT)
+  };
+  
+  /**
+   * Phrases printed when a player observes a player disconnecting and
+   * disappearing from the room.
+   */
+  private final Phrase[] DEMATERIALIZATION_PHRASES = {
+    new Phrase("%s disappears.", PhraseElement.SUBJECT),
+    new Phrase("%s dematerializes.", PhraseElement.SUBJECT),
+    new Phrase("In a flash, %s is gone.", PhraseElement.SUBJECT)
+  };
+  
   /**
    * Phrases printed when a player uses 'say' with no sentence (e.g., 
    * "John remains silent.").
