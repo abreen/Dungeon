@@ -210,9 +210,6 @@ public class DungeonProtocol {
      */
     if (action == Action.GIVE) { }
     
-    /**
-     * @todo Implement look action
-     */
     if (action == Action.LOOK) {
       try {
         String tokensAfter = getTokensAfterAction(tokens);
