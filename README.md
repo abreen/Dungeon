@@ -37,10 +37,3 @@ installed, just run `ant` in the base directory. The default target should
 build all the classes to a directory called `classes`. Change to the 
 directory and start the server with `java DungeonServer`.
 
-## Known bugs
-
-Both the server and the client are in a very early stage of development.
-No tests have been written; as such, there should be undiscovered bugs across
-the codebase. This section should get more interesting as I get around to
-writing code tests and doing play testing.
-
