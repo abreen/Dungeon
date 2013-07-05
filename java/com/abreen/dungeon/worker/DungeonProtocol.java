@@ -124,7 +124,7 @@ public class DungeonProtocol {
    * 
    * @param p The player object who sent the input string
    * @param input The input string received from the connected player
-   * @throws PlayerWantsQuitException
+   * @throws PlayerIsQuittingException
    * @see DungeonUniverse
    */
   public static void process(Player p, String input)
