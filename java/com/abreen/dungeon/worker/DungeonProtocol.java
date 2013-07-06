@@ -211,17 +211,18 @@ public class DungeonProtocol {
     if (action == Action.GIVE) { }
     
     if (action == Action.LOOK) {
+      String tokensAfter = null;
       try {
-        String tokensAfter = getTokensAfterAction(tokens);
-        
+        tokensAfter = getTokensAfterAction(tokens);
+
         if (tokensAfter == null)
           u.look(p, "here");
-        else 
+        else
           u.look(p, tokensAfter);
-        
+
       } catch (NoSuchItemException e) {
-        String oops = "There's no such item by the name '" + tokens[1] + 
-                      "' in the room or your inventory.";
+        String oops = "There's no such item by the name '" + tokensAfter +
+            "' in the room or your inventory.";
         d.addNotificationEvent(playerWriter, oops);
       } finally {
         return;
