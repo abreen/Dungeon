@@ -149,6 +149,7 @@ public class DungeonProtocol {
       String unsure = "Unsure what is meant by '" + tokens[0] + "'. Try " +
                       "'help' to get a list of valid actions.";
       d.addNotificationEvent(p.getWriter(), unsure);
+      return;
     }
     
     switch (action) {
