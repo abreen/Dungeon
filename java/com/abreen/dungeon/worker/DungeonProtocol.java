@@ -204,8 +204,6 @@ public class DungeonProtocol {
       String oops = "There's no such item by the name '" + tokens[1]
               + "' in the room or your inventory.";
       d.addNotificationEvent(p.getWriter(), oops);
-    } finally {
-      return;
     }
   }
   
@@ -242,18 +240,12 @@ public class DungeonProtocol {
     } catch (ArrayIndexOutOfBoundsException e) {
       String oops = "Specify a direction in which to move.";
       d.addNotificationEvent(p.getWriter(), oops);
-    } finally {
-      return;
     }
   }
   
   private static void processSay(Player p, String[] tokens) {
-    try {
-      String tokensAfter = getTokensAfterAction(tokens);
-      u.say(p, tokensAfter);
-    } finally {
-      return;
-    }
+    String tokensAfter = getTokensAfterAction(tokens);
+    u.say(p, tokensAfter);
   }
   
   private static void processTake(Player p, String[] tokens) {
@@ -273,19 +265,15 @@ public class DungeonProtocol {
   }
   
   private static void processYell(Player p, String[] tokens) {
-    try {
-      String tokensAfter = getTokensAfterAction(tokens);
+    String tokensAfter = getTokensAfterAction(tokens);
 
-      if (tokensAfter == null) {
-        String oops = "Supply something to yell.";
-        d.addNotificationEvent(p.getWriter(), oops);
-        return;
-      }
-
-      u.yell(p, tokensAfter);
-    } finally {
+    if (tokensAfter == null) {
+      String oops = "Supply something to yell.";
+      d.addNotificationEvent(p.getWriter(), oops);
       return;
     }
+
+    u.yell(p, tokensAfter);
   }
   
   
