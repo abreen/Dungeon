@@ -191,7 +191,7 @@ public class DungeonProtocol {
   }
   
   private static void processLook(Player p, String[] tokens) {
-     try {
+    try {
       String tokensAfter = getTokensAfterAction(tokens);
 
       if (tokensAfter == null) {
