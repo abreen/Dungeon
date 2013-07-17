@@ -114,6 +114,10 @@ public class DungeonProtocol {
     	return false;
     }
   }
+  
+  private static DungeonUniverse   u = DungeonServer.universe;
+  private static DungeonDispatcher d = DungeonServer.events;
+  private static DungeonNarrator   n = DungeonServer.narrator;
 
   /**
    * Processes the supplied input from the supplied player's point of
@@ -140,153 +144,151 @@ public class DungeonProtocol {
     		break;
     	}
     }
-    
-    PrintWriter playerWriter = p.getWriter();
 
     if (action == null) {
       String unsure = "Unsure what is meant by '" + tokens[0] + "'. Try " +
                       "'help' to get a list of valid actions.";
-      DungeonServer.events.addNotificationEvent(playerWriter, unsure);
+      d.addNotificationEvent(p.getWriter(), unsure);
     }
     
-    if (action == Action.QUIT)
-      throw new PlayerIsQuittingException();
+    switch (action) {
+      case QUIT: throw new PlayerIsQuittingException();
+      case MOVE:      processMove(p, tokens); return;
+      case TAKE:      processTake(p, tokens); return;
+      case DROP:      processDrop(p, tokens); return;
+      case GIVE:      processGive(p, tokens); return;
+      case LOOK:      processLook(p, tokens); return;
+      case INVENTORY: processInventory(p, tokens); return;
+      case EXITS:     processExits(p, tokens); return;
+      case SAY:       processSay(p, tokens); return;
+      case YELL:      processYell(p, tokens); return;
+      case WHISPER:   processWhisper(p, tokens); return;
+      case USE:       processUse(p, tokens); return;
+      case WHO:       processWho(p, tokens); return;
+      case HELP:
+      default:
+        for (String s : usage())
+          d.addNotificationEvent(p.getWriter(), s);
+        return;
+    }
 
-    DungeonUniverse   u = DungeonServer.universe;
-    DungeonDispatcher d = DungeonServer.events;
-    DungeonNarrator   n = DungeonServer.narrator;
+  }
+  
+  private static void processDrop(Player p, String[] tokens) {
     
-    if (action == Action.MOVE) {
-      try {
-        Room here  = p.here();
-        Room there = u.movePlayer(p, tokens[1]);
+  }
+  
+  private static void processExits(Player p, String[] tokens) {
+    
+  }
+  
+  private static void processGive(Player p, String[] tokens) {
+    
+  }
+  
+  private static void processInventory(Player p, String[] tokens) {
+    
+  }
+  
+  private static void processLook(Player p, String[] tokens) {
+     try {
+      String tokensAfter = getTokensAfterAction(tokens);
 
-        /*
-         * Do narration for players watching this player leave.
-         * Because getPlayersInRoom would include the moving player if it
-         * were called before the player moves, we send the narration here.
-         */
-        Iterator<Player> playersHere = u.getPlayersInRoom(here);
-        int numPlayersHere = u.getNumberOfPlayersInRoom(here);
+      if (tokensAfter == null) {
+        u.look(p, "here");
+      } else {
+        u.look(p, tokensAfter);
+      }
 
-        String moveTo = n.narrateMoveToRoom(p.toString(), there.toString());
-        d.addNarrationEvent(
-                DungeonDispatcher.playerIteratorToWriterArray(playersHere,
-                  numPlayersHere), moveTo);
-          
-      } catch (NoSuchDirectionException e) {
-        String oops = "Unsure which direction is meant "
-                + "by '" + tokens[1] + "'. The following directions "
-                + "are recognized: " + Space.listValidDirections();
-        d.addNotificationEvent(playerWriter, oops);
-      } catch (NoSuchExitException e) {
-        String oops = "That's not an exit. Try 'exits' for a list of ways "
-                + "out.";
-        d.addNotificationEvent(playerWriter, oops);
-      } catch (LockedDoorException e) {
-        String oops = "The door is locked, and you don't have the key.";
-        d.addNotificationEvent(playerWriter, oops);
-      } catch (ArrayIndexOutOfBoundsException e) {
-        String oops = "Specify a direction in which to move.";
-        d.addNotificationEvent(playerWriter, oops);
-      } finally {
+    } catch (NoSuchItemException e) {
+      String oops = "There's no such item by the name '" + tokens[1]
+              + "' in the room or your inventory.";
+      d.addNotificationEvent(p.getWriter(), oops);
+    } finally {
+      return;
+    }
+  }
+  
+  private static void processMove(Player p, String[] tokens) {
+    try {
+      Room here = p.here();
+      Room there = u.movePlayer(p, tokens[1]);
+
+      /*
+       * Do narration for players watching this player leave.
+       * Because getPlayersInRoom would include the moving player if it
+       * were called before the player moves, we send the narration here.
+       */
+      Iterator<Player> playersHere = u.getPlayersInRoom(here);
+      int numPlayersHere = u.getNumberOfPlayersInRoom(here);
+
+      String moveTo = n.narrateMoveToRoom(p.toString(), there.toString());
+      d.addNarrationEvent(
+              DungeonDispatcher.playerIteratorToWriterArray(playersHere,
+              numPlayersHere), moveTo);
+
+    } catch (NoSuchDirectionException e) {
+      String oops = "Unsure which direction is meant "
+              + "by '" + tokens[1] + "'. The following directions "
+              + "are recognized: " + Space.listValidDirections();
+      d.addNotificationEvent(p.getWriter(), oops);
+    } catch (NoSuchExitException e) {
+      String oops = "That's not an exit. Try 'exits' for a list of ways "
+              + "out.";
+      d.addNotificationEvent(p.getWriter(), oops);
+    } catch (LockedDoorException e) {
+      String oops = "The door is locked, and you don't have the key.";
+      d.addNotificationEvent(p.getWriter(), oops);
+    } catch (ArrayIndexOutOfBoundsException e) {
+      String oops = "Specify a direction in which to move.";
+      d.addNotificationEvent(p.getWriter(), oops);
+    } finally {
+      return;
+    }
+  }
+  
+  private static void processSay(Player p, String[] tokens) {
+    try {
+      String tokensAfter = getTokensAfterAction(tokens);
+      u.say(p, tokensAfter);
+    } finally {
+      return;
+    }
+  }
+  
+  private static void processTake(Player p, String[] tokens) {
+    
+  }
+  
+  private static void processUse(Player p, String[] tokens) {
+    
+  }
+  
+  private static void processWhisper(Player p, String[] tokens) {
+    
+  }
+  
+  private static void processWho(Player p, String[] tokens) {
+    
+  }
+  
+  private static void processYell(Player p, String[] tokens) {
+    try {
+      String tokensAfter = getTokensAfterAction(tokens);
+
+      if (tokensAfter == null) {
+        String oops = "Supply something to yell.";
+        d.addNotificationEvent(p.getWriter(), oops);
         return;
       }
-    }
-    
-    /**
-     * @todo Implement take action
-     */
-    if (action == Action.TAKE) { }
-    
-    /**
-     * @todo Implement drop action
-     */
-    if (action == Action.DROP) { }
-    
-    /**
-     * @todo Implement give action
-     */
-    if (action == Action.GIVE) { }
-    
-    if (action == Action.LOOK) {
-      try {
-        String tokensAfter = getTokensAfterAction(tokens);
-        
-        if (tokensAfter == null)
-          u.look(p, "here");
-        else 
-          u.look(p, tokensAfter);
-        
-      } catch (NoSuchItemException e) {
-        String oops = "There's no such item by the name '" + tokens[1] + 
-                      "' in the room or your inventory.";
-        d.addNotificationEvent(playerWriter, oops);
-      } finally {
-        return;
-      }
-    }
-    
-    /**
-     * @todo Implement inventory action
-     */
-    if (action == Action.INVENTORY) { }
-    
-    /**
-     * @todo Implement exits action
-     */
-    if (action == Action.EXITS) { }
-    
-    if (action == Action.SAY) {
-      try {
-        String tokensAfter = getTokensAfterAction(tokens);
-        u.say(p, tokensAfter);
-      } finally {
-        return;
-      }
-    }
-   
-    if (action == Action.YELL) {
-      try {
-        String tokensAfter = getTokensAfterAction(tokens);
-        
-        if (tokensAfter == null) {
-          String oops = "Supply something to yell.";
-          d.addNotificationEvent(playerWriter, oops);
-          return;
-        }
-        
-        u.yell(p, tokensAfter);
-      } finally {
-        return;
-      }
-    }
-    
-    /**
-     * @todo Implement whisper action
-     */
-    if (action == Action.WHISPER) { }
-    
-    /**
-     * @todo Implement use action
-     */
-    if (action == Action.USE) { }
-    
-    /**
-     * @todo Implement help action
-     */
-    if (action == Action.HELP) { }
-    
-    /**
-     * @todo Implement who action
-     */
-    if (action == Action.WHO) { }
-    
-    
-    // Action.QUIT handled above
 
-  } // end of process
-
+      u.yell(p, tokensAfter);
+    } finally {
+      return;
+    }
+  }
+  
+  
   /*
    * Returns all the tokens after the action as a space-separated
    * string. Returns null if there are no tokens after the action.
@@ -312,23 +314,24 @@ public class DungeonProtocol {
     return obj;
   }
 
-  private static String usage() {
-    return "ACTION               OBJECT        INDIRECT OBJECT\n" +
-           "[{m,move,go,walk}]   <direction>\n" +
-           "{t,take,get}         <object>\n" +
-           "{d,drop}\n" +
-           "{g,give}             <object>      to <player>\n" +
-           "{l,look,describe}    [<object>]\n" +
-           "{i,inventory}\n" +
-           "{e,exits}\n" +
-           "{s,say,talk}         [<string>]\n" +
-           "{y,yell,shout}       <string>\n" +
-           "{w,whisper}          <string>      to <player>\n" +
-           "{u,use}              <object in inventory>\n" +
-           "\n" + 
-           "SERVER ACTION\n" + 
-           "help\n" +
-           "who\n" + 
-           "quit";
+  private static String[] usage() {
+    String[] z =
+         { "ACTION               OBJECT        INDIRECT OBJECT",
+           "[{m,move,go,walk}]   <direction>",
+           "{t,take,get}         <object>",
+           "{d,drop}",
+           "{g,give}             <object>      to <player>",
+           "{l,look,describe}    [<object>]",
+           "{i,inventory}",
+           "{e,exits}",
+           "{s,say,talk}         [<string>]",
+           "{y,yell,shout}       <string>",
+           "{w,whisper}          <string>      to <player>",
+           "{u,use}              <object in inventory>",
+           "SERVER ACTION",
+           "help",
+           "who",
+           "quit" };
+    return z;
   }
 }
