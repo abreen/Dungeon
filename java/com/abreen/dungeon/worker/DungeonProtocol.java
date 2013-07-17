@@ -191,8 +191,9 @@ public class DungeonProtocol {
   }
   
   private static void processLook(Player p, String[] tokens) {
+    String tokensAfter = getTokensAfterAction(tokens);
+    
     try {
-      String tokensAfter = getTokensAfterAction(tokens);
 
       if (tokensAfter == null) {
         u.look(p, "here");
@@ -201,7 +202,7 @@ public class DungeonProtocol {
       }
 
     } catch (NoSuchItemException e) {
-      String oops = "There's no such item by the name '" + tokens[1]
+      String oops = "There's no such item by the name '" + tokensAfter
               + "' in the room or your inventory.";
       d.addNotificationEvent(p.getWriter(), oops);
     }
