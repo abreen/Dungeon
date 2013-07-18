@@ -9,7 +9,13 @@ public class Item implements Describable {
   protected boolean carryable;
   private boolean nameStartsWithVowel;
 
+  /**
+   * @deprecated Use toString() instead
+   */
   public String getName() { return this.name; }
+  
+  public String toString() { return this.name; }
+  
   public String describe() { return this.description; }
 
   public String getArticle() {
