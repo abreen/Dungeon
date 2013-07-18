@@ -298,4 +298,9 @@ public class DungeonUniverse implements Serializable {
     
   }
 
+  public synchronized Item take(Player p, String s) throws NoSuchItemException {
+    Item i = p.here().removeItemByName(s);
+    p.addToInventory(i);
+    return i;
+  }
 }

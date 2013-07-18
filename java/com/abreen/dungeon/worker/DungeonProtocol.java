@@ -251,7 +251,20 @@ public class DungeonProtocol {
   }
   
   private static void processTake(Player p, String[] tokens) {
+    String s = getTokensAfterAction(tokens);
     
+    try {
+      Item i = u.take(p, s);
+      
+      Iterator<Player> ps = u.getPlayersInRoom(p.here());
+      int size = u.getNumberOfPlayersInRoom(p.here());
+      String narr = n.narrateTake(p.toString(), i.toString());
+      d.addNarrationEvent(d.playerIteratorToWriterArray(ps, size), narr);
+      
+    } catch (NoSuchItemException e) {
+      String oops = "There is no item '" + s + "' in the room.";
+      d.addNotificationEvent(p.getWriter(), oops);
+    }
   }
   
   private static void processUse(Player p, String[] tokens) {
