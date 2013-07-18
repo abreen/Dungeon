@@ -123,10 +123,41 @@ public class DungeonNarrator {
    * @return A string listing the items in the room, or null if there are none
    */
   public static String describeItems(Room r) {
-    if (r.hasNoItems())
+    if (r.hasNoItems()) {
       return null;
-    
-    return toNaturalList(r.getItems());
+    }
+
+    String str = "";
+    Iterator<Item> items = r.getItems().iterator();
+    int size = r.getNumberOfItems();
+
+    if (size == 1) {
+      str += "There is one item here: ";
+    } else {
+      str += "There are " + size + " items here: ";
+    }
+
+    int i = 1;
+    while (items.hasNext()) {
+      Item item = items.next();
+      str += toString(item, StringType.WITH_INDEFINITE_ARTICLE);
+
+      if (i == size - 1) {
+        if (size == 2) {
+          str += " and ";
+        } else {
+          str += ", and ";
+        }
+      } else if (i != size) {
+        str += ", ";
+      }
+
+      i++;
+    }
+
+    str += ".";
+
+    return str;
   }
   
   /**
