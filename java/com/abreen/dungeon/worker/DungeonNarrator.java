@@ -116,6 +116,20 @@ public class DungeonNarrator {
   }
   
   /**
+   * Given a room object, this method will return a string containing a list
+   * of items currently in the room.
+   * 
+   * @param r The room to search for items
+   * @return A string listing the items in the room, or null if there are none
+   */
+  public static String describeItems(Room r) {
+    if (r.hasNoItems())
+      return null;
+    
+    return toNaturalList(r.getItems());
+  }
+  
+  /**
    * Given a describable object and a StringType constant, convert the ingame
    * object to a string with the specified qualities.
    * 
@@ -200,11 +214,11 @@ public class DungeonNarrator {
   }
   
   /**
-   * Returns a string representation of a list of items, in narrative style.
-   * @param a The list of items
-   * @return The list's string representation
+   * Returns a string representation of a collection of items, in narrative style.
+   * @param a The collection of items
+   * @return The collection's string representation
    */
-  public static String toNaturalList(List<Item> a) {
+  public static String toNaturalList(Collection<Item> a) {
     int size = a.size();
     String str = "";
     

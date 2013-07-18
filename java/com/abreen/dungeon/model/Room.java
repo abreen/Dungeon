@@ -23,6 +23,10 @@ public class Room extends Space {
   public boolean hasNoItems() {
     return this.items.isEmpty();
   }
+  
+  public Collection<Item> getItems() {
+    return this.items.values();
+  }
 
   public Item removeItemByName(String name) throws NoSuchItemException {
     Item i = this.items.remove(name.toLowerCase());

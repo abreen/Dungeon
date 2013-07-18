@@ -235,6 +235,10 @@ public class DungeonUniverse implements Serializable {
       if (desc != null)
         DungeonServer.events.addNotificationEvent(p.getWriter(), desc);
       
+      desc = DungeonNarrator.describeItems(p.here());
+      if (desc != null)
+        DungeonServer.events.addNotificationEvent(p.getWriter(), desc);
+      
     } else {
       /*
        * The player specified an object in the room or in the player's own
