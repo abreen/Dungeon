@@ -34,6 +34,7 @@ manually construct universes inside the `DungeonServer.java` file.
 
 There's a small `build.xml` file for Apache Ant. As long as you have Ant
 installed, just run `ant` in the base directory. The default target should
-build all the classes to a directory called `classes`. Change to the 
-directory and start the server with `java DungeonServer`.
+build all the classes to a directory called `classes`. You can start the
+server on port 4444 by specifying `ant server`. Then I recommend using a
+tool like `telnet` or `nc` to connect. 
 
