@@ -176,7 +176,25 @@ public class DungeonProtocol {
   }
   
   private static void processDrop(Player p, String[] tokens) {
+    String s = getTokensAfterAction(tokens);
     
+    try {
+      Item i = u.drop(p, s);
+      
+      String narr = n.narrateDrop(DungeonNarrator.toString(p),
+              DungeonNarrator.toString(i, DungeonNarrator.StringType.WITH_ARTICLE));
+      
+      Iterator<Player> players = p.here().getPlayers();
+      int size = p.here().getNumberOfPlayers();
+      
+      d.addNarrationEvent(
+              DungeonDispatcher.playerIteratorToWriterArray(players, size),
+              narr);
+      
+    } catch (NoSuchItemException e) {
+      String oops = "You do not have an item known as '" + s + "'.";
+      d.addNotificationEvent(p.getWriter(), oops);
+    }
   }
   
   private static void processExits(Player p, String[] tokens) {

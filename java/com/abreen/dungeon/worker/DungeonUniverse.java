@@ -308,4 +308,10 @@ public class DungeonUniverse implements Serializable {
     p.addToInventory(i);
     return i;
   }
+  
+  public synchronized Item drop(Player p, String s) throws NoSuchItemException {
+    Item i = p.dropFromInventoryByName(s);
+    p.here().addItem(i);
+    return i;
+  }
 }
