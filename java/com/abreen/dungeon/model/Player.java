@@ -9,11 +9,6 @@ public class Player extends Describable implements Serializable {
   private Hashtable<String, Item> inventory;
   private PrintWriter out;
 
-  /**
-   * @deprecated 
-   */
-  public boolean wantsQuit;
-
   @Override
   public String getDescription() { return this.name; }
 
