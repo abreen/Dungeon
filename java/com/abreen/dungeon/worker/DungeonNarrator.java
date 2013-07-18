@@ -711,9 +711,9 @@ public class DungeonNarrator {
                PhraseElement.DESTINATION),
     new Phrase("%s enters %s.", PhraseElement.SUBJECT,
                PhraseElement.DESTINATION),
-    new Phrase("%s crosses into %s.", PhraseElement.SUBJECT,
+    new Phrase("%s goes to %s.", PhraseElement.SUBJECT,
                PhraseElement.DESTINATION),
-    new Phrase("%s goes into %s.", PhraseElement.SUBJECT,
+    new Phrase("%s moves to %s.", PhraseElement.SUBJECT,
                PhraseElement.DESTINATION)
   };
 
