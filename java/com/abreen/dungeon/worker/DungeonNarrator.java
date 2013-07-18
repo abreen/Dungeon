@@ -1,7 +1,7 @@
 package com.abreen.dungeon.worker;
 
 import java.util.*;
-import com.abreen.dungeon.model.Item;
+import com.abreen.dungeon.model.*;
 
 /*
  * Provides static methods that provide varied and interesting English
@@ -35,6 +35,122 @@ public class DungeonNarrator {
     System.out.println(n.narrateSay("Alex", ""));
     System.out.println(n.narrateYell("Rachel", "Help me!"));
     System.out.println(n.narrateDistantYell("This is outrageous!"));
+  }
+  
+  public static enum StringType {
+    WITH_ARTICLE, WITH_DEFINITE_ARTICLE, WITH_INDEFINITE_ARTICLE,
+    WITHOUT_ARTICLE;
+  }
+  
+  /**
+   * Given a describable ingame object, the method will return a string
+   * containing the ingame object or item's description.
+   * 
+   * This method determines the type of the object and uses the appropriate
+   * methods to construct a description, for ease of modifiability and
+   * internationalization.
+   * 
+   * @see Describable
+   * @see StringType
+   * @param d The describable object
+   * @return A string containing the object's description
+   */
+  public static String describe(Describable d) {
+    return d.getDescription();
+  }
+  
+  /**
+   * Given a player and a room object, this method will return a string
+   * containing a list of players in the room from the specified player's
+   * perspective (i.e., the player specified here will be mentioned as "you"
+   * in the list).
+   * 
+   * @param perspective The player to list as "you"
+   * @param r The room to search for players
+   * @return A string listing the players in the room, or null if there are none
+   */
+  public static String describePlayers(Player perspective, Room r) {
+    String str = "";
+    
+    int size;
+    if ((size = r.getNumberOfPlayers()) > 0) {
+      
+      if (size == 1)
+        str += "Player ";
+      else
+        str += "Players ";
+      
+      Iterator<Player> ps = r.getPlayers();
+      
+      int i = 1;
+      while (ps.hasNext()) {
+        Player p = ps.next();
+        
+        if (p == perspective)
+          str += toString(p) + " (you)";
+        else
+          str += toString(p);
+        
+        if (i == size - 1) {
+          if (size == 2) {
+            str += " and ";
+          } else {
+            str += ", and ";
+          }
+        } else if (i != size) {
+          str += ", ";
+        }
+        
+        i++;
+      }
+      
+      if (size == 1)
+        str += " is here.";
+      else
+        str += " are here.";
+    } else {
+      return null;  // if there are no players here
+    }
+
+    return str;
+  }
+  
+  /**
+   * Given a describable object and a StringType constant, convert the ingame
+   * object to a string with the specified qualities.
+   * 
+   * This method uses the appropriate methods of the object itself for
+   * ease of modifiability and internationalization.
+   * 
+   * @see Describable
+   * @see StringType
+   * @param d The describable object
+   * @param t Constant referring to the type of output
+   * @return A string representation of the object
+   */
+  public static String toString(Describable d, StringType t) {
+    String str = d.getName();
+    
+    if (d.neverUseArticle())
+      return str;
+    
+    switch (t) {
+      case WITH_ARTICLE:
+      case WITH_DEFINITE_ARTICLE:
+        return "the " + str;
+      case WITH_INDEFINITE_ARTICLE:
+        if (d.startsWithVowel())
+          return "an " + str;
+        else
+          return "a " + str;
+      case WITHOUT_ARTICLE:
+      default:
+        return str;
+    }
+  }
+  
+  public static String toString(Player p) {
+    return toString(p, StringType.WITHOUT_ARTICLE);
   }
   
   /**
@@ -98,7 +214,7 @@ public class DungeonNarrator {
     Iterator<Item> iter = a.iterator();
     Item i = iter.next();
     
-    str += capitalize(i.getName());
+    str += capitalize(toString(i, StringType.WITHOUT_ARTICLE));
     
     if (size == 1)
       return str + ".";
@@ -108,7 +224,7 @@ public class DungeonNarrator {
     while (true) {
       i = iter.next();
       
-      str += i.getName();
+      str += toString(i, StringType.WITHOUT_ARTICLE);
       
       if (!iter.hasNext()) {
         str += ".";
@@ -141,7 +257,7 @@ public class DungeonNarrator {
     Iterator<Item> iter = a.iterator();
     
     Item i = iter.next();
-    str += capitalize(i.getArticle()) + " " + i.getName();
+    str += capitalize(toString(i, StringType.WITH_ARTICLE));
     
     if (size == 1) {
       return str + ".";
@@ -157,7 +273,7 @@ public class DungeonNarrator {
     while (iter.hasNext()) {
       i = iter.next();
 
-      str += i.getArticle() + " " + i.getName();
+      str += toString(i, StringType.WITH_ARTICLE);
 
       if (count == size - 1) {
         if (size == 2) {

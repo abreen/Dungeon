@@ -48,7 +48,8 @@ public class DungeonConnectionThread extends Thread {
 
       out.println("Connected.");
       
-      String a = DungeonServer.narrator.narrateMaterialization(p.toString());
+      String a = DungeonServer.narrator.narrateMaterialization(
+              DungeonNarrator.toString(p, DungeonNarrator.StringType.WITHOUT_ARTICLE));
       Iterator<Player> it = DungeonServer.universe.getPlayersInRoom(p.here());
       int n = DungeonServer.universe.getNumberOfPlayersInRoom(p.here());
       DungeonServer.events.addNarrationEvent(
@@ -71,7 +72,8 @@ public class DungeonConnectionThread extends Thread {
         }
       }
       
-      String b = DungeonServer.narrator.narrateDematerialization(p.toString());
+      String b = DungeonServer.narrator.narrateDematerialization(
+              DungeonNarrator.toString(p, DungeonNarrator.StringType.WITHOUT_ARTICLE));
       it = DungeonServer.universe.getPlayersInRoom(p.here());
       n = DungeonServer.universe.getNumberOfPlayersInRoom(p.here());
       DungeonServer.events.addNarrationEvent(

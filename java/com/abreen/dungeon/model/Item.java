@@ -1,29 +1,10 @@
 package com.abreen.dungeon.model;
 
-public class Item implements Describable {
+public class Item extends Describable {
   public static final char[] VOWELS = {'a', 'e', 'i', 'o', 'u'};
   public static final boolean DEFAULT_CARRYABILITY = false;
 
-  protected String name;
-  protected String description;
   protected boolean carryable;
-  private boolean nameStartsWithVowel;
-
-  /**
-   * @deprecated Use toString() instead
-   */
-  public String getName() { return this.name; }
-  
-  public String toString() { return this.name; }
-  
-  public String describe() { return this.description; }
-
-  public String getArticle() {
-    if (this.nameStartsWithVowel)
-      return "an";
-    else
-      return "a";
-  }
 
   public boolean isCarryable() { return this.carryable; }
 
@@ -39,7 +20,7 @@ public class Item implements Describable {
     char first = n.charAt(0);
     for (int i = 0; i < Item.VOWELS.length; i++) {
       if (Item.VOWELS[i] == first) {
-        this.nameStartsWithVowel = true;
+        this.startsWithVowel = true;
         break;
       }
     }

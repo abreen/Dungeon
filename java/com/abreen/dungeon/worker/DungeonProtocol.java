@@ -222,7 +222,11 @@ public class DungeonProtocol {
       Iterator<Player> playersHere = u.getPlayersInRoom(here);
       int numPlayersHere = u.getNumberOfPlayersInRoom(here);
 
-      String moveTo = n.narrateMoveToRoom(p.toString(), there.toString());
+      String playerString =
+              DungeonNarrator.toString(p);
+      String roomString =
+              DungeonNarrator.toString(there, DungeonNarrator.StringType.WITH_ARTICLE);
+      String moveTo = n.narrateMoveToRoom(playerString, roomString);
       d.addNarrationEvent(
               DungeonDispatcher.playerIteratorToWriterArray(playersHere,
               numPlayersHere), moveTo);
@@ -258,7 +262,9 @@ public class DungeonProtocol {
       
       Iterator<Player> ps = u.getPlayersInRoom(p.here());
       int size = u.getNumberOfPlayersInRoom(p.here());
-      String narr = n.narrateTake(p.toString(), i.toString());
+      String narr =
+              n.narrateTake(DungeonNarrator.toString(p),
+                            DungeonNarrator.toString(i, DungeonNarrator.StringType.WITH_ARTICLE));
       d.addNarrationEvent(d.playerIteratorToWriterArray(ps, size), narr);
       
     } catch (NoSuchItemException e) {

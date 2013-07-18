@@ -110,7 +110,8 @@ public class DungeonUniverse implements Serializable {
       Iterator<Player> ps = getPlayersInRoom((Room)destination);
       int n = getNumberOfPlayersInRoom((Room)destination);
       
-      String moveHere = DungeonServer.narrator.narrateMoveHere(p.toString());
+      String playerString = DungeonNarrator.toString(p);
+      String moveHere = DungeonServer.narrator.narrateMoveHere(playerString);
       DungeonServer.events.addNarrationEvent(
               DungeonDispatcher.playerIteratorToWriterArray(ps,
                 n), moveHere);
@@ -135,7 +136,8 @@ public class DungeonUniverse implements Serializable {
           Iterator<Player> ps = getPlayersInRoom((Room)otherSide);
           int n = getNumberOfPlayersInRoom((Room)otherSide);
 
-          String moveHere = DungeonServer.narrator.narrateMoveHere(p.toString());
+          String playerString = DungeonNarrator.toString(p);
+          String moveHere = DungeonServer.narrator.narrateMoveHere(playerString);
           DungeonServer.events.addNarrationEvent(
                   DungeonDispatcher.playerIteratorToWriterArray(ps,
                   n), moveHere);
@@ -216,6 +218,7 @@ public class DungeonUniverse implements Serializable {
   /**
    * Responds to a player's intent to get a description of the room or
    * an item in the room or the player's inventory.
+   * 
    * @param p The player
    * @param s The name of the item, or "here" for the current room
    * @throws NoSuchItemException If the specified item is nowhere to be found
@@ -225,10 +228,10 @@ public class DungeonUniverse implements Serializable {
       throw new IllegalArgumentException();
     
     if (s.equals("here")) {
-      String desc = p.here().describe();
+      String desc = DungeonNarrator.describe(p.here());
       DungeonServer.events.addNotificationEvent(p.getWriter(), desc);
       
-      desc = p.here().describePlayers(p);
+      desc = DungeonNarrator.describePlayers(p, p.here());
       if (desc != null)
         DungeonServer.events.addNotificationEvent(p.getWriter(), desc);
       
@@ -240,7 +243,7 @@ public class DungeonUniverse implements Serializable {
       try {
         Item item = p.here().getItemByName(s);
         DungeonServer.events.addNotificationEvent(p.getWriter(),
-                item.describe());
+                DungeonNarrator.describe(item));
         return;
       } catch (NoSuchItemException e) {
         /*
@@ -248,7 +251,7 @@ public class DungeonUniverse implements Serializable {
          */
         Item item = p.getFromInventoryByName(s);
         DungeonServer.events.addNotificationEvent(p.getWriter(),
-                item.describe());
+                DungeonNarrator.describe(item));
         return;
       }
       
@@ -257,10 +260,11 @@ public class DungeonUniverse implements Serializable {
   
   public synchronized void say(Player p, String s) {
     String narr;
+    String playerString = DungeonNarrator.toString(p);
     if (s == null) {
-      narr = DungeonServer.narrator.narrateSay(p.toString(), "");
+      narr = DungeonServer.narrator.narrateSay(playerString, "");
     } else {
-      narr = DungeonServer.narrator.narrateSay(p.toString(), s);
+      narr = DungeonServer.narrator.narrateSay(playerString, s);
     }
     
     Iterator<Player> ps = getPlayersInRoom(p.here());
@@ -271,7 +275,8 @@ public class DungeonUniverse implements Serializable {
   }
   
   public synchronized void yell(Player p, String s) {
-    String narr1 = DungeonServer.narrator.narrateYell(p.toString(), s);
+    String playerString = DungeonNarrator.toString(p);
+    String narr1 = DungeonServer.narrator.narrateYell(playerString, s);
     String narr2 = DungeonServer.narrator.narrateDistantYell(s);
     
     Iterator<Player> ps = getPlayersInRoom(p.here());

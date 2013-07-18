@@ -3,7 +3,7 @@ package com.abreen.dungeon.model;
 import java.util.*;
 import com.abreen.dungeon.exceptions.*;
 
-public abstract class Space implements Describable {
+public abstract class Space extends Describable {
   public static enum Direction {
     NORTH("north", "n"),
     NORTHEAST("northeast", "ne"),
@@ -68,21 +68,12 @@ public abstract class Space implements Describable {
   
   public static final int DEFAULT_EXITS_SIZE = 6;
 
-  protected String name;
-  protected String description;
-
   protected Hashtable<Direction, Space> exits;
 
-  public String describe() {
+  @Override
+  public String getDescription() {
     return this.name + "\n\n" + this.description;
   }
-
-  /**
-   * @deprecated Use toString() instead
-   */
-  public String getName() { return this.name; }
-  
-  public String toString() { return this.name; }
 
   public static Direction getDirectionFromString(String s)
     throws NoSuchDirectionException {

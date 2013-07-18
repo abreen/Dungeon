@@ -1,7 +1,9 @@
 package com.abreen.dungeon.model;
 
+import com.abreen.dungeon.DungeonServer;
 import java.util.*;
 import com.abreen.dungeon.exceptions.*;
+import com.abreen.dungeon.worker.DungeonNarrator;
 
 public class Room extends Space {
   public static final int DEFAULT_ITEMS_SIZE = 11;
@@ -12,6 +14,14 @@ public class Room extends Space {
 
   public void addItem(Item i) {
     this.items.put(i.getName().toLowerCase(), i);
+  }
+  
+  public int getNumberOfItems() {
+    return this.items.size();
+  }
+  
+  public boolean hasNoItems() {
+    return this.items.isEmpty();
   }
 
   public Item removeItemByName(String name) throws NoSuchItemException {
@@ -33,7 +43,7 @@ public class Room extends Space {
   }
 
   public void addPlayer(Player p) {
-    this.players.put(p.toString(), p);
+    this.players.put(p.getName(), p);
   }
 
   public void removePlayer(Player p) {
@@ -97,84 +107,6 @@ public class Room extends Space {
     
     return list.iterator();
     
-  }
-
-  public String describe() {
-    String str = this.description;
-
-    if (!items.isEmpty()) {
-      str += " There is ";
-
-      Iterator<Item> iter = this.items.values().iterator();
-      int i = 1, size = this.items.size();
-
-      while (iter.hasNext()) {
-        Item j = iter.next();
-        str += j.getArticle() + " " + j.getName();
-
-        if (i == size - 1) {
-          if (size == 2) {
-            str += " and ";
-          } else {
-            str += ", and ";
-          }
-        } else if (i != size) {
-          str += ", ";
-        }
-
-        i++;
-      }
-
-      str += " here.";
-    }
-    
-    return str;
-  }
-  
-  public String describePlayers(Player perspective) {
-    String str = "";
-    
-    int size;
-    if ((size = this.getNumberOfPlayers()) > 0) {
-      
-      if (size == 1)
-        str += "Player ";
-      else
-        str += "Players ";
-      
-      Iterator<Player> ps = this.getPlayers();
-      
-      int i = 1;
-      while (ps.hasNext()) {
-        Player p = ps.next();
-        
-        if (p == perspective)
-          str += p.toString() + " (you)";
-        else
-          str += p.toString();
-        
-        if (i == size - 1) {
-          if (size == 2) {
-            str += " and ";
-          } else {
-            str += ", and ";
-          }
-        } else if (i != size) {
-          str += ", ";
-        }
-        
-        i++;
-      }
-      
-      if (size == 1)
-        str += " is here.";
-      else
-        str += " are here.";
-    } else {
-      return null;  // if there are no players here
-    }
-
-    return str;
   }
 
   public Room(String n, String d) {

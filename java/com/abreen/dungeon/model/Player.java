@@ -4,8 +4,7 @@ import java.util.*;
 import java.io.*;
 import com.abreen.dungeon.exceptions.*;
 
-public class Player implements Describable, Serializable {
-  private String name;
+public class Player extends Describable implements Serializable {
   private Room here;
   private Hashtable<String, Item> inventory;
   private PrintWriter out;
@@ -15,14 +14,8 @@ public class Player implements Describable, Serializable {
    */
   public boolean wantsQuit;
 
-  public String describe() { return this.name; }
-
-  /**
-   * @deprecated Use toString() instead
-   */
-  public String getName() { return this.name; }
-  
-  public String toString() { return this.name; }
+  @Override
+  public String getDescription() { return this.name; }
 
   public Player(String name, Room spawn) {
     this.name = name;

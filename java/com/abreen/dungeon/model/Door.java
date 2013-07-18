@@ -9,7 +9,7 @@ public class Door extends Space {
   private Key key;
   private boolean locked;
 
-  public String describe() {
+  public String getDescription() {
     return this.description;
   }
 
