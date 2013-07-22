@@ -134,6 +134,8 @@ public class DungeonProtocol {
     throws PlayerIsQuittingException {
 
     if (input.isEmpty()) return;
+    
+    p.updateLastAction();
 
     String[] tokens = input.split("\\s");
     

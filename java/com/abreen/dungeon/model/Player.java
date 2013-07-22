@@ -8,14 +8,60 @@ public class Player extends Describable implements Serializable {
   private Room here;
   private Hashtable<String, Item> inventory;
   private PrintWriter out;
+  
+  /**
+   * The Unix timestamp referring to the last time the player made
+   * an action.
+   */
+  private transient long lastActionTimestamp;
 
   @Override
   public String getDescription() { return this.name; }
+  
+  /**
+   * Returns the number of seconds since the player performed an action.
+   * 
+   * @return The quantity of seconds
+   */
+  public long getNumberOfSecondsIdle() {
+    return (System.currentTimeMillis() / 1000L) - this.lastActionTimestamp;
+  }
+  
+  /**
+   * Returns a string expressing the amount of time since the player
+   * last interacted with the universe.
+   * 
+   * @return A time string
+   */
+  public String getTimeSinceLastAction() {
+    long diff = this.getNumberOfSecondsIdle();
+    
+    if (diff < 60) {
+      return diff + " seconds";
+    } else {
+      return (diff / 60) + "m " + (diff % 60) + "s";
+    }
+  }
+  
+  /**
+   * Sets the last action timestamp of the player to right now.
+   */
+  public void updateLastAction() {
+    this.lastActionTimestamp = (System.currentTimeMillis() / 1000L);
+  }
+  
+  private void readObject(ObjectInputStream in) throws IOException,
+          ClassNotFoundException {
+    
+    in.defaultReadObject();
+    this.updateLastAction();
+  }
 
   public Player(String name, Room spawn) {
     this.name = name;
     this.here = spawn;
     this.inventory = new Hashtable<String, Item>();
+    this.updateLastAction();
   }
 
   public Player(String name, Room spawn, PrintWriter out) {
