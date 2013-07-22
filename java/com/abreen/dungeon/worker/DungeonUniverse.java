@@ -254,8 +254,8 @@ public class DungeonUniverse implements Serializable {
          * Try looking in the player's inventory for the item
          */
         Item item = p.getFromInventoryByName(s);
-        DungeonServer.events.addNotificationEvent(p.getWriter(),
-                DungeonNarrator.describe(item));
+        String desc = "(from your inventory) " + DungeonNarrator.describe(item);
+        DungeonServer.events.addNotificationEvent(p.getWriter(), desc);
         return;
       }
       
