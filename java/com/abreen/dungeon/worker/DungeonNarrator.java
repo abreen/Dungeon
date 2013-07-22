@@ -161,6 +161,47 @@ public class DungeonNarrator {
   }
   
   /**
+   * Given a room object, this method will return a string containing a list
+   * of visible exits from the specified room, along with their directions.
+   * 
+   * @param r The room to search for exits
+   * @return A string listing the exits
+   */
+  public static String describeExits(Room r) {
+    Iterator<Map.Entry<Space.Direction, Space>> exits = r.getExitsIterator();
+    int size = r.getNumberOfExits();
+    
+    String str = "";
+    
+    if (size == 0)
+      return "There's no way out.";
+    
+    Map.Entry<Space.Direction, Space> exit = exits.next();
+    
+    str += capitalize(toString(exit, StringType.WITH_DEFINITE_ARTICLE));
+    
+    if (size == 1)
+      return str + ".";
+    else
+      str += ", ";
+    
+    while (true) {
+      exit = exits.next();
+      
+      str += toString(exit, StringType.WITH_DEFINITE_ARTICLE);
+      
+      if (!exits.hasNext()) {
+        str += ".";
+        break;
+      } else {
+        str += ", ";
+      }
+    }
+    
+    return str;
+  }
+  
+  /**
    * Given a describable object and a StringType constant, convert the ingame
    * object to a string with the specified qualities.
    * 
@@ -196,6 +237,17 @@ public class DungeonNarrator {
   
   public static String toString(Player p) {
     return toString(p, StringType.WITHOUT_ARTICLE);
+  }
+  
+  public static String toString(Map.Entry<Space.Direction, Space> m,
+                                StringType t) {
+    Space s = m.getValue();
+    
+    if (s instanceof Door)
+      return toString(m.getValue(), StringType.WITH_INDEFINITE_ARTICLE) +
+             " (" + m.getKey().toString() + ")";
+    else
+      return toString(m.getValue(), t) + " (" + m.getKey().toString() + ")";
   }
   
   /**

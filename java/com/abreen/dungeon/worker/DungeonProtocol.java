@@ -198,7 +198,8 @@ public class DungeonProtocol {
   }
   
   private static void processExits(Player p, String[] tokens) {
-    
+    String desc = DungeonNarrator.describeExits(p.here());
+    d.addNotificationEvent(p.getWriter(), desc);
   }
   
   private static void processGive(Player p, String[] tokens) {
