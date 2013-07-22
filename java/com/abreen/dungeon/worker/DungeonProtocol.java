@@ -207,7 +207,8 @@ public class DungeonProtocol {
   }
   
   private static void processInventory(Player p, String[] tokens) {
-    
+    String desc = DungeonNarrator.describeInventory(p);
+    d.addNotificationEvent(p.getWriter(), desc);
   }
   
   private static void processLook(Player p, String[] tokens) {

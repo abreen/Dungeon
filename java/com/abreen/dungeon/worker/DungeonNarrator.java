@@ -161,6 +161,47 @@ public class DungeonNarrator {
   }
   
   /**
+   * Given a player object, this method will return a string containing a list
+   * of items currently in the player's inventory.
+   * 
+   * @param p The player whose inventory to search
+   * @return A string listing the items in the inventory
+   */
+  public static String describeInventory(Player p) {
+    Iterator<Item> items = p.getInventoryIterator();
+    int size = p.getInventorySize();
+    
+    String str = "";
+    
+    if (size == 0)
+      return "You are not carrying anything.";
+    
+    Item item = items.next();
+    
+    str += capitalize(toString(item, StringType.WITH_DEFINITE_ARTICLE));
+    
+    if (size == 1)
+      return str + ".";
+    else
+      str += ", ";
+    
+    while (true) {
+      item = items.next();
+      
+      str += toString(item, StringType.WITH_DEFINITE_ARTICLE);
+      
+      if (!items.hasNext()) {
+        str += ".";
+        break;
+      } else {
+        str += ", ";
+      }
+    }
+    
+    return str;
+  }
+  
+  /**
    * Given a room object, this method will return a string containing a list
    * of visible exits from the specified room, along with their directions.
    * 
