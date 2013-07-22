@@ -304,6 +304,26 @@ public class DungeonProtocol {
   }
   
   private static void processWho(Player p, String[] tokens) {
+    Iterator<Player> ps = u.getPlayers();
+    int numPlayers = u.getNumberOfPlayers();
+    
+    String[] lines = new String[numPlayers];
+    
+    int i = 0;
+    while (ps.hasNext()) {
+      Player thisPlayer = ps.next();
+      
+      String name;
+      if (thisPlayer == p)
+        name = DungeonNarrator.toString(thisPlayer) + " (you)";
+      else
+        name = DungeonNarrator.toString(thisPlayer);
+      
+      lines[i++] = name + "\t" + thisPlayer.getTimeSinceLastAction();
+    }
+    
+    for (String line : lines)
+      d.addNarrationEvent(p.getWriter(), line);
     
   }
   
