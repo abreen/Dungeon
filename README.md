@@ -46,3 +46,4 @@ server will automatically look for a `config.yml` file under the `yaml`
 directory, from which it will take information like hostname, port, etc.
 If it finds no configuration file, it will ask for program arguments.
 
+[snakeyaml]: http://code.google.com/p/snakeyaml/
