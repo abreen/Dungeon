@@ -302,7 +302,8 @@ public class DungeonProtocol {
   }
   
   private static void processUse(Player p, String[] tokens) {
-    
+    String oops = "That cannot be used.";
+    d.addNotificationEvent(p.getWriter(), oops);
   }
   
   private static void processWhisper(Player p, String[] tokens) {
