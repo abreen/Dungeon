@@ -37,9 +37,19 @@ public class Player extends Describable implements Serializable {
     long diff = this.getNumberOfSecondsIdle();
     
     if (diff < 60) {
-      return diff + " seconds";
+      if (diff < 5)
+        return "a moment ago";
+      else
+        return diff + " seconds ago";
     } else {
-      return (diff / 60) + "m " + (diff % 60) + "s";
+      String str = "";
+      
+      if ((diff / 60) == 1)
+        str += "1 minute, ";
+      else
+        str += (diff / 60) + " minute, ";
+      
+      return str + (diff % 60) + " seconds ago";
     }
   }
   

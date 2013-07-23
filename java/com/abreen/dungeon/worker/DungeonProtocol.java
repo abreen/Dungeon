@@ -307,9 +307,11 @@ public class DungeonProtocol {
     Iterator<Player> ps = u.getPlayers();
     int numPlayers = u.getNumberOfPlayers();
     
-    String[] lines = new String[numPlayers];
+    String[] lines = new String[numPlayers + 1];
     
-    int i = 0;
+    lines[0] = String.format("%-18s%s", "PLAYER", "LAST HEARD FROM");
+    
+    int i = 1;
     while (ps.hasNext()) {
       Player thisPlayer = ps.next();
       
@@ -319,11 +321,12 @@ public class DungeonProtocol {
       else
         name = DungeonNarrator.toString(thisPlayer);
       
-      lines[i++] = name + "\t" + thisPlayer.getTimeSinceLastAction();
+      lines[i++] = String.format("%-18s%s", name,
+                                 thisPlayer.getTimeSinceLastAction());
     }
     
     for (String line : lines)
-      d.addNarrationEvent(p.getWriter(), line);
+      d.addNotificationEvent(p.getWriter(), line);
     
   }
   
