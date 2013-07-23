@@ -252,6 +252,12 @@ public class DungeonProtocol {
       d.addNarrationEvent(
               DungeonDispatcher.playerIteratorToWriterArray(playersHere,
               numPlayersHere), moveTo);
+      
+      /*
+       * Finally, give the player a description of the new room.
+       */
+      String[] fakeTokens = {"look", "here"};
+      processLook(p, fakeTokens);
 
     } catch (NoSuchDirectionException e) {
       String oops = "Unsure which direction is meant "
