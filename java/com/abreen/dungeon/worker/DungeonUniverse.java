@@ -228,7 +228,9 @@ public class DungeonUniverse implements Serializable {
       throw new IllegalArgumentException();
     
     if (s.equals("here")) {
+      String name = DungeonNarrator.toString(p.here()).toUpperCase();
       String desc = DungeonNarrator.describe(p.here());
+      DungeonServer.events.addNotificationEvent(p.getWriter(), name);
       DungeonServer.events.addNotificationEvent(p.getWriter(), desc);
       
       desc = DungeonNarrator.describePlayers(p, p.here());

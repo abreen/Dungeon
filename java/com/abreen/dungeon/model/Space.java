@@ -70,11 +70,6 @@ public abstract class Space extends Describable {
 
   protected Hashtable<Direction, Space> exits;
 
-  @Override
-  public String getDescription() {
-    return this.name + "\n\n" + this.description;
-  }
-
   public static Direction getDirectionFromString(String s)
     throws NoSuchDirectionException {
 

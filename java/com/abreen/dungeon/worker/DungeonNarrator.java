@@ -276,6 +276,17 @@ public class DungeonNarrator {
     }
   }
   
+  /**
+   * Given a describable object, convert the ingame object to a string
+   * with the specified qualities, using no article.
+   * 
+   * @param d The describable object
+   * @return A string representation of the object
+   */
+  public static String toString(Describable d) {
+    return toString(d, StringType.WITHOUT_ARTICLE);
+  }
+  
   public static String toString(Player p) {
     return toString(p, StringType.WITHOUT_ARTICLE);
   }
