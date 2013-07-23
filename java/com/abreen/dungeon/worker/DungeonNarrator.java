@@ -916,8 +916,6 @@ public class DungeonNarrator {
    * another (e.g., "Jason whispers to Raymond.").
    */
   private final Phrase[] WHISPER_OBSERVER_PHRASES = {
-    new Phrase("%s whispers in %s ear.", PhraseElement.SUBJECT,
-               PhraseElement.OBJECT),
     new Phrase("%s mutters something to %s.", PhraseElement.SUBJECT,
                PhraseElement.OBJECT),
     new Phrase("%s whispers to %s.", PhraseElement.SUBJECT,

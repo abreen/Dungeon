@@ -346,7 +346,40 @@ public class DungeonProtocol {
   }
   
   private static void processWhisper(Player p, String[] tokens) {
+    String s = getTokensAfterAction(tokens);
     
+    if (s == null) {
+      String oops = "Write a secret message, followed by 'to' and the name " +
+                    "of the recipient.";
+      d.addNotificationEvent(p.getWriter(), oops);
+      return;
+    }
+    
+    int indirectIndex = s.lastIndexOf(" to ");
+    
+    if (indirectIndex == -1) {
+      String oops = "You didn't specify a recipient, so you whipsered to " +
+                    "yourself.";
+      d.addNotificationEvent(p.getWriter(), oops);
+      return;
+    }
+    
+    String message = s.substring(0, indirectIndex);
+    String recipient = s.substring(indirectIndex + 4).trim();
+    
+    if (p.getName().equals(recipient)) {
+      String oops = "OK, you murmur something completely inaudible.";
+      d.addNarrationEvent(p.getWriter(), oops);
+      return;
+    }
+    
+    try {
+      u.whisper(p, message, recipient);
+    } catch (NoSuchPlayerException e) {
+      String oops = "There is no such player '" + recipient +
+                    "' in this room.";
+      d.addNotificationEvent(p.getWriter(), oops);
+    }
   }
   
   private static void processWho(Player p, String[] tokens) {

@@ -278,6 +278,46 @@ public class DungeonUniverse implements Serializable {
     
   }
   
+  public synchronized void whisper(Player p, String message, String recipient)
+          throws NoSuchPlayerException {
+    Iterator<Player> ps = p.here().getPlayers();
+    int numHere = p.here().getNumberOfPlayers();
+    ArrayList<Player> observers = new ArrayList<Player>(numHere - 2);
+    
+    Player otherPlayer = null;
+    while (ps.hasNext()) {
+      Player thisPlayer = ps.next();
+      
+      if (thisPlayer.getName().equals(recipient)) {
+        otherPlayer = thisPlayer;
+      } else {
+        if (thisPlayer != p)
+          observers.add(thisPlayer);
+      }
+    }
+    
+    if (otherPlayer == null)
+      throw new NoSuchPlayerException();
+    
+    String secretNarr = DungeonServer.narrator.narrateWhisper(
+            DungeonNarrator.toString(p), message);
+    String publicNarr = DungeonServer.narrator.narrateUnheardWhisper(
+            DungeonNarrator.toString(p), DungeonNarrator.toString(otherPlayer));
+    
+    ArrayList<Player> secrets = new ArrayList<Player>();
+    secrets.add(p);
+    secrets.add(otherPlayer);
+    
+    DungeonServer.events.addNarrationEvent(
+            DungeonDispatcher.playerIteratorToWriterArray(
+                secrets.iterator(), secrets.size()), secretNarr);
+    
+    DungeonServer.events.addNarrationEvent(
+            DungeonDispatcher.playerIteratorToWriterArray(
+                observers.iterator(), observers.size()), publicNarr);
+    
+  }
+  
   public synchronized void yell(Player p, String s) {
     String playerString = DungeonNarrator.toString(p);
     String narr1 = DungeonServer.narrator.narrateYell(playerString, s);
