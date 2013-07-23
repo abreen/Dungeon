@@ -248,7 +248,6 @@ public class DungeonUniverse implements Serializable {
         Item item = p.here().getItemByName(s);
         DungeonServer.events.addNotificationEvent(p.getWriter(),
                 DungeonNarrator.describe(item));
-        return;
       } catch (NoSuchItemException e) {
         /*
          * Try looking in the player's inventory for the item
@@ -256,7 +255,6 @@ public class DungeonUniverse implements Serializable {
         Item item = p.getFromInventoryByName(s);
         String desc = "(from your inventory) " + DungeonNarrator.describe(item);
         DungeonServer.events.addNotificationEvent(p.getWriter(), desc);
-        return;
       }
       
     }
