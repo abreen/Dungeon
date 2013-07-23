@@ -205,7 +205,46 @@ public class DungeonProtocol {
   }
   
   private static void processGive(Player p, String[] tokens) {
+    String s = getTokensAfterAction(tokens);
     
+    if (s == null) {
+      String oops = "Specify an item from your inventory to give, followed " +
+                    "by 'to' and the name of the recipient.";
+      d.addNotificationEvent(p.getWriter(), oops);
+      return;
+    }
+    
+    int indirectIndex = s.lastIndexOf(" to ");
+    
+    if (indirectIndex == -1) {
+      String oops = "You must specify a recipient.";
+      d.addNotificationEvent(p.getWriter(), oops);
+      return;
+    }
+    
+    String object = s.substring(0, indirectIndex);
+    String indirectObject = s.substring(indirectIndex + 4).trim();
+    
+    try {
+      Item i = u.give(p, object, indirectObject);
+      
+      String narr = n.narrateGive(DungeonNarrator.toString(p), object,
+                                  indirectObject);
+      
+      Iterator<Player> ps = u.getPlayersInRoom(p.here());
+      int size = u.getNumberOfPlayersInRoom(p.here());
+      
+      d.addNarrationEvent(
+              DungeonDispatcher.playerIteratorToWriterArray(ps, size), narr);
+      
+    } catch (NoSuchItemException e) {
+      String oops = "You do not have an item known as '" + object + "'.";
+      d.addNotificationEvent(p.getWriter(), oops);
+    } catch (NoSuchPlayerException e) {
+      String oops = "There is no such player '" + indirectObject +
+                    "' in this room.";
+      d.addNotificationEvent(p.getWriter(), oops);
+    }
   }
   
   private static void processInventory(Player p, String[] tokens) {

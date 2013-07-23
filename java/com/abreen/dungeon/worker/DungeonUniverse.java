@@ -318,4 +318,27 @@ public class DungeonUniverse implements Serializable {
     p.here().addItem(i);
     return i;
   }
+  
+  public synchronized Item give(Player p, String object, String whom) throws
+          NoSuchItemException, NoSuchPlayerException {
+    
+    Item i = p.dropFromInventoryByName(object);
+    Iterator<Player> ps = p.here().getPlayers();
+    
+    Player otherPlayer = null;
+    while (ps.hasNext()) {
+      Player thisPlayer = ps.next();
+      if (thisPlayer.getName().equals(whom)) {
+        otherPlayer = thisPlayer;
+        break;
+      }
+    }
+    
+    if (otherPlayer == null)
+      throw new NoSuchPlayerException();
+    
+    otherPlayer.addToInventory(i);
+    
+    return i;
+  }
 }
