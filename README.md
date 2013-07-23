@@ -21,20 +21,28 @@ license in due time.
 ## Extensibility
 
 At the moment, the server automatically constructs a boring universe for
-players to roam around in. In the future, I'll integrate a YAML parser into
-the server so that authors can write their own universes and play in them.
-This is what makes `Dungeon` a bit more flexible than any old text
+players to roam around in. I am in the process of building in a YAML
+parser so people can write their own game universes and load them into the
+server. This is what makes `Dungeon` a bit more flexible than any old text
 adventure game.
 
 I'll get around to authoring a small universe demoing the features that
-`Dungeon` has to offer. If you poke around, you could probably guess how to
-manually construct universes inside the `DungeonServer.java` file.
+`Dungeon` has to offer.
 
-## Building
+## Dependencies
+
+The server uses [SnakeYAML][snakeyaml], a YAML parser for Java. The JAR
+file (version 1.12) is included in the `lib` directory.
+
+## Building and running
 
 There's a small `build.xml` file for Apache Ant. As long as you have Ant
 installed, just run `ant` in the base directory. The default target should
-build all the classes to a directory called `classes`. You can start the
-server on port 4444 by specifying `ant server`. Then I recommend using a
-tool like `telnet` or `nc` to connect. 
+build all the classes to a directory called `classes`. 
+
+To start the server, change to the top-level directory of the repository
+and run `java -cp classes:lib/* com.abreen.dungeon.DungeonServer`. The
+server will automatically look for a `config.yml` file under the `yaml`
+directory, from which it will take information like hostname, port, etc.
+If it finds no configuration file, it will ask for program arguments.
 

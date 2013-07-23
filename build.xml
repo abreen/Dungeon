@@ -5,11 +5,11 @@
   </target>
   <target name="compile" description="compile the source code">
     <mkdir dir="classes"/>
-    <javac includeantruntime="false" srcdir="." destdir="classes"/>
-  </target>
-  <target name="server" description="run the server">
-    <java classname="com.abreen.dungeon.DungeonServer" classpath="classes">
-      <arg value="4444" />
-    </java>
+    <javac includeantruntime="false" srcdir="." destdir="classes">
+      <classpath>
+        <pathelement location="java"/>
+        <pathelement location="lib/snakeyaml-1.12.jar"/>
+      </classpath>
+    </javac>
   </target>
 </project>

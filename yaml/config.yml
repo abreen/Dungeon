@@ -1,0 +1,3 @@
+hostname: localhost
+port: 5554
+world: default
