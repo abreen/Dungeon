@@ -37,10 +37,10 @@ forest_edge:
     The cliff slopes into a smooth hill, covered with healthy grasses. A few 
     meters in front of you there stands a tree with a giant, dark trunk. 
     The lowest branches of the tree are moving slightly in the wind, almost 
-    as if the tree were taking breaths. Hundreds (thousands?) oftrees span 
+    as if the tree were taking breaths. Hundreds (thousands?) of trees span 
     your vision to the south.
   exits:
-    north: henged
+    north: henge
 
 
 henge_cliff:
