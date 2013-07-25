@@ -7,7 +7,7 @@ import com.abreen.dungeon.exceptions.*;
 import com.abreen.dungeon.model.*;
 
 public class DungeonUniverse implements Serializable {
-  private ArrayList<Space> spaces;
+  private Collection<Room> rooms;
   private Hashtable<String, Player> players;
   private Room spawnPoint;
   private boolean doWeather;
@@ -16,12 +16,15 @@ public class DungeonUniverse implements Serializable {
    * Loads a boring universe.
    */
   public DungeonUniverse() {
-    this.spaces = new ArrayList<Space>();
-    this.players = new Hashtable<String, Player>();
+    this.rooms = new ArrayList<>();
+    this.players = new Hashtable<>();
   }
   
-  public void setWeather(boolean b) {
-    this.doWeather = b;
+  public DungeonUniverse(Room spawn, boolean weather, Collection<Room> sps) {
+    this();
+    this.spawnPoint = spawn;
+    this.doWeather = weather;
+    this.rooms = sps;
   }
   
   public boolean doWeather() {

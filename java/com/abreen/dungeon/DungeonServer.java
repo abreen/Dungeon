@@ -78,7 +78,6 @@ public class DungeonServer {
         universeFile = new FileReader(YAML_PATH + config.get("world") + 
                                       ".universe.yml");
       
-      universe = new DungeonUniverse();
       Object[] docs = new Object[3];
       Map<String, Object> preamble = null;
       Map<String, Map<String, Object>> rooms = null, items = null;
@@ -106,15 +105,17 @@ public class DungeonServer {
         System.exit(3);
       }
       
+      /*
+       * Used after parsing rooms to set universe parameters
+       */
+      boolean doWeather = false;
       String spawnRoomID = null;
       try {
         /*
          * Load variables from the preamble
          */
-        boolean doWeather =
+        doWeather =
                 (Boolean) validateAndGet(preamble, "weather", Boolean.class);
-        
-        universe.setWeather(doWeather);
         
         spawnRoomID =
                 (String) validateAndGet(preamble, "spawn", String.class);
@@ -198,7 +199,7 @@ public class DungeonServer {
             }
             
           }
-
+          
         } // end of for loop adding rooms
       } catch (Exception e) {
         System.err.println("DungeonServer: failed parsing room '" +
@@ -213,6 +214,13 @@ public class DungeonServer {
        */
        if (!unresolvedReferences.isEmpty())
          throw new UnresolvedReferenceException(unresolvedReferences);
+       
+       /*
+        * Invariant: All rooms in the universe file have been instantiated
+        * and all exits to other rooms now reference actual rooms.
+        */
+       Room spawnRoom = knownRooms.get(spawnRoomID);
+       universe = new DungeonUniverse(spawnRoom, doWeather, knownRooms.values());
       
     } catch (Exception e) {
       System.err.println("DungeonServer: failed loading universe " +
