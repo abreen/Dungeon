@@ -11,6 +11,16 @@ public class Room extends Space {
 
   private Hashtable<String, Item> items;
   private Hashtable<String, Player> players;
+  
+  private boolean isOutside;
+  
+  public void setOutside(boolean b) {
+    this.isOutside = b;
+  }
+  
+  public boolean isOutside() {
+    return this.isOutside;
+  }
 
   public void addItem(Item i) {
     this.items.put(i.getName().toLowerCase(), i);
@@ -117,5 +127,10 @@ public class Room extends Space {
     super(n, d);
     this.players = new Hashtable<String, Player>(Room.DEFAULT_PLAYERS_SIZE);
     this.items = new Hashtable<String, Item>(Room.DEFAULT_ITEMS_SIZE);
+  }
+  
+  public Room(String n, String d, boolean o) {
+    this(n, d);
+    this.isOutside = o;
   }
 }
