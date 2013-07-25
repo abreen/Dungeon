@@ -139,8 +139,8 @@ public class DungeonServer {
        * seen, the not-yet-seen room is also added to a list that can be
        * checked at the end of parsing for invalid references.
        */
-      HashMap<String, Room> knownRooms = new HashMap<String, Room>();
-      ArrayList<String> unresolvedReferences = new ArrayList<String>();
+      HashMap<String, Room> knownRooms = new HashMap<>();
+      ArrayList<String> unresolvedReferences = new ArrayList<>();
       
       String thisRoomID = null;
       try {
@@ -175,8 +175,15 @@ public class DungeonServer {
                   (Map) validateAndGet(thisMap, "exits", "Map");
           
           for (Map.Entry<String, String> exit : exits.entrySet()) {
-            Space.Direction dir = Space.Direction.fromString(exit.getKey());
+            String thisDirection = exit.getKey();
             String toRoom = exit.getValue();
+            
+            /*
+             * Verify the direction from the file
+             */
+            Space.Direction dir = Space.Direction.fromString(thisDirection);
+            if (dir == null)
+              throw new InvalidDirectionException(thisDirection);
             
             /*
              * Look up the destination room in the hash map
@@ -326,6 +333,16 @@ public class DungeonServer {
   private static class UnexpectedTypeException extends Exception {
     public UnexpectedTypeException(String expected, String got) {
       super("expected type '" + expected + "', got '" + got + "'");
+    }
+  }
+  
+  /**
+   * Thrown when a universe file tries to mention an exit in a direction
+   * that is misspelled or otherwise unacceptable.
+   */
+  private static class InvalidDirectionException extends Exception {
+    public InvalidDirectionException(String invalidDirection) {
+      super("'" + invalidDirection + "' is not a valid direction");
     }
   }
 
