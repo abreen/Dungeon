@@ -7,42 +7,28 @@ import com.abreen.dungeon.exceptions.*;
 import com.abreen.dungeon.model.*;
 
 public class DungeonUniverse implements Serializable {
-  private ArrayList<Space> spaces;
+  private Collection<Room> rooms;
   private Hashtable<String, Player> players;
   private Room spawnPoint;
+  private boolean doWeather;
 
   /*
    * Loads a boring universe.
    */
   public DungeonUniverse() {
-    this.spaces = new ArrayList<Space>();
-    this.players = new Hashtable<String, Player>();
-
-    Room a = new Room("train platform", "An empty train platform.");
-    Room b = new Room("lobby", "An empty train station lobby.");
-    a.addExit(Space.Direction.EAST, b);
-    b.addExit(Space.Direction.WEST, a);
-
-    Item x = new Item("flashlight", "A heavy flashlight.");
-    Item y = new Item("aerosol can", "Shaving cream. Seems empty.");
-    Item z = new Item("ocelot", "Slender and purring.");
-    b.addItem(x);
-    b.addItem(y);
-    b.addItem(z);
-
-    Room c = new Room("broom closet", "A dark broom closet.");
-    Key k = new Key("skeleton key", "A skeleton key.");
-    a.addItem(k);
-
-    Door d = a.addDoor(Space.Direction.NORTH, c, Space.Direction.SOUTH, k);
-
-    Item p = new Item("broom", "Standard-looking broom.");
-    c.addItem(p);
-
-    this.spaces.add(a);
-    this.spaces.add(b);
-    this.spaces.add(c);
-    this.spawnPoint = a;
+    this.rooms = new ArrayList<>();
+    this.players = new Hashtable<>();
+  }
+  
+  public DungeonUniverse(Room spawn, boolean weather, Collection<Room> sps) {
+    this();
+    this.spawnPoint = spawn;
+    this.doWeather = weather;
+    this.rooms = sps;
+  }
+  
+  public boolean doWeather() {
+    return this.doWeather;
   }
 
   public boolean hasSavedState(String name) { return false; }
