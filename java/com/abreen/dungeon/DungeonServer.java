@@ -160,8 +160,8 @@ public class DungeonServer {
           Room r = new Room(roomName, description, isOutside);
           
           if (unresolvedReferences.contains(thisRoomID)) {
-            Room dummyRoom = knownRooms.get(thisRoomID);
-            dummyRoom = r;      // actually resolves the reference
+            knownRooms.remove(thisRoomID);
+            knownRooms.put(thisRoomID, r);
             unresolvedReferences.remove(thisRoomID);
           } else {
             knownRooms.put(thisRoomID, r);
