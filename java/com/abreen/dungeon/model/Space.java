@@ -37,21 +37,6 @@ public abstract class Space extends Describable {
     }
     
     /**
-     * Given a direction string (e.g., "north", "southWEST", or "sw"), return
-     * the matchin Direction enumeration member, or null.
-     * 
-     * @param s A direction string
-     * @return The matching direction enumeration, or null
-     */
-    public static Direction fromString(String s) {
-      for (Direction d : Direction.values())
-        if (d.isThisDirection(s))
-          return d;
-      
-      return null;
-    }
-    
-    /**
      * @deprecated Use toString() instead
      */
     public String getName() {

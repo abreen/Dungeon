@@ -69,8 +69,12 @@ public class DungeonServer {
 
     System.out.printf("bound to port %d\n", port);
 
+    System.out.println("loading universe:");
+    
     /* Load universe */
     try {
+      System.out.println("\tfinding universe file");
+      
       FileReader universeFile = null;
       if (useArguments)
         universeFile = new FileReader(YAML_PATH + DEFAULT_UNIVERSE_FILE);
@@ -81,8 +85,10 @@ public class DungeonServer {
       Object[] docs = new Object[3];
       Map<String, Object> preamble = null;
       Map<String, Map<String, Object>> rooms = null, items = null;
-      
+          
       try {
+        System.out.println("\tchecking universe file");
+        
         int i = 0;
         for (Object o : yamlInstance.loadAll(universeFile)) {
           docs[i++] = o;
@@ -90,7 +96,7 @@ public class DungeonServer {
         
         preamble = (Map<String, Object>) docs[0];
         rooms = (Map<String, Map<String, Object>>) docs[1];
-        items = (Map<String, Map<String, Object>>) docs[2];
+        items = (Map<String, Map<String, Object>>) docs[2];   // not implemented
         
         if (preamble == null || rooms == null || items == null)
           throw new NullPointerException();
@@ -111,8 +117,10 @@ public class DungeonServer {
       boolean doWeather = false;
       String spawnRoomID = null;
       try {
+        System.out.println("\treading preamble");
+        
         /*
-         * Load variables from the preamble
+         * Load universe parameters from the preamble
          */
         doWeather =
                 (Boolean) validateAndGet(preamble, "weather", Boolean.class);
@@ -131,20 +139,36 @@ public class DungeonServer {
        */
       
       /**
-       * This hash map is used to resolve references in exits from one room
-       * to another. Each time a room is parsed, it is added to this map,
-       * and then henceforth back references to the newly added room will
-       * be resolved by checking this hash map.
-       * 
-       * If a room makes a reference to another room that has not yet been
-       * seen, the not-yet-seen room is also added to a list that can be
-       * checked at the end of parsing for invalid references.
+       * This hash map is used to resolve references from one room to another.
+       * Each time a room is parsed, it is added to this map, and henceforth
+       * back references to the newly added room will be resolved by checking
+       * this map.
        */
       HashMap<String, Room> knownRooms = new HashMap<>();
-      ArrayList<String> unresolvedReferences = new ArrayList<>();
+      
+      /**
+       * This list is maintained to easily check at the end of parsing if there
+       * are still references to unseen rooms.
+       */
+      ArrayList<String> unseenRooms = new ArrayList<>();
+      
+      /**
+       * This is a list of triples (A, B, C) such that A is a room waiting for
+       * a reference to another room, C, through a direction B. For A and B,
+       * the string ID of the rooms are used (the same key used in the
+       * knownRooms hash map). This list is used whenever a room's exit
+       * references cannot actually be resolved because the destination room
+       * has not yet been parsed. At the end of parsing, as long as the
+       * unseenRooms list is empty, this list is traversed to resolve the
+       * remaining references.
+       */
+      ArrayList<Triple<String, Space.Direction, String>> unresolvedReferences =
+              new ArrayList<>();
       
       String thisRoomID = null;
       try {
+        System.out.println("\tparsing rooms");
+        
         for (Map.Entry<String, Map<String, Object>> m : rooms.entrySet()) {
           thisRoomID = m.getKey();
           Map<String, Object> thisMap = m.getValue();
@@ -160,46 +184,44 @@ public class DungeonServer {
           
           Room r = new Room(roomName, description, isOutside);
           
-          if (unresolvedReferences.contains(thisRoomID)) {
-            knownRooms.remove(thisRoomID);
-            knownRooms.put(thisRoomID, r);
-            unresolvedReferences.remove(thisRoomID);
-          } else {
-            knownRooms.put(thisRoomID, r);
-          }
+          if (unseenRooms.contains(thisRoomID))
+            unseenRooms.remove(thisRoomID);
+            
+          knownRooms.put(thisRoomID, r);
           
           /*
-           * Process exits away from this room, adding unseen rooms to the
-           * list/hash map when appropriate.
+           * Process exits out of this room
            */
           Map<String, String> exits =
                   (Map) validateAndGet(thisMap, "exits", Map.class);
           
           for (Map.Entry<String, String> exit : exits.entrySet()) {
             String thisDirection = exit.getKey();
-            String toRoom = exit.getValue();
+            String toRoomID = exit.getValue();
             
             /*
              * Verify the direction from the file
              */
-            Space.Direction dir = Space.Direction.fromString(thisDirection);
+            Space.Direction dir = Space.getDirectionFromString(thisDirection);
             if (dir == null)
               throw new InvalidDirectionException(thisDirection);
             
             /*
              * Look up the destination room in the hash map
              */
-            if (knownRooms.containsKey(toRoom)) {
-              r.addExit(dir, knownRooms.get(toRoom));
+            if (knownRooms.containsKey(toRoomID)) {
+              r.addExit(dir, knownRooms.get(toRoomID));
             } else {
-              unresolvedReferences.add(toRoom);
-              UnresolvedReferenceRoom u = new UnresolvedReferenceRoom();
-              knownRooms.put(toRoom, u);
-              r.addExit(dir, u);
+              if (!unseenRooms.contains(toRoomID))
+                unseenRooms.add(toRoomID);
+              
+              Triple<String, Space.Direction, String> t =
+                      new Triple(thisRoomID, dir, toRoomID);
+              unresolvedReferences.add(t);
             }
             
           }
-          
+                    
         } // end of for loop adding rooms
       } catch (Exception e) {
         System.err.println("DungeonServer: failed parsing room '" +
@@ -207,20 +229,35 @@ public class DungeonServer {
         System.exit(4);
       } // end of try/catch adding rooms
       
+      
+      if (!unseenRooms.isEmpty())
+        throw new UnresolvedReferenceException(unseenRooms);
+
       /*
-       * Invariant: All rooms in universe file are in the hash map. The
-       * rooms to which references were found but had no actual definition
-       * are in the unresolvedReferences list.
+       * Invariant: There were no references to undefined rooms in the file.
+       * Invariant: All the rooms in the file have been instantiated.
+       * 
+       * All rooms in the universe file have been parsed, but there may
+       * still be exits waiting to be added because their destination was
+       * not yet parsed at the time. Now loop through the unresolved list
+       * to set them up.
        */
-       if (!unresolvedReferences.isEmpty())
-         throw new UnresolvedReferenceException(unresolvedReferences);
-       
-       /*
-        * Invariant: All rooms in the universe file have been instantiated
-        * and all exits to other rooms now reference actual rooms.
-        */
-       Room spawnRoom = knownRooms.get(spawnRoomID);
-       universe = new DungeonUniverse(spawnRoom, doWeather, knownRooms.values());
+      for (Triple<String, Space.Direction, String> t : unresolvedReferences) {
+        Room fromRoom = knownRooms.get(t.first);
+        Room toRoom = knownRooms.get(t.third);
+        Space.Direction dir = t.second;
+        
+        fromRoom.addExit(dir, toRoom);
+      }
+
+      /*
+       * Invariant: All exits in the file have been set up among the rooms.
+       */
+
+      Room spawnRoom = knownRooms.get(spawnRoomID);
+      universe = new DungeonUniverse(spawnRoom, doWeather, knownRooms.values());
+      
+      universeFile.close();
       
     } catch (Exception e) {
       System.err.println("DungeonServer: failed loading universe " +
@@ -273,6 +310,18 @@ public class DungeonServer {
     return "usage: java DungeonServer <port>";
   }
 
+  private static class Triple<X, Y, Z> {
+    public X first;
+    public Y second;
+    public Z third;
+    
+    public Triple(X x, Y y, Z z) {
+      this.first = x;
+      this.second = y;
+      this.third = z;
+    }
+  }
+  
   /**
    * Exception thrown at the end of parsing if there are still rooms to
    * which references have been made but whose definitions are not in the
@@ -287,18 +336,6 @@ public class DungeonServer {
     public UnresolvedReferenceException(ArrayList<String> list) {
       super(list.size() > 1 ? "rooms referenced but never actually defined: " +
       list : "room referenced but never actually defined: " + list.get(0));
-    }
-  }
-  
-  /**
-   * Class used when parsing the universe file. If a room references another
-   * room not yet parsed, an instance of this class is used in the hash map.
-   * Later, all instances of this class must be replaced by the appropriate
-   * instance of the superclass. If not, the universe file is invalid.
-   */
-  private static class UnresolvedReferenceRoom extends Room {
-    public UnresolvedReferenceRoom() {
-      super("(unresolved reference)", "");
     }
   }
   
