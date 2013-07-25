@@ -125,8 +125,6 @@ public class DungeonServer {
         System.exit(4);
       }
       
-      System.out.println(universe);
-      
       /*
        * Loop through room definitions in universe file
        */
