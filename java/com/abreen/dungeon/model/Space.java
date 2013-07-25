@@ -83,7 +83,7 @@ public abstract class Space extends Describable {
   
   public static final int DEFAULT_EXITS_SIZE = 6;
 
-  protected Hashtable<Direction, Space> exits;
+  protected HashMap<Direction, Space> exits;
 
   public static Direction getDirectionFromString(String s)
     throws NoSuchDirectionException {
@@ -135,13 +135,13 @@ public abstract class Space extends Describable {
   public Space(String n, String d) {
     this.name = n;
     this.description = d;
-    this.exits = new Hashtable<Direction, Space>(Space.DEFAULT_EXITS_SIZE);
+    this.exits = new HashMap<>(Space.DEFAULT_EXITS_SIZE);
   }
 
   public Space(String n, String d, int size) {
     this.name = n;
     this.description = d;
-    this.exits = new Hashtable<Direction, Space>(size);
+    this.exits = new HashMap<>(size);
   }
 
 }
