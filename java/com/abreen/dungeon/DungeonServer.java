@@ -112,12 +112,12 @@ public class DungeonServer {
          * Load variables from the preamble
          */
         boolean doWeather =
-                (Boolean) validateAndGet(preamble, "weather", "Boolean");
+                (Boolean) validateAndGet(preamble, "weather", Boolean.class);
         
         universe.setWeather(doWeather);
         
         spawnRoomID =
-                (String) validateAndGet(preamble, "spawn", "String");
+                (String) validateAndGet(preamble, "spawn", String.class);
         
       } catch (Exception e) {
         System.err.println("DungeonServer: failed parsing preamble (" + 
@@ -149,13 +149,13 @@ public class DungeonServer {
           Map<String, Object> thisMap = m.getValue();
           
           String roomName =
-                  (String) validateAndGet(thisMap, "name", "String");
+                  (String) validateAndGet(thisMap, "name", String.class);
           
           String description =
-                  (String) validateAndGet(thisMap, "description", "String");
+                  (String) validateAndGet(thisMap, "description", String.class);
           
           boolean isOutside = 
-                  (Boolean) validateAndGet(thisMap, "isOutside", "Boolean");
+                  (Boolean) validateAndGet(thisMap, "isOutside", Boolean.class);
           
           Room r = new Room(roomName, description, isOutside);
           
@@ -172,7 +172,7 @@ public class DungeonServer {
            * list/hash map when appropriate.
            */
           Map<String, String> exits =
-                  (Map) validateAndGet(thisMap, "exits", "Map");
+                  (Map) validateAndGet(thisMap, "exits", Map.class);
           
           for (Map.Entry<String, String> exit : exits.entrySet()) {
             String thisDirection = exit.getKey();
@@ -302,15 +302,15 @@ public class DungeonServer {
    * @return Null if the types do not match, or the value
    */
   private static Object validateAndGet(Map<String, Object> m, String s, 
-          String className) throws MissingMappingException,
+          Class<?> c) throws MissingMappingException,
                                    UnexpectedTypeException {
     
     Object o = m.get(s);
     if (o == null)
       throw new MissingMappingException(s);
     
-    if (o.getClass().toString().equals(className))
-      throw new UnexpectedTypeException(className, o.getClass().toString());
+    if (!c.isAssignableFrom(o.getClass()))
+      throw new UnexpectedTypeException(s, c.toString(), o.getClass().toString());
     else
       return o;
   }
@@ -331,8 +331,9 @@ public class DungeonServer {
    * isOutside and not boolean).
    */
   private static class UnexpectedTypeException extends Exception {
-    public UnexpectedTypeException(String expected, String got) {
-      super("expected type '" + expected + "', got '" + got + "'");
+    public UnexpectedTypeException(String keyName, String expected, String got) {
+      super("for '" + keyName + "', expected type '" + expected + "', but " +
+            "got '" + got + "' instead");
     }
   }
   
