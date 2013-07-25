@@ -2,8 +2,8 @@
 # The following universe file is included with all installations of
 # Dungeon. Feel free to experiment with it. The document format is YAML.
 # This universe was written by Alexander Breen (alexander.breen@gmail.com).
-# Your modification of it coincides with an acknowledgement that you will
-# not hold me responsible if something terrible happens.
+# Your use of it coincides with an acknowledgement that you will not hold
+# me responsible if something terrible happens.
 
 # Every Dungeon universe file consists of three YAML documents: the first is
 # a preamble, containing settings for the entire universe. The second is the
@@ -19,11 +19,11 @@ henge:
   name:         henge   # The name of the room, used when describing it
   isOutside:    true    # Whether to print weather (not yet implemented)
   description:  >
-    You are in the center of a large henge, perhaps as wide as fifty meters in 
-    diameter, with a circle of huge, rectangular, stone monoliths surrounding 
-    it. The stones have the worn, rounded appearance of century-old building 
-    material. From what you can see, the henge is perched atop a rocky 
-    cliff, whose northern edge overlooks some water. To the south there is 
+    You are in the center of a large henge, perhaps as wide as fifty meters in
+    diameter, with a circle of huge, rectangular, stone monoliths surrounding
+    it. The stones have the worn, rounded appearance of century-old building
+    material. From what you can see, the henge is perched atop a rocky
+    cliff, whose northern edge overlooks some water. To the south there is
     a forest. The air is surprisingly still inside the henge.
   exits:
     south: forest_edge
@@ -34,10 +34,10 @@ forest_edge:
   name:         forest edge
   isOutside:    true
   description:  >
-    The cliff slopes into a smooth hill, covered with healthy grasses. A few 
-    meters in front of you there stands a tree with a giant, dark trunk. 
-    The lowest branches of the tree are moving slightly in the wind, almost 
-    as if the tree were taking breaths. Hundreds (thousands?) of trees span 
+    The cliff slopes into a smooth hill, covered with healthy grasses. A few
+    meters in front of you there stands a tree with a giant, dark trunk.
+    The lowest branches of the tree are moving slightly in the wind, almost
+    as if the tree were taking breaths. Hundreds (thousands?) of trees span
     your vision to the south.
   exits:
     north: henge
@@ -47,8 +47,8 @@ henge_cliff:
   name:         cliff
   isOutside:    true
   description:  >
-    You are at the edge of a majestic cliff, too rocky and windy to support 
-    the growth of trees, shrubs, or grass. You can't see the base, but 
+    You are at the edge of a majestic cliff, too rocky and windy to support
+    the growth of trees, shrubs, or grass. You can't see the base, but
     it's probably a rocky shore. A dark, choppy ocean extends almost
     infinitely into the distance, but you can see a small peninsula far
     in the east, and a small island with tall trees out to the north.
@@ -56,7 +56,7 @@ henge_cliff:
     south: henge
 
 
---- # items
+--- # items (not yet implemented)
 
 skeleton_key:
   name:         skeleton key
