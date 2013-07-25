@@ -1,5 +1,8 @@
 package com.abreen.dungeon;
 
+import com.abreen.dungeon.model.Room;
+import com.abreen.dungeon.model.Space;
+import com.abreen.dungeon.model.Space.Direction;
 import java.io.*;
 import java.util.*;
 import java.net.*;
@@ -68,9 +71,147 @@ public class DungeonServer {
 
     /* Load universe */
     try {
+      FileReader universeFile = null;
+      if (useArguments)
+        universeFile = new FileReader(YAML_PATH + DEFAULT_UNIVERSE_FILE);
+      else
+        universeFile = new FileReader(YAML_PATH + config.get("world") + 
+                                      ".universe.yml");
+      
       universe = new DungeonUniverse();
+      Object[] docs = new Object[3];
+      Map<String, Object> preamble = null;
+      Map<String, Map<String, Object>> rooms = null, items = null;
+      
+      try {
+        int i = 0;
+        for (Object o : yamlInstance.loadAll(universeFile)) {
+          docs[i++] = o;
+        }
+        
+        preamble = (Map<String, Object>) docs[0];
+        rooms = (Map<String, Map<String, Object>>) docs[1];
+        items = (Map<String, Map<String, Object>>) docs[2];
+        
+        if (preamble == null || rooms == null || items == null)
+          throw new NullPointerException();
+        
+      } catch (ArrayIndexOutOfBoundsException e) {
+        System.err.println("DungeonServer: error parsing universe file: " +
+                           "too many documents in universe file");
+        System.exit(3);
+      } catch (NullPointerException e) {
+        System.err.println("DungeonServer: error parsing universe file: " +
+                           "too few documents in universe file");
+        System.exit(3);
+      }
+      
+      String spawnRoomID = null;
+      try {
+        /*
+         * Load variables from the preamble
+         */
+        boolean doWeather =
+                (Boolean) validateAndGet(preamble, "weather", "Boolean");
+        
+        universe.setWeather(doWeather);
+        
+        spawnRoomID =
+                (String) validateAndGet(preamble, "spawn", "String");
+        
+      } catch (Exception e) {
+        System.err.println("DungeonServer: failed parsing preamble (" + 
+                           e.getMessage() + ")");
+        System.exit(4);
+      }
+      
+      System.out.println(universe);
+      
+      /*
+       * Loop through room definitions in universe file
+       */
+      
+      /**
+       * This hash map is used to resolve references in exits from one room
+       * to another. Each time a room is parsed, it is added to this map,
+       * and then henceforth back references to the newly added room will
+       * be resolved by checking this hash map.
+       * 
+       * If a room makes a reference to another room that has not yet been
+       * seen, the not-yet-seen room is also added to a list that can be
+       * checked at the end of parsing for invalid references.
+       */
+      HashMap<String, Room> knownRooms = new HashMap<String, Room>();
+      ArrayList<String> unresolvedReferences = new ArrayList<String>();
+      
+      String thisRoomID = null;
+      try {
+        for (Map.Entry<String, Map<String, Object>> m : rooms.entrySet()) {
+          thisRoomID = m.getKey();
+          Map<String, Object> thisMap = m.getValue();
+          
+          String roomName =
+                  (String) validateAndGet(thisMap, "name", "String");
+          
+          String description =
+                  (String) validateAndGet(thisMap, "description", "String");
+          
+          boolean isOutside = 
+                  (Boolean) validateAndGet(thisMap, "isOutside", "Boolean");
+          
+          Room r = new Room(roomName, description, isOutside);
+          
+          if (unresolvedReferences.contains(thisRoomID)) {
+            Room dummyRoom = knownRooms.get(thisRoomID);
+            dummyRoom = r;      // actually resolves the reference
+            unresolvedReferences.remove(thisRoomID);
+          } else {
+            knownRooms.put(thisRoomID, r);
+          }
+          
+          /*
+           * Process exits away from this room, adding unseen rooms to the
+           * list/hash map when appropriate.
+           */
+          Map<String, String> exits =
+                  (Map) validateAndGet(thisMap, "exits", "Map");
+          
+          for (Map.Entry<String, String> exit : exits.entrySet()) {
+            Space.Direction dir = Space.Direction.fromString(exit.getKey());
+            String toRoom = exit.getValue();
+            
+            /*
+             * Look up the destination room in the hash map
+             */
+            if (knownRooms.containsKey(toRoom)) {
+              r.addExit(dir, knownRooms.get(toRoom));
+            } else {
+              unresolvedReferences.add(toRoom);
+              UnresolvedReferenceRoom u = new UnresolvedReferenceRoom();
+              knownRooms.put(toRoom, u);
+              r.addExit(dir, u);
+            }
+            
+          }
+
+        } // end of for loop adding rooms
+      } catch (Exception e) {
+        System.err.println("DungeonServer: failed parsing room '" +
+                            thisRoomID + "' (" + e.getMessage() + ")");
+        System.exit(4);
+      } // end of try/catch adding rooms
+      
+      /*
+       * Invariant: All rooms in universe file are in the hash map. The
+       * rooms to which references were found but had no actual definition
+       * are in the unresolvedReferences list.
+       */
+       if (!unresolvedReferences.isEmpty())
+         throw new UnresolvedReferenceException(unresolvedReferences);
+      
     } catch (Exception e) {
-      System.err.println("DungeonServer: failed loading universe");
+      System.err.println("DungeonServer: failed loading universe " +
+                         "(" + e.getMessage() + ")");
       System.exit(2);
     }
 
@@ -118,4 +259,76 @@ public class DungeonServer {
   private static String usage() {
     return "usage: java DungeonServer <port>";
   }
+
+  /**
+   * Exception thrown at the end of parsing if there are still rooms to
+   * which references have been made but whose definitions are not in the
+   * universe file.
+   */
+  private static class UnresolvedReferenceException extends Exception {
+
+    /**
+     * Constructs a new UnresolvedReferenceException that takes a list
+     * of strings corresponding to the unresolved room IDs left over.
+     */
+    public UnresolvedReferenceException(ArrayList<String> list) {
+      super(list.size() > 1 ? "rooms referenced but never actually defined: " +
+      list : "room referenced but never actually defined: " + list.get(0));
+    }
+  }
+  
+  /**
+   * Class used when parsing the universe file. If a room references another
+   * room not yet parsed, an instance of this class is used in the hash map.
+   * Later, all instances of this class must be replaced by the appropriate
+   * instance of the superclass. If not, the universe file is invalid.
+   */
+  private static class UnresolvedReferenceRoom extends Room {
+    public UnresolvedReferenceRoom() {
+      super("(unresolved reference)", "");
+    }
+  }
+  
+  /**
+   * Given a map between a string and an object of unknown type, attempt to
+   * retrieve what value is mapped to from the specified string and validate
+   * that the actual type matches the specified class.
+   * 
+   * @return Null if the types do not match, or the value
+   */
+  private static Object validateAndGet(Map<String, Object> m, String s, 
+          String className) throws MissingMappingException,
+                                   UnexpectedTypeException {
+    
+    Object o = m.get(s);
+    if (o == null)
+      throw new MissingMappingException(s);
+    
+    if (o.getClass().toString().equals(className))
+      throw new UnexpectedTypeException(className, o.getClass().toString());
+    else
+      return o;
+  }
+  
+  /**
+   * Thrown while parsing a universe file and a room or item is missing a
+   * required mapping (e.g., a room is missing a name).
+   */
+  private static class MissingMappingException extends Exception {
+    public MissingMappingException(String s) {
+      super("expected key '" + s + "', but it is missing");
+    }
+  }
+  
+  /**
+   * Thrown while parsing a universe file and somewhere in the YAML we get
+   * a type not expected for a certain mapping (e.g., got a number for
+   * isOutside and not boolean).
+   */
+  private static class UnexpectedTypeException extends Exception {
+    public UnexpectedTypeException(String expected, String got) {
+      super("expected type '" + expected + "', got '" + got + "'");
+    }
+  }
+
 }
