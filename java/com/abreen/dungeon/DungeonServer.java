@@ -184,6 +184,13 @@ public class DungeonServer {
           
           Room r = new Room(roomName, description, isOutside);
           
+          if (thisMap.containsKey("neverUseArticle")) {
+            boolean neverUseArticle =
+                    (Boolean) validateAndGet(thisMap, "neverUseArticle", Boolean.class);
+            
+            r.setNeverUseArticle(neverUseArticle);
+          }
+          
           if (unseenRooms.contains(thisRoomID))
             unseenRooms.remove(thisRoomID);
             
