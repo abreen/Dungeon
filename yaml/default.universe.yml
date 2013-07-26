@@ -20,9 +20,9 @@ henge:
   isOutside:    true    # Whether to print weather (not yet implemented)
   description:  >
     You are in the center of a large henge, perhaps as wide as fifty meters in
-    diameter, with a circle of huge, rectangular, stone monoliths surrounding
-    it. The stones have the worn, rounded appearance of century-old building
-    material. From what you can see, the henge is perched atop a rocky
+    diameter, with a circle of huge, rectangular, stone monoliths standing
+    proudly around you. The stones have the worn, rounded appearance of century-old
+    building material. From what you can see, the henge is perched atop a rocky
     cliff, whose northern edge overlooks some water. To the south there is
     a forest. The air is surprisingly still inside the henge.
   exits:
@@ -41,7 +41,68 @@ forest_edge:
     your vision to the south.
   exits:
     north: henge
+    south: dense_wood
 
+dense_wood:
+  name:             dense wood
+  neverUseArticle:  true
+  isOutside:        true
+  description:      >
+    Tall trees with dark trunks surround you. At every gust of slight wind,
+    their ancient, knotted branches sigh and squeak quietly. To the north, you
+    can see sky through gaps in the trunks.
+  exits:
+    north: forest_edge
+    south: deep_wood
+    west: butterfly_tree
+
+butterfly_tree:
+  name:         butterfly tree
+  isOutside:    true
+  description:  >
+    The trees seem to have grown shorter here, or at least their lowest branches
+    are low enough to prevent you from walking through. An ancient tree stands
+    ahead of you, from which no leaves are growing but instead moss. There are
+    an unusual number of blue butterflies in this area. Maybe they've come here
+    to mate.
+  exits:
+    east: dense_wood
+
+deep_wood:
+  name:             more dense wood
+  neverUseArticle:  true
+  isOutside:        true
+  description:      >
+    You are surrounded by dark trunks. The trees have grown so densely that you
+    cannot see more than a few meters before your eyes meet gnarled bark.
+  exits:
+    north: dense_wood
+    south: forest_clearing
+
+forest_clearing:
+  name:         clearing
+  isOutside:    true
+  description:  >
+    You are standing in a circular clearing, where the trees have ceased growing
+    suddenly, and the ground is pale and covered with light dirt. There are a
+    couple of small rocks in a near-circle near the center. It could have been a
+    campfire, but it seems to be decades old. There's a delicate nest in a tree
+    nearby.
+  exits:
+    north: deep_wood
+    east: cave_entrance
+
+cave_entrance:
+  name:         cave entrance
+  isOutside:    true
+  description:  >
+    A hole rises up out of the ground in front of you, its deep, dark mouth tall
+    enough for one person and ominous enough for you to keep your distance.
+    Occasionally you hear an echo rising from the cave.
+  exits:
+    west: forest_clearing
+
+# todo: you are too scared to enter without a light.
 
 henge_cliff:
   name:         cliff
