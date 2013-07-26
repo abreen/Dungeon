@@ -79,6 +79,8 @@ public class DungeonConnectionThread extends Thread {
       DungeonServer.events.addNarrationEvent(
               DungeonDispatcher.playerIteratorToWriterArray(it, n), b);
       
+      DungeonServer.universe.retire(p);
+      
       System.out.printf("player '%s' disconnected (quitting)\n", name);
       String logout = name + " disconnected.";
       DungeonServer.events.addServerNotificationEvent(logout);
