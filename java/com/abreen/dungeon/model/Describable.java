@@ -63,6 +63,10 @@ public abstract class Describable {
    */
   protected boolean neverUseArticle;
   
+  public void setNeverUseArticle(boolean b) {
+    this.neverUseArticle = b;
+  }
+  
   public String getDescription() {
     return this.description;
   }

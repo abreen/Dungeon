@@ -59,6 +59,7 @@ public class DungeonUniverse implements Serializable {
    */
   public synchronized void retire(Player p) {
     // serialize the Player object and save to disk
+    p.here().removePlayer(p);
     this.players.remove(p.getName());
   }
 
