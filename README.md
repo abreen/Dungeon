@@ -34,6 +34,9 @@ I'll get around to authoring a small universe demoing the features that
 The server uses [SnakeYAML][snakeyaml], a YAML parser for Java. The JAR
 file (version 1.12) is included in the `lib` directory.
 
+I've been using some Java 1.7-only syntax, so you'll need (at least)
+Java 1.7.
+
 ## Building and running
 
 There's a small `build.xml` file for Apache Ant. As long as you have Ant
