@@ -6,3 +6,7 @@
 *.ear
 
 classes/*
+/bin/
+
+.classpath
+.project
