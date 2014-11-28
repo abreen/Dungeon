@@ -5,146 +5,151 @@ import java.io.*;
 import com.abreen.dungeon.exceptions.*;
 
 public class Player extends Describable implements Serializable {
-  private Room here;
-  private Hashtable<String, Item> inventory;
-  private PrintWriter out;
-  
-  /**
-   * The Unix timestamp referring to the last time the player made
-   * an action.
-   */
-  private transient long lastActionTimestamp;
+    private Room here;
+    private Hashtable<String, Item> inventory;
+    private PrintWriter out;
 
-  @Override
-  public String getDescription() { return this.name; }
-  
-  /**
-   * Returns the number of seconds since the player performed an action.
-   * 
-   * @return The quantity of seconds
-   */
-  public long getNumberOfSecondsIdle() {
-    return (System.currentTimeMillis() / 1000L) - this.lastActionTimestamp;
-  }
-  
-  /**
-   * Returns a string expressing the amount of time since the player
-   * last interacted with the universe.
-   * 
-   * @return A time string
-   */
-  public String getTimeSinceLastAction() {
-    long diff = this.getNumberOfSecondsIdle();
-    
-    if (diff < 60) {
-      if (diff < 5)
-        return "a moment ago";
-      else
-        return diff + " seconds ago";
-    } else {
-      String str = "";
-      
-      if ((diff / 60) == 1)
-        str += "1 minute, ";
-      else
-        str += (diff / 60) + " minute, ";
-      
-      return str + (diff % 60) + " seconds ago";
+    /**
+     * The Unix timestamp referring to the last time the player made an action.
+     */
+    private transient long lastActionTimestamp;
+
+    @Override
+    public String getDescription() {
+        return this.name;
     }
-  }
-  
-  /**
-   * Sets the last action timestamp of the player to right now.
-   */
-  public void updateLastAction() {
-    this.lastActionTimestamp = (System.currentTimeMillis() / 1000L);
-  }
-  
-  private void readObject(ObjectInputStream in) throws IOException,
-          ClassNotFoundException {
-    
-    in.defaultReadObject();
-    this.updateLastAction();
-  }
 
-  public Player(String name, Room spawn) {
-    this.name = name;
-    this.here = spawn;
-    this.inventory = new Hashtable<String, Item>();
-    this.updateLastAction();
-  }
+    /**
+     * Returns the number of seconds since the player performed an action.
+     * 
+     * @return The quantity of seconds
+     */
+    public long getNumberOfSecondsIdle() {
+        return System.currentTimeMillis() / 1000L - this.lastActionTimestamp;
+    }
 
-  public Player(String name, Room spawn, PrintWriter out) {
-    this(name, spawn);
-    this.setWriter(out);
-  }
+    /**
+     * Returns a string expressing the amount of time since the player last
+     * interacted with the universe.
+     * 
+     * @return A time string
+     */
+    public String getTimeSinceLastAction() {
+        long diff = this.getNumberOfSecondsIdle();
 
-  public int getInventorySize() { return this.inventory.size(); }
+        if (diff < 60) {
+            if (diff < 5)
+                return "a moment ago";
+            else
+                return diff + " seconds ago";
+        } else {
+            String str = "";
 
-  public Iterator<Item> getInventoryIterator() {
-    return this.inventory.values().iterator();
-  }
+            if (diff / 60 == 1)
+                str += "1 minute, ";
+            else
+                str += diff / 60 + " minute, ";
 
-  public Item dropFromInventory(Item i) throws NoSuchItemException {
-    if (!this.inventory.contains(i))
-      throw new NoSuchItemException();
+            return str + diff % 60 + " seconds ago";
+        }
+    }
 
-    return this.inventory.remove(i.getName().toLowerCase());
-  }
+    /**
+     * Sets the last action timestamp of the player to right now.
+     */
+    public void updateLastAction() {
+        this.lastActionTimestamp = System.currentTimeMillis() / 1000L;
+    }
 
-  public Item dropFromInventoryByName(String name) throws NoSuchItemException {
-    Item i = this.inventory.remove(name.toLowerCase());
+    private void readObject(ObjectInputStream in) throws IOException,
+            ClassNotFoundException {
 
-    if (i == null)
-      throw new NoSuchItemException();
+        in.defaultReadObject();
+        this.updateLastAction();
+    }
 
-    return i;
-  }
+    public Player(String name, Room spawn) {
+        this.name = name;
+        this.here = spawn;
+        this.inventory = new Hashtable<String, Item>();
+        this.updateLastAction();
+    }
 
-  public void addToInventory(Item i) {
-    this.inventory.put(i.getName().toLowerCase(), i);
-  }
+    public Player(String name, Room spawn, PrintWriter out) {
+        this(name, spawn);
+        this.setWriter(out);
+    }
 
-  public Item getFromInventoryByName(String name) throws NoSuchItemException {
-    Item i = this.inventory.get(name.toLowerCase());
+    public int getInventorySize() {
+        return this.inventory.size();
+    }
 
-    if (i == null)
-      throw new NoSuchItemException();
+    public Iterator<Item> getInventoryIterator() {
+        return this.inventory.values().iterator();
+    }
 
-    return i;
-  }
+    public Item dropFromInventory(Item i) throws NoSuchItemException {
+        if (!this.inventory.contains(i))
+            throw new NoSuchItemException();
 
-  public Room here() { return this.here; }
+        return this.inventory.remove(i.getName().toLowerCase());
+    }
 
-  public void move(Room r) {
-    if (r == null)
-      throw new IllegalArgumentException("cannot move to null room");
+    public Item dropFromInventoryByName(String name) throws NoSuchItemException {
+        Item i = this.inventory.remove(name.toLowerCase());
 
-    this.here = r;
-  }
+        if (i == null)
+            throw new NoSuchItemException();
 
-  public PrintWriter getWriter() {
-    return this.out;
-  }
+        return i;
+    }
 
-  public void setWriter(PrintWriter out) {
-    if (this.out != null)
-      throw new RuntimeException("writer already set");
-    
-    if (out == null)
-      throw new IllegalArgumentException("writer must be non-null");
+    public void addToInventory(Item i) {
+        this.inventory.put(i.getName().toLowerCase(), i);
+    }
 
-    this.out = out;
-  }
+    public Item getFromInventoryByName(String name) throws NoSuchItemException {
+        Item i = this.inventory.get(name.toLowerCase());
 
-  /*
-   * Removes the output stream writer for this player. This method
-   * does not close the writer's stream!
-   */
-  public void unsetWriter() {
-    if (this.out == null)
-      throw new RuntimeException("writer already null");
+        if (i == null)
+            throw new NoSuchItemException();
 
-    this.out = null;
-  }
+        return i;
+    }
+
+    public Room here() {
+        return this.here;
+    }
+
+    public void move(Room r) {
+        if (r == null)
+            throw new IllegalArgumentException("cannot move to null room");
+
+        this.here = r;
+    }
+
+    public PrintWriter getWriter() {
+        return this.out;
+    }
+
+    public void setWriter(PrintWriter out) {
+        if (this.out != null)
+            throw new RuntimeException("writer already set");
+
+        if (out == null)
+            throw new IllegalArgumentException("writer must be non-null");
+
+        this.out = out;
+    }
+
+    /*
+     * Removes the output stream writer for this player. This method does not
+     * close the writer's stream!
+     */
+    public void unsetWriter() {
+        if (this.out == null)
+            throw new RuntimeException("writer already null");
+
+        this.out = null;
+    }
 }

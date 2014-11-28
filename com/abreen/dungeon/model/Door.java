@@ -3,66 +3,68 @@ package com.abreen.dungeon.model;
 import com.abreen.dungeon.exceptions.*;
 
 public class Door extends Space {
-  public static final String DEFAULT_NAME = "door";
-  public static final String DEFAULT_DESCRIPTION = "A normal-looking door.";
+    public static final String DEFAULT_NAME = "door";
+    public static final String DEFAULT_DESCRIPTION = "A normal-looking door.";
 
-  private Key key;
-  private boolean locked;
+    private Key key;
+    private boolean locked;
 
-  public String getDescription() {
-    return this.description;
-  }
+    public String getDescription() {
+        return this.description;
+    }
 
-  public Key getKey() { return this.key; }
+    public Key getKey() {
+        return this.key;
+    }
 
-  public boolean keyFits(Key k) {
-    return k == this.key;
-  }
+    public boolean keyFits(Key k) {
+        return k == this.key;
+    }
 
-  public boolean isLocked() { return this.locked; }
+    public boolean isLocked() {
+        return this.locked;
+    }
 
-  public void lock(Key k) throws AlreadyLockedException,
-                                 WrongKeyException {
-    if (k == null)
-      throw new IllegalArgumentException("key must be non-null");
+    public void lock(Key k) throws AlreadyLockedException, WrongKeyException {
+        if (k == null)
+            throw new IllegalArgumentException("key must be non-null");
 
-    if (this.locked)
-      throw new AlreadyLockedException();
+        if (this.locked)
+            throw new AlreadyLockedException();
 
-    if (k != this.key)
-      throw new WrongKeyException();
+        if (k != this.key)
+            throw new WrongKeyException();
 
-    this.locked = true;
-  }
+        this.locked = true;
+    }
 
-  public void unlock(Key k) throws NotLockedException,
-                                   WrongKeyException {
-    if (k == null)
-      throw new IllegalArgumentException("key must be non-null");
+    public void unlock(Key k) throws NotLockedException, WrongKeyException {
+        if (k == null)
+            throw new IllegalArgumentException("key must be non-null");
 
-    if (!this.locked)
-      throw new NotLockedException();
+        if (!this.locked)
+            throw new NotLockedException();
 
-    if (k != this.key)
-      throw new WrongKeyException();
+        if (k != this.key)
+            throw new WrongKeyException();
 
-    this.locked = false;
-  }
+        this.locked = false;
+    }
 
-  /*
-   * Constructs a new door with a lock mechanism that fits the specified
-   * key. Locks the door by default.
-   */
-  public Door(Key k) {
-    /* 
-     * Let the Space constructor make a space whose hashtable size is
-     * exactly 2 --- one for each side of the door.
+    /*
+     * Constructs a new door with a lock mechanism that fits the specified key.
+     * Locks the door by default.
      */
-    super(Door.DEFAULT_NAME, Door.DEFAULT_DESCRIPTION, 2);
-    if (k == null)
-      throw new IllegalArgumentException("key must be non-null");
+    public Door(Key k) {
+        /*
+         * Let the Space constructor make a space whose hashtable size is
+         * exactly 2 --- one for each side of the door.
+         */
+        super(Door.DEFAULT_NAME, Door.DEFAULT_DESCRIPTION, 2);
+        if (k == null)
+            throw new IllegalArgumentException("key must be non-null");
 
-    this.key = k;
-    this.locked = true;
-  }
+        this.key = k;
+        this.locked = true;
+    }
 }
