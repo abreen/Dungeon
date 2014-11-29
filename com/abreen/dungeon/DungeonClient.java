@@ -15,8 +15,7 @@ public class DungeonClient {
             host = args[1];
             port = Integer.parseInt(args[2]);
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.err
-                    .print("DungeonClient: specify a name, server, and port\n");
+            System.err.println("DungeonClient: specify a name, server, and port");
             System.out.println(usage());
             System.exit(1);
         }
@@ -32,12 +31,10 @@ public class DungeonClient {
                     server.getInputStream()));
 
         } catch (UnknownHostException e) {
-            System.err
-                    .printf("DungeonClient: could not find host '%s'\n", host);
+            System.err.printf("DungeonClient: could not find host '%s'\n", host);
             System.exit(2);
         } catch (IOException e) {
-            System.err
-                    .print("DungeonClient: could not get I/O for connection\n");
+            System.err.println("DungeonClient: could not get I/O for connection");
             System.exit(2);
         }
 

@@ -19,9 +19,9 @@ public class DungeonServer {
 
     private static Yaml yamlInstance;
 
-    public static DungeonUniverse universe; // reference to universe instance
-    public static DungeonDispatcher events; // reference to event queue
-    public static DungeonNarrator narrator; // reference to narrator
+    public static DungeonUniverse universe;
+    public static DungeonDispatcher events;
+    public static DungeonNarrator narrator;
 
     public static void main(String[] args) throws IOException {
         boolean useArguments = false;
@@ -38,8 +38,7 @@ public class DungeonServer {
             config = (Map) yamlInstance.load(configFile);
 
         } catch (FileNotFoundException e) {
-            System.out
-                    .println("Could not load configuration file. Using program "
+            System.out.println("Could not load configuration file. Using program "
                             + "arguments instead.");
             useArguments = true;
         }
@@ -55,8 +54,7 @@ public class DungeonServer {
                 port = (Integer) config.get("port");
 
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.err
-                    .println("DungeonServer: specify a port to which to bind");
+            System.err.println("DungeonServer: specify a port to which to bind");
             System.out.println(usage());
             System.exit(1);
         }
@@ -99,8 +97,7 @@ public class DungeonServer {
 
                 preamble = (Map<String, Object>) docs[0];
                 rooms = (Map<String, Map<String, Object>>) docs[1];
-                items = (Map<String, Map<String, Object>>) docs[2]; // not
-                                                                    // implemented
+                items = (Map<String, Map<String, Object>>) docs[2];
 
                 if (preamble == null || rooms == null || items == null)
                     throw new NullPointerException();
@@ -236,12 +233,12 @@ public class DungeonServer {
 
                     }
 
-                } // end of for loop adding rooms
+                }
             } catch (Exception e) {
                 System.err.println("DungeonServer: failed parsing room '"
                         + thisRoomID + "' (" + e.getMessage() + ")");
                 System.exit(4);
-            } // end of try/catch adding rooms
+            }
 
             if (!unseenRooms.isEmpty())
                 throw new UnresolvedReferenceException(unseenRooms);
@@ -311,8 +308,7 @@ public class DungeonServer {
             while (true)
                 new DungeonConnectionThread(server.accept()).start();
         } catch (IOException e) {
-            System.err
-                    .printf("DungeonServer: failed accepting client on port %d\n",
+            System.err.printf("DungeonServer: failed accepting client on port %d\n",
                             port);
             System.exit(2);
         } finally {

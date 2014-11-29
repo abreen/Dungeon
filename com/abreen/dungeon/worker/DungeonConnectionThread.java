@@ -35,8 +35,7 @@ public class DungeonConnectionThread extends Thread {
             if (DungeonServer.universe == null)
                 throw new NoUniverseException();
 
-            System.out
-                    .printf("player '%s' connected (start of stream)\n", name);
+            System.out.printf("player '%s' connected (start of stream)\n", name);
             String login = name + " connected.";
             DungeonServer.events.addServerNotificationEvent(login);
 
