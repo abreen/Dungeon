@@ -1,14 +1,10 @@
 package com.abreen.dungeon;
 
-import com.abreen.dungeon.model.Room;
-import com.abreen.dungeon.model.Space;
 import java.io.*;
 import java.util.*;
 import java.net.*;
-import com.abreen.dungeon.worker.DungeonUniverse;
-import com.abreen.dungeon.worker.DungeonDispatcher;
-import com.abreen.dungeon.worker.DungeonNarrator;
-import com.abreen.dungeon.worker.DungeonConnectionThread;
+import com.abreen.dungeon.worker.*;
+import com.abreen.dungeon.model.*;
 
 import org.yaml.snakeyaml.*;
 
@@ -103,14 +99,12 @@ public class DungeonServer {
                     throw new NullPointerException();
 
             } catch (ArrayIndexOutOfBoundsException e) {
-                System.err
-                        .println("DungeonServer: error parsing universe file: "
-                                + "too many documents in universe file");
+                System.err.println("DungeonServer: error parsing universe " +
+                        "file: too many documents in universe file");
                 System.exit(3);
             } catch (NullPointerException e) {
-                System.err
-                        .println("DungeonServer: error parsing universe file: "
-                                + "too few documents in universe file");
+                System.err.println("DungeonServer: error parsing universe " +
+                        "file: too few documents in universe file");
                 System.exit(3);
             }
 
@@ -156,23 +150,24 @@ public class DungeonServer {
             ArrayList<String> unseenRooms = new ArrayList<>();
 
             /**
-             * This is a list of triples (A, B, C) such that A is a room waiting
-             * for a reference to another room, C, through a direction B. For A
-             * and B, the string ID of the rooms are used (the same key used in
-             * the knownRooms hash map). This list is used whenever a room's
-             * exit references cannot actually be resolved because the
+             * This is a list of triples (A, B, C) such that A is a room
+             * waiting for a reference to another room, C, through a direction
+             * B. For A and B, the string ID of the rooms are used (the same
+             * key used in the knownRooms hash map). This list is used whenever
+             * a room's exit references cannot actually be resolved because the
              * destination room has not yet been parsed. At the end of parsing,
              * as long as the unseenRooms list is empty, this list is traversed
              * to resolve the remaining references.
              */
-            ArrayList<Triple<String, Space.Direction, String>> unresolvedReferences = new ArrayList<>();
+            ArrayList<Triple<String, Space.Direction, String>> unresolved;
+            unresolved = new ArrayList<>();
 
             String thisRoomID = null;
             try {
                 System.out.println("\tparsing rooms");
 
-                for (Map.Entry<String, Map<String, Object>> m : rooms
-                        .entrySet()) {
+                Map.Entry<String, Map<String, Object>> m;
+                for (m : rooms.entrySet()) {
                     thisRoomID = m.getKey();
                     Map<String, Object> thisMap = m.getValue();
 
@@ -212,8 +207,8 @@ public class DungeonServer {
                         /*
                          * Verify the direction from the file
                          */
-                        Space.Direction dir = Space
-                                .getDirectionFromString(thisDirection);
+                        Space.Direction dir;
+                        dir = Space.getDirectionFromString(thisDirection);
                         if (dir == null)
                             throw new InvalidDirectionException(thisDirection);
 
@@ -226,8 +221,8 @@ public class DungeonServer {
                             if (!unseenRooms.contains(toRoomID))
                                 unseenRooms.add(toRoomID);
 
-                            Triple<String, Space.Direction, String> t = new Triple<>(
-                                    thisRoomID, dir, toRoomID);
+                            Triple<String, Space.Direction, String> t;
+                            t = new Triple<>(thisRoomID, dir, toRoomID);
                             unresolvedReferences.add(t);
                         }
 
@@ -345,11 +340,10 @@ public class DungeonServer {
          * strings corresponding to the unresolved room IDs left over.
          */
         public UnresolvedReferenceException(ArrayList<String> list) {
-            super(
-                    list.size() > 1 ? "rooms referenced but never actually defined: "
-                            + list
-                            : "room referenced but never actually defined: "
-                                    + list.get(0));
+            super(list.size() > 1 ?
+                    "rooms referenced but never actually defined: " + list
+                    : "room referenced but never actually defined: " +
+                        list.get(0));
         }
     }
 
@@ -361,8 +355,9 @@ public class DungeonServer {
      * @return Null if the types do not match, or the value
      */
     private static Object validateAndGet(Map<String, Object> m, String s,
-            Class<?> c) throws MissingMappingException, UnexpectedTypeException {
-
+            Class<?> c)
+        throws MissingMappingException, UnexpectedTypeException
+    {
         Object o = m.get(s);
         if (o == null)
             throw new MissingMappingException(s);
