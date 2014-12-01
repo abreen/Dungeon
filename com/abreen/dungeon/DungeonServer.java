@@ -166,8 +166,9 @@ public class DungeonServer {
             try {
                 System.out.println("\tparsing rooms");
 
-                Map.Entry<String, Map<String, Object>> m;
-                for (m : rooms.entrySet()) {
+                for (Map.Entry<String, Map<String, Object>> m :
+                        rooms.entrySet())
+                {
                     thisRoomID = m.getKey();
                     Map<String, Object> thisMap = m.getValue();
 
@@ -223,7 +224,7 @@ public class DungeonServer {
 
                             Triple<String, Space.Direction, String> t;
                             t = new Triple<>(thisRoomID, dir, toRoomID);
-                            unresolvedReferences.add(t);
+                            unresolved.add(t);
                         }
 
                     }
@@ -248,7 +249,7 @@ public class DungeonServer {
              * not yet parsed at the time. Now loop through the unresolved list
              * to set them up.
              */
-            for (Triple<String, Space.Direction, String> t : unresolvedReferences) {
+            for (Triple<String, Space.Direction, String> t : unresolved) {
                 Room fromRoom = knownRooms.get(t.first);
                 Room toRoom = knownRooms.get(t.third);
                 Space.Direction dir = t.second;
