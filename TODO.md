@@ -23,6 +23,11 @@ Low priority
 
 Planned features
 ================
+*   Add server logging features
+*   Add sentence analysis techniques to choose say-verbs based on vocabulary
+    in sentence (e.g., 'think' should choose from 'suggests' or 'surmises')
+*   'continues' should be used when a player continues speaking, or the verb
+    could be omitted entirely
 *   `UseableItem`s should be able to modify the universe and add events
     to the dispatcher
 *   There should be pedagogical `UseableItem` implementations like maps,
