@@ -13,8 +13,10 @@ High priority
 
 Low priority
 ------------
-* The `toString` method in the `Item` class should concatenate article
-  and noun
+*   The `toString` method in the `Item` class should concatenate article
+    and noun
+*   Terminal resizing causes crash
+*   Terminal scrolling causes crash
 
 
 
