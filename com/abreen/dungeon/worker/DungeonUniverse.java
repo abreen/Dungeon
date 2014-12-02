@@ -16,8 +16,8 @@ public class DungeonUniverse implements Serializable {
      * Loads a boring universe.
      */
     public DungeonUniverse() {
-        this.rooms = new ArrayList<>();
-        this.players = new Hashtable<>();
+        this.rooms = new ArrayList<Room>();
+        this.players = new Hashtable<String, Player>();
     }
 
     public DungeonUniverse(Room spawn, boolean weather, Collection<Room> sps) {

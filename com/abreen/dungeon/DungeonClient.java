@@ -150,7 +150,7 @@ class DungeonDisplayThread extends Thread {
         this.localBuffer = new char[BUFFER_SIZE];
         this.i = 0;
         
-        this.lines = new LinkedList<>();
+        this.lines = new LinkedList<String>();
     }
 
     /*

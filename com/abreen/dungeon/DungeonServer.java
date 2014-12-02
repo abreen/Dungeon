@@ -141,13 +141,13 @@ public class DungeonServer {
              * henceforth back references to the newly added room will be
              * resolved by checking this map.
              */
-            HashMap<String, Room> knownRooms = new HashMap<>();
+            HashMap<String, Room> knownRooms = new HashMap<String, Room>();
 
             /**
              * This list is maintained to easily check at the end of parsing if
              * there are still references to unseen rooms.
              */
-            ArrayList<String> unseenRooms = new ArrayList<>();
+            ArrayList<String> unseenRooms = new ArrayList<String>();
 
             /**
              * This is a list of triples (A, B, C) such that A is a room
@@ -160,7 +160,8 @@ public class DungeonServer {
              * to resolve the remaining references.
              */
             ArrayList<Triple<String, Space.Direction, String>> unresolved;
-            unresolved = new ArrayList<>();
+            unresolved =
+                    new ArrayList<Triple<String, Space.Direction, String>>();
 
             String thisRoomID = null;
             try {
@@ -223,7 +224,8 @@ public class DungeonServer {
                                 unseenRooms.add(toRoomID);
 
                             Triple<String, Space.Direction, String> t;
-                            t = new Triple<>(thisRoomID, dir, toRoomID);
+                            t = new Triple<String, Space.Direction,
+                                    String>(thisRoomID, dir, toRoomID);
                             unresolved.add(t);
                         }
 

@@ -35,9 +35,6 @@ file (version 1.12) is included in the `lib` directory.
 The client uses [Lanterna 3][lanterna], a pure Java terminal UI library
 that's super cool, and is included in the `lib` directory.
 
-I've been using some Java 1.7-only syntax, so you'll need (at least)
-Java 1.7.
-
 
 ## Building and running
 
