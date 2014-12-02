@@ -18,11 +18,17 @@ Low priority
     and noun
 *   Terminal resizing causes crash
 *   Terminal scrolling causes crash
+*   'who' command does not pluralize multiple minutes
+*   No action name should be interpreted as "move" action
 
 
 
 Planned features
 ================
+*   Server should serialize/deserialize saved worlds
+*   Player states should be saved between logins
+*   Players should be able to author descriptions of their character
+*   "look" action should respond to requests to describe a player in the room
 *   Add server logging features
 *   Add sentence analysis techniques to choose say-verbs based on vocabulary
     in sentence (e.g., 'think' should choose from 'suggests' or 'surmises')
