@@ -118,7 +118,8 @@ public class DungeonClient {
  */
 class DungeonDisplayThread extends Thread {
     private static int BUFFER_SIZE = 4096;
-    private static int HISTORY_LIMIT = 1000;    // how many server lines to keep
+    private static int MESSAGE_LIMIT = 1000;    // how many server lines to keep
+    private static int HISTORY_LIMIT = 100;     // size of local command history
 
     private PrintWriter toServer;
     
@@ -130,6 +131,15 @@ class DungeonDisplayThread extends Thread {
     private int i;                      // index into localBuffer
     
     private LinkedList<String> lines;   // history of server messages, by line
+    
+    private LinkedList<String> localLines;  // history of local commands
+    
+    /*
+     * When > 1, the user pressed Up/Down arrow one or more times and is
+     * browsing the local history of commands. Upon pressing Enter, that
+     * command is added to the local history and this field is reset to -1.
+     */
+    private int historyIndex;
     
     public DungeonDisplayThread(PrintWriter out) {
         this.toServer = out;
@@ -154,6 +164,9 @@ class DungeonDisplayThread extends Thread {
         this.i = 0;
         
         this.lines = new LinkedList<String>();
+        
+        this.localLines = new LinkedList<String>();
+        this.historyIndex = -1;
     }
 
     /*
@@ -184,8 +197,8 @@ class DungeonDisplayThread extends Thread {
         drawMessages();
         refresh();
         
-        if (this.lines.size() > HISTORY_LIMIT) {
-            for (int i = 0; i < this.lines.size() - HISTORY_LIMIT; i++)
+        if (this.lines.size() > MESSAGE_LIMIT) {
+            for (int i = 0; i < this.lines.size() - MESSAGE_LIMIT; i++)
                 this.lines.removeLast();
         }
     }
@@ -200,13 +213,15 @@ class DungeonDisplayThread extends Thread {
             refresh();
             
             while (true) {
+                pruneHistory();
+                
                 KeyStroke k = screen.readInput();
                 
                 if (k == null)
                     continue;
                 
                 KeyType type = k.getKeyType();
-                
+
                 switch (type) {
                 
                 case F10:
@@ -216,6 +231,9 @@ class DungeonDisplayThread extends Thread {
                     
                 case Enter:
                     sendLocalBuffer();
+                    
+                    String cmd = String.valueOf(localBuffer, 0, i);
+                    localLines.addFirst(cmd);
                     
                     // this effectively clears the prompt
                     i = 0;
@@ -230,6 +248,42 @@ class DungeonDisplayThread extends Thread {
                         drawPrompt();
                         refresh();
                     }
+                    break;
+                
+                case ArrowUp:
+                    // replace local buffer with previous line in history
+                    historyIndex++;
+                    
+                    if (historyIndex == localLines.size()) {
+                        historyIndex = -1;
+                        
+                        // reset back to blank line
+                        i = 0;
+                    }
+                    
+                    loadLineFromHistory();
+
+                    drawPrompt();
+                    refresh();
+                    
+                    break;
+                
+                case ArrowDown:
+                    // replace local buffer with next line in history
+                    historyIndex--;
+                    
+                    if (historyIndex == -2) {
+                        historyIndex = localLines.size() - 1;
+                    } else if (historyIndex == -1) {
+                        // reset back to blank line
+                        i = 0;
+                    }
+                    
+                    loadLineFromHistory();
+                    
+                    drawPrompt();
+                    refresh();
+                    
                     break;
                     
                 default:
@@ -370,6 +424,28 @@ class DungeonDisplayThread extends Thread {
                     TextColor.ANSI.DEFAULT);
             
             screen.setCharacter(col + i, row, ch);
+        }
+    }
+    
+    
+    /*
+     * Use the current value of historyIndex to retrieve the specified
+     * line from the command history into the local buffer.
+     */
+    private void loadLineFromHistory() {
+        if (historyIndex < 0)
+            return;
+        
+        String hist = localLines.get(historyIndex);
+        for (i = 0; i < hist.length(); i++)
+            localBuffer[i] = hist.charAt(i);
+    }
+    
+    
+    private void pruneHistory() {
+        if (this.localLines.size() > HISTORY_LIMIT) {
+            for (int i = 0; i < this.localLines.size() - HISTORY_LIMIT; i++)
+                this.localLines.removeLast();
         }
     }
 }
