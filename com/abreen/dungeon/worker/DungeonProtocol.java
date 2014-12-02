@@ -6,7 +6,7 @@ import com.abreen.dungeon.model.*;
 import com.abreen.dungeon.DungeonServer;
 
 public class DungeonProtocol {
-    private static enum Action {
+    public static enum Action {
 
         /**
          * The action a player issues to move from one room to another.
@@ -104,6 +104,14 @@ public class DungeonProtocol {
             for (String key : keys)
                 if (key.equalsIgnoreCase(str))
                     return true;
+            return false;
+        }
+        
+        public static boolean isValidKey(String str) {
+            for (Action a : Action.values())
+                if (a.isAction(str))
+                    return true;
+           
             return false;
         }
     }

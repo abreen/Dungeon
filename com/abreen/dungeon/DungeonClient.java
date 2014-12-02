@@ -25,7 +25,7 @@ public class DungeonClient {
      * Size of the read buffer used to store individual messages from
      * the server.
      */
-    public static int BUFFER_SIZE = 262144;
+    public static int BUFFER_SIZE = 1 << 16;
 
     /*
      * Character buffer used to store individual messages from the server.
@@ -128,7 +128,7 @@ class DungeonDisplayThread extends Thread {
     private int rows, columns;
     
     private char[] localBuffer;         // buffer for composing a message
-    private int i;                      // index into localBuffer
+    private int bufferIndex;                      // index into localBuffer
     
     private LinkedList<String> lines;   // history of server messages, by line
     
@@ -161,7 +161,7 @@ class DungeonDisplayThread extends Thread {
         }
         
         this.localBuffer = new char[BUFFER_SIZE];
-        this.i = 0;
+        this.bufferIndex= 0;
         
         this.lines = new LinkedList<String>();
         
@@ -241,19 +241,19 @@ class DungeonDisplayThread extends Thread {
                 case Enter:
                     sendLocalBuffer();
                     
-                    String cmd = String.valueOf(localBuffer, 0, i);
+                    String cmd = String.valueOf(localBuffer, 0, bufferIndex);
                     localLines.addFirst(cmd);
                     
                     // this effectively clears the prompt
-                    i = 0;
+                    bufferIndex = 0;
                     
                     drawPrompt();
                     refresh();
                     break;
                     
                 case Backspace:
-                    if (i > 0) {
-                        i--;
+                    if (bufferIndex > 0) {
+                        bufferIndex--;
                         drawPrompt();
                         refresh();
                     }
@@ -267,7 +267,7 @@ class DungeonDisplayThread extends Thread {
                         historyIndex = -1;
                         
                         // reset back to blank line
-                        i = 0;
+                        bufferIndex = 0;
                     }
                     
                     loadLineFromHistory();
@@ -285,7 +285,7 @@ class DungeonDisplayThread extends Thread {
                         historyIndex = localLines.size() - 1;
                     } else if (historyIndex == -1) {
                         // reset back to blank line
-                        i = 0;
+                        bufferIndex = 0;
                     }
                     
                     loadLineFromHistory();
@@ -303,7 +303,7 @@ class DungeonDisplayThread extends Thread {
                         continue;
                     }
                     
-                    localBuffer[i++] = ch.charValue();
+                    localBuffer[bufferIndex++] = ch.charValue();
                     drawPrompt();
                     refresh();
                 }
@@ -325,9 +325,21 @@ class DungeonDisplayThread extends Thread {
     private void drawPrompt() {
         clearLastLine();
         
-        String s = String.valueOf(localBuffer, 0, i);
+        String s = String.valueOf(localBuffer, 0, bufferIndex);
         putString(0, rows - 1, "> ", TextColor.ANSI.BLUE);
-        putString(2, rows - 1, s);
+        
+        // color the first token red if it is not actually a valid action
+        TextColor.ANSI c = TextColor.ANSI.DEFAULT;
+        
+        String[] tokens = s.split(" ");
+        String firstToken = tokens[0];
+        
+        if (!DungeonProtocol.Action.isValidKey(firstToken)) {
+            c = TextColor.ANSI.RED;
+        }
+        
+        putString(2, rows - 1, firstToken, c);
+        putString(2 + firstToken.length() + 1, rows - 1, join(tokens, 1, " "));
     }
     
     
@@ -347,7 +359,7 @@ class DungeonDisplayThread extends Thread {
         clearMessageArea();
         
         Iterator<String> it = lines.iterator();
-        for (int j = rows - 2; j >= 0; j--) {
+        for (int i = rows - 2; i >= 0; i--) {
             if (!it.hasNext())
                 break;
             
@@ -360,22 +372,22 @@ class DungeonDisplayThread extends Thread {
             };
 
             if (str.indexOf(specials[0]) == 0) {
-                putString(0, j, specials[0], TextColor.ANSI.MAGENTA);
-                putString(specials[0].length(), j,
+                putString(0, i, specials[0], TextColor.ANSI.MAGENTA);
+                putString(specials[0].length(), i,
                         str.substring(specials[0].length()));
                 
             } else if (str.indexOf(specials[1]) == 0) {
-                putString(0, j, specials[1], TextColor.ANSI.YELLOW);
-                putString(specials[1].length(), j,
+                putString(0, i, specials[1], TextColor.ANSI.YELLOW);
+                putString(specials[1].length(), i,
                         str.substring(specials[1].length()));
                 
             } else if (str.indexOf(specials[2]) == 0) {
-                putString(0, j, specials[2], TextColor.ANSI.RED);
-                putString(specials[2].length(), j,
+                putString(0, i, specials[2], TextColor.ANSI.RED);
+                putString(specials[2].length(), i,
                         str.substring(specials[2].length()));
                 
             } else {
-                putString(0, j, str);
+                putString(0, i, str);
             }
         }
     }
@@ -384,8 +396,8 @@ class DungeonDisplayThread extends Thread {
     private void clearMessageArea() {
         String z = repeat(" ", columns);
         
-        for (int j = rows - 2; j >= 0; j--)
-            putString(0, j, z);
+        for (int i = rows - 2; i >= 0; i--)
+            putString(0, i, z);
     }
 
     
@@ -394,7 +406,7 @@ class DungeonDisplayThread extends Thread {
      * the right edge of the prompt text after refreshing.
      */
     private void refresh() {
-        TerminalPosition pos = new TerminalPosition(i + 2, rows - 1);
+        TerminalPosition pos = new TerminalPosition(bufferIndex + 2, rows - 1);
         screen.setCursorPosition(pos);
         
         try {
@@ -408,10 +420,10 @@ class DungeonDisplayThread extends Thread {
     
     private void sendLocalBuffer() {
         // don't send empty strings to server
-        if (i == 0)
+        if (bufferIndex == 0)
             return;
         
-        String s = String.valueOf(localBuffer, 0, i);
+        String s = String.valueOf(localBuffer, 0, bufferIndex);
         toServer.println(s);
     }
     
@@ -440,8 +452,8 @@ class DungeonDisplayThread extends Thread {
             return;
         
         String hist = localLines.get(historyIndex);
-        for (i = 0; i < hist.length(); i++)
-            localBuffer[i] = hist.charAt(i);
+        for (bufferIndex = 0; bufferIndex < hist.length(); bufferIndex++)
+            localBuffer[bufferIndex] = hist.charAt(bufferIndex);
     }
     
     
@@ -458,5 +470,21 @@ class DungeonDisplayThread extends Thread {
         for (int i = 0; i < times; i++)
             z += s;
         return z;
+    }
+    
+    
+    private String join(String[] tokens, int start, String with) {
+        if (tokens.length == 0)
+            return "";
+        if (start >= tokens.length)
+            return "";
+        
+        String s = "";
+        int i;
+        for (i = start; i < tokens.length - 1; i++)
+            s += tokens[i] + with;
+        
+        s += tokens[i];
+        return s;
     }
 }
