@@ -61,10 +61,11 @@ public class DungeonClient {
 
         } catch (UnknownHostException e) {
             System.err.printf("DungeonClient: could not find host '%s'\n", host);
-            System.exit(2);
+            System.exit(5);
         } catch (IOException e) {
-            System.err.println("DungeonClient: could not get I/O for connection");
-            System.exit(2);
+            System.err.printf("DungeonClient: could not connect to host " +
+                    "'%s'\n", host);
+            System.exit(6);
         }
 
         // send user name
@@ -83,7 +84,7 @@ public class DungeonClient {
             
         } catch (IOException e) {
             System.err.println("failed in communication loop");
-            System.exit(5);
+            System.exit(4);
         }
     }
 
@@ -146,7 +147,7 @@ class DungeonDisplayThread extends Thread {
         } catch (IOException e) {
             System.err.println("DungeonClient: failed to get control of " +
                     "terminal");
-            System.exit(1);
+            System.exit(2);
         }
         
         this.localBuffer = new char[BUFFER_SIZE];
@@ -232,8 +233,14 @@ class DungeonDisplayThread extends Thread {
                     break;
                     
                 default:
-                    char ch = k.getCharacter();
-                    localBuffer[i++] = ch;
+                    Character ch = k.getCharacter();
+                    
+                    if (ch == null) {
+                        // character was special key type that we should ignore
+                        continue;
+                    }
+                    
+                    localBuffer[i++] = ch.charValue();
                     drawPrompt();
                     refresh();
                 }
@@ -241,7 +248,7 @@ class DungeonDisplayThread extends Thread {
             
         } catch (IOException e) {
             System.err.println("DungeonClient: terminal failure");
-            System.exit(2);
+            System.exit(3);
         }
     }
     
@@ -337,7 +344,7 @@ class DungeonDisplayThread extends Thread {
             screen.refresh();
         } catch (IOException e) {
             System.err.println("failed refreshing terminal");
-            System.exit(3);
+            System.exit(4);
         }
     }
     
