@@ -32,6 +32,9 @@ I'll get around to authoring a small universe demoing the features that
 The server uses [SnakeYAML][snakeyaml], a YAML parser for Java. The JAR
 file (version 1.12) is included in the `lib` directory.
 
+The client uses [Lanterna 3][lanterna], a pure Java terminal UI library
+that's super cool, and is included in the `lib` directory.
+
 I've been using some Java 1.7-only syntax, so you'll need (at least)
 Java 1.7.
 
@@ -41,3 +44,4 @@ Java 1.7.
 See `USAGE.md`.
 
 [snakeyaml]: http://code.google.com/p/snakeyaml/
+[lanterna]: http://code.google.com/p/lanterna/
