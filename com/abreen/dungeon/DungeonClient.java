@@ -176,10 +176,19 @@ class DungeonDisplayThread extends Thread {
         String s = String.valueOf(buf, 0, len);
         String[] lines = s.split("\n");
         
+        // whether this line starts with DungeonDispatcher.CHEVRONS
+        boolean isSpecial = false;
+        
         for (String line : lines) {
+            isSpecial = line.indexOf(DungeonDispatcher.CHEVRONS) == 0;
             String[] tokens = line.split("\\s");
-            String newLine = "";
             int token = 0;
+            
+            int prefixLength = 0;
+            if (isSpecial)
+                prefixLength = DungeonDispatcher.CHEVRONS.length();
+            
+            String newLine = "";
             
             while (token < tokens.length) {
                 do {
@@ -190,7 +199,7 @@ class DungeonDisplayThread extends Thread {
                 } while (newLine.length() < columns && token < tokens.length);
                 
                 this.lines.addFirst(newLine);
-                newLine = "";
+                newLine = repeat(" ", prefixLength);
             }
         }
         
@@ -323,11 +332,7 @@ class DungeonDisplayThread extends Thread {
     
     
     private void clearLastLine() {
-        String z = "";
-        for (int j = 0; j < columns; j++)
-            z += " ";
-        
-        putString(0, rows - 1, z);
+        putString(0, rows - 1, repeat(" ", columns));
     }
     
     
@@ -377,9 +382,7 @@ class DungeonDisplayThread extends Thread {
     
     
     private void clearMessageArea() {
-        String z = "";
-        for (int j = 0; j < columns; j++)
-            z += " ";
+        String z = repeat(" ", columns);
         
         for (int j = rows - 2; j >= 0; j--)
             putString(0, j, z);
@@ -447,5 +450,13 @@ class DungeonDisplayThread extends Thread {
             for (int i = 0; i < this.localLines.size() - HISTORY_LIMIT; i++)
                 this.localLines.removeLast();
         }
+    }
+    
+    
+    private String repeat(String s, int times) {
+        String z = "";
+        for (int i = 0; i < times; i++)
+            z += s;
+        return z;
     }
 }
