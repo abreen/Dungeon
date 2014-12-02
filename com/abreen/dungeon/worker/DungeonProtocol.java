@@ -407,8 +407,10 @@ public class DungeonProtocol {
         int numPlayers = u.getNumberOfPlayers();
 
         String[] lines = new String[numPlayers + 1];
+        
+        String fmt = "%-32s%s";
 
-        lines[0] = String.format("%-18s%s", "PLAYER", "LAST HEARD FROM");
+        lines[0] = String.format(fmt, "PLAYER", "LAST HEARD FROM");
 
         int i = 1;
         while (ps.hasNext()) {
@@ -420,7 +422,7 @@ public class DungeonProtocol {
             else
                 name = DungeonNarrator.toString(thisPlayer);
 
-            lines[i++] = String.format("%-18s%s", name,
+            lines[i++] = String.format(fmt, name,
                     thisPlayer.getTimeSinceLastAction());
         }
 
