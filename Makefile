@@ -1,5 +1,5 @@
 CLASSES=classes
-CLASSPATH=jars/snakeyaml-1.12.jar:$(CLASSES)
+CLASSPATH=jars/snakeyaml-1.12.jar:jars/lanterna-3.0.0-alpha4.jar:$(CLASSES)
 
 .PHONY: classes
 
