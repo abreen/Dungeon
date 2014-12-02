@@ -5,10 +5,16 @@ import com.abreen.dungeon.exceptions.*;
 
 public abstract class Space extends Describable {
     public static enum Direction {
-        NORTH("north", "n"), NORTHEAST("northeast", "ne"), EAST("east", "e"), SOUTHEAST(
-                "southeast", "se"), SOUTH("south", "s"), SOUTHWEST("southwest",
-                "sw"), WEST("west", "w"), NORTHWEST("northwest", "nw"), UP("up"), DOWN(
-                "down");
+        NORTH("north", "n"),
+        NORTHEAST("northeast", "ne"),
+        EAST("east", "e"),
+        SOUTHEAST("southeast", "se"),
+        SOUTH("south", "s"),
+        SOUTHWEST("southwest", "sw"),
+        WEST("west", "w"),
+        NORTHWEST("northwest", "nw"),
+        UP("up"),
+        DOWN("down");
 
         private String fullName;
         private String[] names;
