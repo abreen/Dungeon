@@ -25,6 +25,7 @@ Low priority
 
 Planned features
 ================
+*   Server/client should exchange versions before connecting
 *   Server should serialize/deserialize saved worlds
 *   Player states should be saved between logins
 *   Players should be able to author descriptions of their character
