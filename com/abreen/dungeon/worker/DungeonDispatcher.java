@@ -33,7 +33,8 @@ public class DungeonDispatcher extends Thread {
      * @return An array containing all the players' writers
      */
     public static PrintWriter[] playerIteratorToWriterArray(
-            Iterator<Player> it, int size) {
+            Iterator<Player> it, int size)
+    {
         PrintWriter[] arr = new PrintWriter[size];
 
         int i = 0;
@@ -235,10 +236,12 @@ public class DungeonDispatcher extends Thread {
     public void run() {
         while (true)
             try {
-                Event e = this.eventQueue.take();
-                PrintWriter[] w = e.getWriters();
-                for (PrintWriter element : w)
-                    element.println(e.toString());
+                Event event = this.eventQueue.take();
+                PrintWriter[] writers = event.getWriters();
+                for (PrintWriter writer : writers) {
+                    // println() should automatically flush
+                    writer.println(event.toString());
+                }
 
             } catch (InterruptedException e) {
                 System.out.println("event queue got interrupt");

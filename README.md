@@ -4,11 +4,8 @@
 is inspired by traditional text adventure games from years ago, with some
 new ideas and features.
 
-This project comes with a server and client, though you could probably get
-away with connecting to the server over a raw TCP connection once you 
-understand how it works. I'll get to writing up the protocol later.
-
-The client is really buggy at the moment. Don't use it.
+This project comes with a server and client. See the `USAGE.md` file for
+more information about how to use them.
 
 `Dungeon` is my first exploration into text-based games and network 
 programming. You're welcome to help out with development.
