@@ -177,7 +177,7 @@ class DungeonDisplayThread extends Thread {
         String[] lines = s.split("\n");
         
         for (String line : lines) {
-            String[] tokens = line.split("\\s+");
+            String[] tokens = line.split("\\s");
             String newLine = "";
             int token = 0;
             
