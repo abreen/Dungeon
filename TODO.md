@@ -9,7 +9,6 @@ High priority
     in `DungeonUniverse`
 *   "Say" command starting with "the" will drop the "the"
 *   Whispering to invalid recipient causes server crash
-*   Up/down arrows in client should present command history
 
 
 Low priority
@@ -17,7 +16,6 @@ Low priority
 *   The `toString` method in the `Item` class should concatenate article
     and noun
 *   Terminal resizing causes crash
-*   Terminal scrolling causes crash
 *   'who' command does not pluralize multiple minutes
 *   No action name should be interpreted as "move" action
 
