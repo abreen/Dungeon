@@ -29,6 +29,7 @@ adventure game.
 I'll get around to authoring a small universe demoing the features that
 `Dungeon` has to offer.
 
+
 ## Dependencies
 
 The server uses [SnakeYAML][snakeyaml], a YAML parser for Java. The JAR
@@ -37,16 +38,9 @@ file (version 1.12) is included in the `lib` directory.
 I've been using some Java 1.7-only syntax, so you'll need (at least)
 Java 1.7.
 
+
 ## Building and running
 
-There's a small `build.xml` file for Apache Ant. As long as you have Ant
-installed, just run `ant` in the base directory. The default target should
-build all the classes to a directory called `classes`. 
-
-To start the server, change to the top-level directory of the repository
-and run `java -cp classes:lib/* com.abreen.dungeon.DungeonServer`. The
-server will automatically look for a `config.yml` file under the `yaml`
-directory, from which it will take information like hostname, port, etc.
-If it finds no configuration file, it will ask for program arguments.
+See `USAGE.md`.
 
 [snakeyaml]: http://code.google.com/p/snakeyaml/

@@ -1,4 +1,26 @@
-# Actions
+# Usage
+
+## Starting the server
+
+First, invoke `make` to compile the Java sources. Then use the `run`
+shell script as follows:
+
+    ./run server
+
+The server should start up on port 5554.
+
+## Starting the client
+
+Assuming `make` has already been invoked, use the `run` shell
+script as follows:
+
+    ./run client
+
+The client should print a usage message. Follow its instructions to
+specify the server to connect to.
+
+
+## Playing the game
 
 The following are actions available for a player to perform. The angled
 brackets < and > indicate an object of the specified type that should be

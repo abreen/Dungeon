@@ -1,0 +1,15 @@
+#!/bin/bash
+
+CLASSES=classes
+CLASSPATH="jars/snakeyaml-1.12.jar:$CLASSES"
+
+case $1 in
+"server")
+    shift
+    java -classpath "$CLASSPATH:$CLASSES" com.abreen.dungeon.DungeonServer "$@"
+    ;;
+"client")
+    shift
+    java -classpath "$CLASSPATH:$CLASSES" com.abreen.dungeon.DungeonClient "$@"
+    ;;
+esac
