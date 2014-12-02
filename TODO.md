@@ -9,6 +9,7 @@ High priority
     in `DungeonUniverse`
 *   "Say" command starting with "the" will drop the "the"
 *   Whispering to invalid recipient causes server crash
+*   Up/down arrows in client should present command history
 
 
 Low priority
