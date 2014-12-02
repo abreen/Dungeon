@@ -14,9 +14,9 @@ import com.abreen.dungeon.model.Player;
  * strings to players, they are queued here before being sent over the network.
  */
 public class DungeonDispatcher extends Thread {
-    private static final String CHEVRONS = ">>> "; // used for notifications
-    private static final String ASTERISKS = "*** "; // used for server notices
-    private static final String BANGS = "!!! "; // used for server errors
+    public static final String CHEVRONS = ">>> "; // used for notifications
+    public static final String ASTERISKS = "*** "; // used for server notices
+    public static final String BANGS = "!!! "; // used for server errors
 
     private static final String SERVER_CLOSING_MESSAGE = "Server closing...";
     private static final String SERVER_RESTART_MESSAGE = "Server restarting...";

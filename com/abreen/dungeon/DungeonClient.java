@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import com.abreen.dungeon.worker.DungeonDispatcher;
+import com.abreen.dungeon.worker.DungeonProtocol;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextCharacter;
@@ -284,10 +286,28 @@ class DungeonDisplayThread extends Thread {
                 break;
             
             String str = it.next();
-            
-            if (str.indexOf(">>>") == 0) {
-                putString(0, j, ">>> ", TextColor.ANSI.RED);
-                putString(4, j, str.substring(4));
+         
+            String[] specials = {
+                    DungeonDispatcher.CHEVRONS,
+                    DungeonDispatcher.ASTERISKS,
+                    DungeonDispatcher.BANGS
+            };
+
+            if (str.indexOf(specials[0]) == 0) {
+                putString(0, j, specials[0], TextColor.ANSI.MAGENTA);
+                putString(specials[0].length(), j,
+                        str.substring(specials[0].length()));
+                
+            } else if (str.indexOf(specials[1]) == 0) {
+                putString(0, j, specials[1], TextColor.ANSI.YELLOW);
+                putString(specials[1].length(), j,
+                        str.substring(specials[1].length()));
+                
+            } else if (str.indexOf(specials[2]) == 0) {
+                putString(0, j, specials[2], TextColor.ANSI.RED);
+                putString(specials[2].length(), j,
+                        str.substring(specials[2].length()));
+                
             } else {
                 putString(0, j, str);
             }

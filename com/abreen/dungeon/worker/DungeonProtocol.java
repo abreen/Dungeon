@@ -6,10 +6,6 @@ import com.abreen.dungeon.model.*;
 import com.abreen.dungeon.DungeonServer;
 
 public class DungeonProtocol {
-    public static final double VERSION = 0.1;
-    private static final String CHEVRONS = ">>> ";
-    private static final String BANGS = "!!! ";
-
     private static enum Action {
 
         /**
