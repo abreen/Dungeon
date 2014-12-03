@@ -332,6 +332,9 @@ class DungeonDisplayThread extends Thread {
         TextColor.ANSI c = TextColor.ANSI.DEFAULT;
         
         String[] tokens = s.split(" ");
+        if (tokens.length == 0)
+            return;
+        
         String firstToken = tokens[0];
         
         if (!DungeonProtocol.Action.isValidKey(firstToken)) {
@@ -424,7 +427,7 @@ class DungeonDisplayThread extends Thread {
             return;
         
         String s = String.valueOf(localBuffer, 0, bufferIndex);
-        toServer.println(s);
+        toServer.println(s.trim());
     }
     
     
