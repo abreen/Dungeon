@@ -1,5 +1,7 @@
 # Dungeon
 
+![Logged into a server](https://raw.githubusercontent.com/abreen/Dungeon/master/screenshot.png)
+
 `Dungeon` is a multiplayer text adventure game engine written in Java. It
 is inspired by traditional text adventure games from years ago, with some
 new ideas and features.
