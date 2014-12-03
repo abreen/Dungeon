@@ -9,7 +9,7 @@ new ideas and features.
 This project comes with a server and client. See the `USAGE.md` file for
 more information about how to use them.
 
-`Dungeon` is my first exploration into text-based games and network 
+`Dungeon` is my first exploration into text-based games and network
 programming. You're welcome to help out with development.
 
 There is no "license" for the source code, apart from the requirement that
@@ -19,15 +19,10 @@ license in due time.
 
 ## Extensibility
 
-At the moment, the server automatically constructs a boring universe for
-players to roam around in. I am in the process of building in a YAML
-parser so people can write their own game universes and load them into the
-server. This is what makes `Dungeon` a bit more flexible than any old text
-adventure game.
-
-I'll get around to authoring a small universe demoing the features that
-`Dungeon` has to offer.
-
+Since `Dungeon` is a game *engine*, you can write your own universe files
+and start the `Dungeon` server with them. See the `yaml` directory for
+the configuration file (to tell the server which universe file to
+load) and the default "demo" universe file that I've written.
 
 ## Dependencies
 
