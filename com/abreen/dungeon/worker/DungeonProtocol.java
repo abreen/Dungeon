@@ -343,7 +343,7 @@ public class DungeonProtocol {
     }
 
     private static void processSay(Player p, String[] tokens) {
-        String tokensAfter = getTokensAfterAction(tokens);
+        String tokensAfter = getTokensAfterAction(tokens, false);
         u.say(p, tokensAfter);
     }
 
@@ -374,7 +374,7 @@ public class DungeonProtocol {
     }
 
     private static void processWhisper(Player p, String[] tokens) {
-        String s = getTokensAfterAction(tokens);
+        String s = getTokensAfterAction(tokens, false);
 
         if (s == null) {
             String oops = "Write a secret message, followed by 'to' and the name "
@@ -440,7 +440,7 @@ public class DungeonProtocol {
     }
 
     private static void processYell(Player p, String[] tokens) {
-        String tokensAfter = getTokensAfterAction(tokens);
+        String tokensAfter = getTokensAfterAction(tokens, false);
 
         if (tokensAfter == null) {
             String oops = "Supply something to yell.";
@@ -450,17 +450,23 @@ public class DungeonProtocol {
 
         u.yell(p, tokensAfter);
     }
+    
+    private static String getTokensAfterAction(String[] tokens) {
+        return getTokensAfterAction(tokens, true);
+    }
 
     /*
      * Returns all the tokens after the action as a space-separated string.
      * Returns null if there are no tokens after the action.
      */
-    private static String getTokensAfterAction(String[] tokens) {
+    private static String getTokensAfterAction(String[] tokens,
+            boolean avoidThe)
+    {
         if (tokens.length < 2)
             return null;
 
         int i;
-        if (tokens[1].equalsIgnoreCase("the"))
+        if (avoidThe && tokens[1].equalsIgnoreCase("the"))
             i = 2;
         else
             i = 1;

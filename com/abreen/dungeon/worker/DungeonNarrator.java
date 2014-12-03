@@ -28,7 +28,7 @@ public class DungeonNarrator {
         System.out.println(n.narrateDrop("Karl", "the notebook"));
         System.out.println(n.narrateGive("Moritz", "the pen", "Georg"));
         System.out.println(n.narrateSay("Jason", "I like pancakes."));
-        System.out.println(n.narrateSay("Marta",
+        System.out.println(n.narrateSay("Amalia",
                 "I'd like some water, because I'm thirsty."));
         System.out.println(n.narrateSay("Chris",
                 "Either we leave now, or we leave in a couple minutes."));
