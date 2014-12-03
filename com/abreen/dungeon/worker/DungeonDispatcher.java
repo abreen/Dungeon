@@ -240,7 +240,8 @@ public class DungeonDispatcher extends Thread {
                 PrintWriter[] writers = event.getWriters();
                 for (PrintWriter writer : writers) {
                     // println() should automatically flush
-                    writer.println(event.toString());
+                    String s = DungeonServer.narrator.prettify(event.toString());
+                    writer.println(s);
                 }
 
             } catch (InterruptedException e) {
