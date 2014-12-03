@@ -11,10 +11,10 @@ import com.abreen.dungeon.model.*;
 public class DungeonNarrator {
     private static final long DEFAULT_RANDOM_SEED = 6;
     
-    private static final char LEFT_DOUBLE_QUOTE = '“';
-    private static final char RIGHT_DOUBLE_QUOTE = '”';
-    private static final char LEFT_SINGLE_QUOTE = '‘';
-    private static final char RIGHT_SINGLE_QUOTE = '’';
+    private static final char LEFT_DOUBLE_QUOTE = '\u201c';
+    private static final char RIGHT_DOUBLE_QUOTE = '\u201d';
+    private static final char LEFT_SINGLE_QUOTE = '\u2018';
+    private static final char RIGHT_SINGLE_QUOTE = '\u2019';
 
     private Random r;
 
@@ -71,15 +71,15 @@ public class DungeonNarrator {
     }
     
     private final Replacement[] SPECIAL_REPLACEMENTS = {
-        new Replacement("'(\\d{2})s", "’$1s"),
-        new Replacement("'[Ee]m", "’$1m"),
-        new Replacement("([Nn])othin'", "$1othin’"),
-        new Replacement("([Dd])oin'", "$1oin’"),
-        new Replacement("([Ll])ookin'", "$1ookin’"),
-        new Replacement("([Tt])hinkin'", "$1hinkin’"),
-        new Replacement("'([Cc])ause", "’$1ause"),
-        new Replacement("'([Cc])ept", "’$1ept"),
-        new Replacement("'([Bb])out", "’$1out"),
+        new Replacement("'(\\d{2})s", "\u2019$1s"),
+        new Replacement("'([Ee])m", "\u2019$1m"),
+        new Replacement("([Nn])othin'", "$1othin\u2019"),
+        new Replacement("([Dd])oin'", "$1oin\u2019"),
+        new Replacement("([Ll])ookin'", "$1ookin\u2019"),
+        new Replacement("([Tt])hinkin'", "$1hinkin\u2019"),
+        new Replacement("'([Cc])ause", "\u2019$1ause"),
+        new Replacement("'([Cc])ept", "\u2019$1ept"),
+        new Replacement("'([Bb])out", "\u2019$1out"),
     };
     
     /**
