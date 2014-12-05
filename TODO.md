@@ -22,6 +22,12 @@ Low priority
 
 Planned features
 ================
+*   Client/server protocol should be developed to allow more intelligent
+    clients
+    -   Client should be able to understand world parameters like time,
+        weather, etc. and other details about locales
+    -   If client could download and parse world file, then it could present
+        room descriptions faster and more reliably to player
 *   Add scenes
 *   Add server ticks to support game time
     -   Game time multiplier should be variable for testing purposes
@@ -56,4 +62,3 @@ Feature wishlist
 *   Servers should have a timer to support time-based actions
     -   In-game weather
     -   In-game day and night
-*   Servers should send text formatting codes to the client
