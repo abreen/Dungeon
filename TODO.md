@@ -22,6 +22,16 @@ Low priority
 
 Planned features
 ================
+*   Add scenes
+*   Add server ticks to support game time
+    -   Game time multiplier should be variable for testing purposes
+*   Add player status variables
+    -   Fatigue
+    -   Body temperature
+    -   Hunger
+    -   Sickness
+        *   condition of each major part (skeleton)
+        *   blood loss level
 *   Server/client should exchange versions before connecting
 *   Server should serialize/deserialize saved worlds
 *   Player states should be saved between logins
@@ -36,6 +46,8 @@ Planned features
     to the dispatcher
 *   There should be pedagogical `UseableItem` implementations like maps,
     compasses, or two-way radios
+    -   Clocks that reflect real time (but not necessarily set) and whose
+        batteries can die
 
 
 Feature wishlist
