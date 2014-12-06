@@ -17,6 +17,7 @@ Low priority
 *   Terminal resizing causes crash
 *   'who' command does not pluralize multiple minutes
 *   No action name should be interpreted as "move" action
+*   Replace lots of string concatenation occurrences with StringBuilder
 
 
 
