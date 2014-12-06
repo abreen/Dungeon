@@ -21,7 +21,7 @@ public class DungeonServer {
     public static DungeonDispatcher events;
     public static DungeonNarrator narrator;
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static void main(String[] args) throws IOException {
         boolean useArguments = false;
         Map config = null;
