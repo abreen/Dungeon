@@ -254,7 +254,7 @@ public class DungeonProtocol {
         String indirectObject = s.substring(indirectIndex + 4).trim();
 
         try {
-            Item i = u.give(p, object, indirectObject);
+            u.give(p, object, indirectObject);
 
             String narr = n.narrateGive(DungeonNarrator.toString(p), object,
                     indirectObject);

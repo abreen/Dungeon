@@ -631,7 +631,6 @@ public class DungeonNarrator {
         int k = getIndexOfClause(words);
 
         String verbString = v.toString();
-        char last = words.charAt(words.length() - 1);
 
         if (k == -1)
             return name + " " + verbString + ", \"" + words + "\"";
