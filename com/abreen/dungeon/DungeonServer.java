@@ -3,6 +3,7 @@ package com.abreen.dungeon;
 import java.io.*;
 import java.util.*;
 import java.net.*;
+
 import com.abreen.dungeon.worker.*;
 import com.abreen.dungeon.model.*;
 
@@ -19,6 +20,7 @@ public class DungeonServer {
     public static DungeonDispatcher events;
     public static DungeonNarrator narrator;
 
+    @SuppressWarnings("unchecked")
     public static void main(String[] args) throws IOException {
         boolean useArguments = false;
         Map config = null;
