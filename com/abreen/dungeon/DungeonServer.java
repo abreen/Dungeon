@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 import java.net.*;
 
+import com.abreen.dungeon.util.*;
 import com.abreen.dungeon.worker.*;
 import com.abreen.dungeon.model.*;
 
@@ -319,18 +320,6 @@ public class DungeonServer {
 
     private static String usage() {
         return "usage: java DungeonServer <port>";
-    }
-
-    private static class Triple<X, Y, Z> {
-        public X first;
-        public Y second;
-        public Z third;
-
-        public Triple(X x, Y y, Z z) {
-            this.first = x;
-            this.second = y;
-            this.third = z;
-        }
     }
 
     /**

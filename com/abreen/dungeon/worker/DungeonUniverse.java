@@ -92,7 +92,8 @@ public class DungeonUniverse implements Serializable {
      */
     public synchronized Room movePlayer(Player p, String dest)
             throws NoSuchDirectionException, NoSuchExitException,
-            LockedDoorException {
+            LockedDoorException
+    {
 
         Space.Direction direction = Space.getDirectionFromString(dest);
         Space destination = p.here().to(direction);
@@ -285,7 +286,8 @@ public class DungeonUniverse implements Serializable {
     }
 
     public synchronized void whisper(Player p, String message, String recipient)
-            throws NoSuchPlayerException {
+            throws NoSuchPlayerException
+    {
         Iterator<Player> ps = p.here().getPlayers();
         ArrayList<Player> observers = new ArrayList<Player>();
 
@@ -351,21 +353,24 @@ public class DungeonUniverse implements Serializable {
     }
 
     public synchronized Item take(Player p, String s)
-            throws NoSuchItemException {
+            throws NoSuchItemException
+    {
         Item i = p.here().removeItemByName(s);
         p.addToInventory(i);
         return i;
     }
 
     public synchronized Item drop(Player p, String s)
-            throws NoSuchItemException {
+            throws NoSuchItemException
+    {
         Item i = p.dropFromInventoryByName(s);
         p.here().addItem(i);
         return i;
     }
 
     public synchronized Item give(Player p, String object, String whom)
-            throws NoSuchItemException, NoSuchPlayerException {
+            throws NoSuchItemException, NoSuchPlayerException
+    {
 
         Item i = p.dropFromInventoryByName(object);
         Iterator<Player> ps = p.here().getPlayers();
