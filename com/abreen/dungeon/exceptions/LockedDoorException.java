@@ -5,5 +5,5 @@ package com.abreen.dungeon.exceptions;
  * player has no key.
  */
 public class LockedDoorException extends DungeonException {
-
+    private static final long serialVersionUID = 1L;
 }

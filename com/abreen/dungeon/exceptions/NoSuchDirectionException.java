@@ -5,5 +5,5 @@ package com.abreen.dungeon.exceptions;
  * to a known direction.
  */
 public class NoSuchDirectionException extends DungeonException {
-
+    private static final long serialVersionUID = 1L;
 }

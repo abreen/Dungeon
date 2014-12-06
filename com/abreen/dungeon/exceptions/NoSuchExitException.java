@@ -5,5 +5,5 @@ package com.abreen.dungeon.exceptions;
  * not connect two spaces.
  */
 public class NoSuchExitException extends DungeonException {
-
+    private static final long serialVersionUID = 1L;
 }

@@ -5,6 +5,8 @@ import java.io.*;
 import com.abreen.dungeon.exceptions.*;
 
 public class Player extends Describable implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
     private Room here;
     private Hashtable<String, Item> inventory;
     private PrintWriter out;

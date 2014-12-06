@@ -328,6 +328,7 @@ public class DungeonServer {
      * file.
      */
     private static class UnresolvedReferenceException extends Exception {
+        private static final long serialVersionUID = 1L;
 
         /**
          * Constructs a new UnresolvedReferenceException that takes a list of
@@ -368,6 +369,7 @@ public class DungeonServer {
      * required mapping (e.g., a room is missing a name).
      */
     private static class MissingMappingException extends Exception {
+        private static final long serialVersionUID = 1L;
         public MissingMappingException(String s) {
             super("expected key '" + s + "', but it is missing");
         }
@@ -379,6 +381,7 @@ public class DungeonServer {
      * and not boolean).
      */
     private static class UnexpectedTypeException extends Exception {
+        private static final long serialVersionUID = 1L;
         public UnexpectedTypeException(String keyName, String expected,
                 String got) {
             super("for '" + keyName + "', expected type '" + expected
@@ -391,6 +394,7 @@ public class DungeonServer {
      * is misspelled or otherwise unacceptable.
      */
     private static class InvalidDirectionException extends Exception {
+        private static final long serialVersionUID = 1L;
         public InvalidDirectionException(String invalidDirection) {
             super("'" + invalidDirection + "' is not a valid direction");
         }

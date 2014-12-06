@@ -5,5 +5,5 @@ package com.abreen.dungeon.exceptions;
  * or in the inventory.
  */
 public class NoSuchItemException extends DungeonException {
-
+    private static final long serialVersionUID = 1L;
 }

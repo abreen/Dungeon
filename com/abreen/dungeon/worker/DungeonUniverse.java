@@ -7,6 +7,8 @@ import com.abreen.dungeon.exceptions.*;
 import com.abreen.dungeon.model.*;
 
 public class DungeonUniverse implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Collection<Room> rooms;
     private Hashtable<String, Player> players;
     private Room spawnPoint;
