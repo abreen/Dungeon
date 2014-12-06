@@ -7,7 +7,6 @@ High priority
 -------------
 *   Fully implement actions by implementing and using new concurrent methods
     in `DungeonUniverse`
-*   Whispering to invalid recipient causes server crash
 
 
 Low priority

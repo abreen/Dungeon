@@ -287,8 +287,7 @@ public class DungeonUniverse implements Serializable {
     public synchronized void whisper(Player p, String message, String recipient)
             throws NoSuchPlayerException {
         Iterator<Player> ps = p.here().getPlayers();
-        int numHere = p.here().getNumberOfPlayers();
-        ArrayList<Player> observers = new ArrayList<Player>(numHere - 2);
+        ArrayList<Player> observers = new ArrayList<Player>();
 
         Player otherPlayer = null;
         while (ps.hasNext()) {
