@@ -284,7 +284,7 @@ public class DungeonProtocol {
                     players, size), narr);
 
         } catch (NoSuchItemException e) {
-            String oops = "You do not have an item known as '" + s + "'.";
+            String oops = "You do not have an item known as \"" + s + "\".";
             d.addNotificationEvent(p.getWriter(), oops);
         }
     }
@@ -299,7 +299,7 @@ public class DungeonProtocol {
 
         if (s == null) {
             String oops = "Specify an item from your inventory to give, followed "
-                    + "by 'to' and the name of the recipient.";
+                    + "by \"to\" and the name of the recipient.";
             d.addNotificationEvent(p.getWriter(), oops);
             return;
         }
@@ -329,11 +329,12 @@ public class DungeonProtocol {
                     narr);
 
         } catch (NoSuchItemException e) {
-            String oops = "You do not have an item known as '" + object + "'.";
+            String oops = "You do not have an item known as \""
+                    + object + "\".";
             d.addNotificationEvent(p.getWriter(), oops);
         } catch (NoSuchPlayerException e) {
-            String oops = "There is no such player '" + indirectObject
-                    + "' in this room.";
+            String oops = "There is no such player \"" + indirectObject
+                    + "\" in this room.";
             d.addNotificationEvent(p.getWriter(), oops);
         }
     }
@@ -356,8 +357,8 @@ public class DungeonProtocol {
                 u.look(p, tokensAfter);
 
         } catch (NoSuchItemException e) {
-            String oops = "There's no such item by the name '" + tokensAfter
-                    + "' in the room or your inventory.";
+            String oops = "There's no such item by the name \"" + tokensAfter
+                    + "\" in the room or your inventory.";
             d.addNotificationEvent(p.getWriter(), oops);
         }
     }
@@ -391,13 +392,13 @@ public class DungeonProtocol {
             String validDirs =
                     DungeonNarrator.toNaturalList(Direction.values(), false);
             
-            String oops = "Unsure which direction is meant " + "by '"
-                    + tokens.get(1) + "'. The following directions "
+            String oops = "Unsure which direction is meant " + "by \""
+                    + tokens.get(1) + "\". The following directions "
                     + "are recognized: " + validDirs;
             d.addNotificationEvent(p.getWriter(), oops);
         } catch (NoSuchExitException e) {
-            String oops = "That's not an exit. Try 'exits' for a list of ways "
-                    + "out.";
+            String oops = "That's not an exit. Try \"exits\" for a list of " +
+                    "ways out.";
             d.addNotificationEvent(p.getWriter(), oops);
         } catch (LockedDoorException e) {
             String oops = "The door is locked, and you don't have the key.";
@@ -410,6 +411,10 @@ public class DungeonProtocol {
 
     private static void processSay(Player p, ArrayList<String> tokens) {
         String tokensAfter = getTokensAfterAction(tokens, false);
+        if (tokensAfter != null && tokensAfter.length() > 0 &&
+                (tokensAfter.charAt(0) == '"' || tokensAfter.charAt(0) == '\''))
+            tokensAfter = stripQuotationMarks(tokensAfter);
+        
         u.say(p, tokensAfter);
     }
 
@@ -429,7 +434,7 @@ public class DungeonProtocol {
                     narr);
 
         } catch (NoSuchItemException e) {
-            String oops = "There is no item '" + s + "' in the room.";
+            String oops = "There is no item \"" + s + "\" in the room.";
             d.addNotificationEvent(p.getWriter(), oops);
         }
     }
@@ -443,8 +448,8 @@ public class DungeonProtocol {
         String s = getTokensAfterAction(tokens, false);
 
         if (s == null) {
-            String oops = "Write a secret message, followed by 'to' and the name "
-                    + "of the recipient.";
+            String oops = "Write a secret message, followed by \"to\" and the "
+                    + "name of the recipient.";
             d.addNotificationEvent(p.getWriter(), oops);
             return;
         }
@@ -470,8 +475,8 @@ public class DungeonProtocol {
         try {
             u.whisper(p, message, recipient);
         } catch (NoSuchPlayerException e) {
-            String oops = "There is no such player '" + recipient
-                    + "' in this room.";
+            String oops = "There is no such player \"" + recipient
+                    + "\" in this room.";
             d.addNotificationEvent(p.getWriter(), oops);
         }
     }
@@ -564,5 +569,21 @@ public class DungeonProtocol {
         }
 
         return rest.toString();
+    }
+    
+    private static String stripQuotationMarks(String s) {
+        StringBuilder buf = new StringBuilder(s);
+        int length = s.length();
+        int bufLength = length;
+        
+        if (s.charAt(0) == '"' || s.charAt(0) == '\'') {
+            buf.deleteCharAt(0);
+            bufLength--;
+        }
+        
+        if (s.charAt(length - 1) == '"' || s.charAt(length - 1) == '\'')
+            buf.deleteCharAt(bufLength - 1);
+        
+        return buf.toString();
     }
 }
