@@ -8,6 +8,8 @@ import com.abreen.dungeon.util.*;
 import com.abreen.dungeon.DungeonServer;
 
 public class DungeonProtocol {
+    private static final int DEFAULT_BUFFER_SIZE = 2048;
+    
     public static enum Action {
 
         /**
@@ -133,6 +135,36 @@ public class DungeonProtocol {
         
         return false;
     }
+    
+    /**
+     * Breaks an input string into tokens. Similar to using the string's
+     * split() method with a whitespace regular expression, but is
+     * actually faster, since no regular expressions are used.
+     * 
+     * @param s The string to tokenize
+     * @return An array of string tokens
+     */
+    private static ArrayList<String> tokenize(String s) {
+        ArrayList<String> tokens = new ArrayList<String>();
+        
+        if (s.indexOf(' ') < 0) {
+            tokens.add(s);
+            return tokens;
+        }
+        
+        int start = 0, end;
+        while ((end = s.indexOf(' ', start)) >= 0) {
+            if (start != end)
+                tokens.add(s.substring(start, end));
+            start = end + 1;
+        }
+        end = s.length();
+        
+        if (end - start > 0)
+            tokens.add(s.substring(start, end));
+        
+        return tokens;
+    }
 
     /**
      * Processes the supplied input from the supplied player's point of view.
@@ -156,11 +188,16 @@ public class DungeonProtocol {
 
         p.updateLastAction();
 
-        String[] tokens = input.split("\\s");
+        ArrayList<String> tokens = tokenize(input);
+        
+        if (tokens.size() == 0)
+            return;
+        
+        String first = tokens.get(0);
 
         Action action = null;
         for (Action a : Action.values()) {
-            if (a.isThisAction(tokens[0])) {
+            if (a.isThisAction(first)) {
                 action = a;
                 break;
             }
@@ -169,16 +206,17 @@ public class DungeonProtocol {
         if (action == null) {
             // try to interpret it as a direction for a move command
             try {
-                Direction dir = Direction.fromString(tokens[0]);
+                Direction.fromString(first);
             } catch (NoSuchDirectionException e) {
-                String unsure = "Unsure what is meant by '" + tokens[0] + "'. Try "
+                String unsure = "Unsure what is meant by '" + first + "'. Try "
                         + "'help' to get a list of valid actions.";
                 d.addNotificationEvent(p.getWriter(), unsure);
                 return;
             }
             
-            String[] fakeAction = { "move", tokens[0] };
-            processMove(p, fakeAction);
+            // add in a "move" action before the direction before processing
+            tokens.add(0, "move");
+            processMove(p, tokens);
             return;
         }
 
@@ -228,7 +266,7 @@ public class DungeonProtocol {
         }
     }
 
-    private static void processDrop(Player p, String[] tokens) {
+    private static void processDrop(Player p, ArrayList<String> tokens) {
         String s = getTokensAfterAction(tokens);
 
         try {
@@ -250,12 +288,12 @@ public class DungeonProtocol {
         }
     }
 
-    private static void processExits(Player p, String[] tokens) {
+    private static void processExits(Player p, ArrayList<String> tokens) {
         String desc = DungeonNarrator.describeExits(p.here());
         d.addNotificationEvent(p.getWriter(), desc);
     }
 
-    private static void processGive(Player p, String[] tokens) {
+    private static void processGive(Player p, ArrayList<String> tokens) {
         String s = getTokensAfterAction(tokens);
 
         if (s == null) {
@@ -299,16 +337,18 @@ public class DungeonProtocol {
         }
     }
 
-    private static void processInventory(Player p, String[] tokens) {
+    private static void processInventory(Player p, ArrayList<String> tokens) {
         String desc = DungeonNarrator.describeInventory(p);
         d.addNotificationEvent(p.getWriter(), desc);
     }
 
-    private static void processLook(Player p, String[] tokens) {
-        String tokensAfter = getTokensAfterAction(tokens);
+    private static void processLook(Player p, ArrayList<String> tokens) {
+        String tokensAfter = null;
+        
+        if (tokens != null)
+            tokensAfter = getTokensAfterAction(tokens);
 
         try {
-
             if (tokensAfter == null)
                 u.look(p, "here");
             else
@@ -321,10 +361,10 @@ public class DungeonProtocol {
         }
     }
 
-    private static void processMove(Player p, String[] tokens) {
+    private static void processMove(Player p, ArrayList<String> tokens) {
         try {
             Room here = p.here();
-            Room there = u.movePlayer(p, tokens[1]);
+            Room there = u.movePlayer(p, tokens.get(1));
 
             /*
              * Do narration for players watching this player leave. Because
@@ -344,15 +384,14 @@ public class DungeonProtocol {
             /*
              * Finally, give the player a description of the new room.
              */
-            String[] fakeTokens = { "look", "here" };
-            processLook(p, fakeTokens);
+            processLook(p, null);
 
         } catch (NoSuchDirectionException e) {
             String validDirs =
                     DungeonNarrator.toNaturalList(Direction.values(), false);
             
             String oops = "Unsure which direction is meant " + "by '"
-                    + tokens[1] + "'. The following directions "
+                    + tokens.get(1) + "'. The following directions "
                     + "are recognized: " + validDirs;
             d.addNotificationEvent(p.getWriter(), oops);
         } catch (NoSuchExitException e) {
@@ -362,18 +401,18 @@ public class DungeonProtocol {
         } catch (LockedDoorException e) {
             String oops = "The door is locked, and you don't have the key.";
             d.addNotificationEvent(p.getWriter(), oops);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             String oops = "Specify a direction in which to move.";
             d.addNotificationEvent(p.getWriter(), oops);
         }
     }
 
-    private static void processSay(Player p, String[] tokens) {
+    private static void processSay(Player p, ArrayList<String> tokens) {
         String tokensAfter = getTokensAfterAction(tokens, false);
         u.say(p, tokensAfter);
     }
 
-    private static void processTake(Player p, String[] tokens) {
+    private static void processTake(Player p, ArrayList<String> tokens) {
         String s = getTokensAfterAction(tokens);
 
         try {
@@ -394,12 +433,12 @@ public class DungeonProtocol {
         }
     }
 
-    private static void processUse(Player p, String[] tokens) {
+    private static void processUse(Player p, ArrayList<String> tokens) {
         String oops = "That cannot be used.";
         d.addNotificationEvent(p.getWriter(), oops);
     }
 
-    private static void processWhisper(Player p, String[] tokens) {
+    private static void processWhisper(Player p, ArrayList<String> tokens) {
         String s = getTokensAfterAction(tokens, false);
 
         if (s == null) {
@@ -436,7 +475,7 @@ public class DungeonProtocol {
         }
     }
 
-    private static void processWho(Player p, String[] tokens) {
+    private static void processWho(Player p, ArrayList<String> tokens) {
         Iterator<Player> ps = u.getPlayers();
         int numPlayers = u.getNumberOfPlayers();
 
@@ -465,7 +504,7 @@ public class DungeonProtocol {
 
     }
 
-    private static void processYell(Player p, String[] tokens) {
+    private static void processYell(Player p, ArrayList<String> tokens) {
         String tokensAfter = getTokensAfterAction(tokens, false);
 
         if (tokensAfter == null) {
@@ -493,7 +532,7 @@ public class DungeonProtocol {
         d.addNotificationEvent(p.getWriter(), buf);
     }
     
-    private static String getTokensAfterAction(String[] tokens) {
+    private static String getTokensAfterAction(ArrayList<String> tokens) {
         return getTokensAfterAction(tokens, true);
     }
 
@@ -501,26 +540,28 @@ public class DungeonProtocol {
      * Returns all the tokens after the action as a space-separated string.
      * Returns null if there are no tokens after the action.
      */
-    private static String getTokensAfterAction(String[] tokens,
+    private static String getTokensAfterAction(ArrayList<String> tokens,
             boolean avoidThe)
     {
-        if (tokens.length < 2)
+        int size = tokens.size();
+        if (size < 2)
             return null;
 
         int i;
-        if (avoidThe && tokens[1].equalsIgnoreCase("the"))
+        if (avoidThe && tokens.get(1).equalsIgnoreCase("the"))
             i = 2;
         else
             i = 1;
 
-        String obj = "";
-        for (; i < tokens.length; i++) {
-            obj += tokens[i];
+        StringBuilder rest = new StringBuilder();
+        
+        for (; i < size; i++) {
+            rest.append(tokens.get(i));
 
-            if (i != tokens.length - 1)
-                obj += " ";
+            if (i != size - 1)
+                rest.append(" ");
         }
 
-        return obj;
+        return rest.toString();
     }
 }
