@@ -4,93 +4,9 @@ import java.util.*;
 import com.abreen.dungeon.exceptions.*;
 
 public abstract class Space extends Describable {
-    public static enum Direction {
-        NORTH("north", "n"),
-        NORTHEAST("northeast", "ne"),
-        EAST("east", "e"),
-        SOUTHEAST("southeast", "se"),
-        SOUTH("south", "s"),
-        SOUTHWEST("southwest", "sw"),
-        WEST("west", "w"),
-        NORTHWEST("northwest", "nw"),
-        UP("up"),
-        DOWN("down");
-
-        private String fullName;
-        
-        /**
-         * An array of alternate names that may be used for this space
-         * (e.g., abbreviations or alternate spellings of the name).
-         */
-        private String[] names;
-
-        Direction(String fullName, String... abbreviations) {
-            this.fullName = fullName;
-            this.names = abbreviations;
-        }
-
-        public boolean isThisDirection(String nm) {
-            if (nm.equalsIgnoreCase(fullName))
-                return true;
-
-            for (String name : names)
-                if (name.equalsIgnoreCase(nm))
-                    return true;
-            return false;
-        }
-
-        /**
-         * @deprecated Use toString() instead
-         */
-        public String getName() {
-            return fullName;
-        }
-
-        public String toString() {
-            return fullName;
-        }
-
-    }
-
-    public static String listValidDirections() {
-        String str = "";
-
-        Direction[] dirs = Direction.values();
-
-        for (int i = 0; i < dirs.length; i++) {
-            str += dirs[i].toString();
-
-            if (i + 1 < dirs.length)
-                str += ", ";
-            else
-                str += ".";
-        }
-
-        return str;
-    }
-
     public static final int DEFAULT_EXITS_SIZE = 6;
 
     protected HashMap<Direction, Space> exits;
-
-    public static Direction getDirectionFromString(String s)
-            throws NoSuchDirectionException {
-
-        if (s == null)
-            throw new IllegalArgumentException("direction must be non-null");
-
-        Direction dir = null;
-        for (Direction direction : Direction.values())
-            if (direction.isThisDirection(s)) {
-                dir = direction;
-                break;
-            }
-
-        if (dir == null)
-            throw new NoSuchDirectionException();
-
-        return dir;
-    }
 
     public void addExit(Direction direction, Space sp) {
         if (sp == null)

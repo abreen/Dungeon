@@ -162,9 +162,9 @@ public class DungeonServer {
              * as long as the unseenRooms list is empty, this list is traversed
              * to resolve the remaining references.
              */
-            ArrayList<Triple<String, Space.Direction, String>> unresolved;
+            ArrayList<Triple<String, Direction, String>> unresolved;
             unresolved =
-                    new ArrayList<Triple<String, Space.Direction, String>>();
+                    new ArrayList<Triple<String, Direction, String>>();
 
             String thisRoomID = null;
             try {
@@ -212,8 +212,8 @@ public class DungeonServer {
                         /*
                          * Verify the direction from the file
                          */
-                        Space.Direction dir;
-                        dir = Space.getDirectionFromString(thisDirection);
+                        Direction dir;
+                        dir = Direction.fromString(thisDirection);
                         if (dir == null)
                             throw new InvalidDirectionException(thisDirection);
 
@@ -226,8 +226,8 @@ public class DungeonServer {
                             if (!unseenRooms.contains(toRoomID))
                                 unseenRooms.add(toRoomID);
 
-                            Triple<String, Space.Direction, String> t;
-                            t = new Triple<String, Space.Direction,
+                            Triple<String, Direction, String> t;
+                            t = new Triple<String, Direction,
                                     String>(thisRoomID, dir, toRoomID);
                             unresolved.add(t);
                         }
@@ -254,10 +254,10 @@ public class DungeonServer {
              * not yet parsed at the time. Now loop through the unresolved list
              * to set them up.
              */
-            for (Triple<String, Space.Direction, String> t : unresolved) {
+            for (Triple<String, Direction, String> t : unresolved) {
                 Room fromRoom = knownRooms.get(t.first);
                 Room toRoom = knownRooms.get(t.third);
-                Space.Direction dir = t.second;
+                Direction dir = t.second;
 
                 fromRoom.addExit(dir, toRoom);
             }

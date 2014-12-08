@@ -334,7 +334,7 @@ class DungeonDisplayThread extends Thread {
         
         String firstToken = tokens[0];
         
-        if (!DungeonProtocol.Action.isValidKey(firstToken)) {
+        if (!DungeonProtocol.isValidActionOrDirection(firstToken)) {
             c = TextColor.ANSI.RED;
         }
         

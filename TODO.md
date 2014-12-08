@@ -12,7 +12,6 @@ High priority
 Low priority
 ------------
 *   Fix terminal resizing crash
-*   No action name should be interpreted as "move" action
 *   Replace lots of string concatenation occurrences with StringBuilder
 *   Special replacements need to be optimized
 

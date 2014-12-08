@@ -97,7 +97,7 @@ public class DungeonUniverse implements Serializable {
             LockedDoorException
     {
 
-        Space.Direction direction = Space.getDirectionFromString(dest);
+        Direction direction = Direction.fromString(dest);
         Space destination = p.here().to(direction);
 
         if (destination instanceof Room) {

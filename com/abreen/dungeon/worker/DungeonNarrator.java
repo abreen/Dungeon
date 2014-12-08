@@ -369,7 +369,7 @@ public class DungeonNarrator {
      * @return A string listing the exits
      */
     public static String describeExits(Room r) {
-        Iterator<Map.Entry<Space.Direction, Space>> exits = r
+        Iterator<Map.Entry<Direction, Space>> exits = r
                 .getExitsIterator();
         int size = r.getNumberOfExits();
 
@@ -378,7 +378,7 @@ public class DungeonNarrator {
         if (size == 0)
             return "There's no way out.";
 
-        Map.Entry<Space.Direction, Space> exit = exits.next();
+        Map.Entry<Direction, Space> exit = exits.next();
 
         str += capitalize(toString(exit, StringType.WITH_DEFINITE_ARTICLE));
 
@@ -454,7 +454,7 @@ public class DungeonNarrator {
         return toString(p, StringType.WITHOUT_ARTICLE);
     }
 
-    public static String toString(Map.Entry<Space.Direction, Space> m,
+    public static String toString(Map.Entry<Direction, Space> m,
             StringType t) {
         Space s = m.getValue();
 
@@ -477,24 +477,39 @@ public class DungeonNarrator {
     public static String capitalize(String s) {
         return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
+    
+    /**
+     * Returns a String representation of a list of objects, in narrative style.
+     * Fully generalized to accept an array of any object type and uses the
+     * toString() method. The first item's string representation is capitalized.
+     * 
+     * @param a The array of objects
+     * @return The array's string representation
+     */
+    public static String toNaturalList(Object[] a) {
+        return toNaturalList(a, true);
+    }
 
     /**
      * Returns a String representation of a list of objects, in narrative style.
      * Fully generalized to accept an array of any object type and uses the
      * toString() method.
      * 
-     * @param a
-     *            The array of objects
+     * @param a The array of objects
+     * @param capitalizeFirst Whether to capitalize the first object
      * @return The array's string representation
      */
-    public static String toNaturalList(Object[] a) {
+    public static String toNaturalList(Object[] a, boolean capitalizeFirst) {
         int size = a.length;
         String str = "";
 
         if (size == 0)
             return "Nothing.";
 
-        str += capitalize(a[0].toString());
+        if (capitalizeFirst)
+            str += capitalize(a[0].toString());
+        else
+            str += a[0].toString();
 
         if (size == 1)
             return str + ".";

@@ -100,18 +100,10 @@ public class DungeonProtocol {
             this.keys = keys;
         }
 
-        public boolean isAction(String str) {
+        public boolean isThisAction(String str) {
             for (String key : keys)
                 if (key.equalsIgnoreCase(str))
                     return true;
-            return false;
-        }
-        
-        public static boolean isValidKey(String str) {
-            for (Action a : Action.values())
-                if (a.isAction(str))
-                    return true;
-           
             return false;
         }
     }
@@ -119,6 +111,18 @@ public class DungeonProtocol {
     private static DungeonUniverse u = DungeonServer.universe;
     private static DungeonDispatcher d = DungeonServer.events;
     private static DungeonNarrator n = DungeonServer.narrator;
+    
+    public static boolean isValidActionOrDirection(String s) {
+        for (Action a : Action.values())
+            if (a.isThisAction(s))
+                return true;
+        
+        for (Direction d : Direction.values())
+            if (d.isThisDirection(s))
+                return true;
+        
+        return false;
+    }
 
     /**
      * Processes the supplied input from the supplied player's point of view.
@@ -134,7 +138,8 @@ public class DungeonProtocol {
      * @see DungeonUniverse
      */
     public static void process(Player p, String input)
-            throws PlayerIsQuittingException {
+            throws PlayerIsQuittingException
+    {
 
         if (input.isEmpty())
             return;
@@ -144,16 +149,26 @@ public class DungeonProtocol {
         String[] tokens = input.split("\\s");
 
         Action action = null;
-        for (Action a : Action.values())
-            if (a.isAction(tokens[0])) {
+        for (Action a : Action.values()) {
+            if (a.isThisAction(tokens[0])) {
                 action = a;
                 break;
             }
+        }
 
         if (action == null) {
-            String unsure = "Unsure what is meant by '" + tokens[0] + "'. Try "
-                    + "'help' to get a list of valid actions.";
-            d.addNotificationEvent(p.getWriter(), unsure);
+            // try to interpret it as a direction for a move command
+            try {
+                Direction dir = Direction.fromString(tokens[0]);
+            } catch (NoSuchDirectionException e) {
+                String unsure = "Unsure what is meant by '" + tokens[0] + "'. Try "
+                        + "'help' to get a list of valid actions.";
+                d.addNotificationEvent(p.getWriter(), unsure);
+                return;
+            }
+            
+            String[] fakeAction = { "move", tokens[0] };
+            processMove(p, fakeAction);
             return;
         }
 
@@ -325,9 +340,12 @@ public class DungeonProtocol {
             processLook(p, fakeTokens);
 
         } catch (NoSuchDirectionException e) {
+            String validDirs =
+                    DungeonNarrator.toNaturalList(Direction.values(), false);
+            
             String oops = "Unsure which direction is meant " + "by '"
                     + tokens[1] + "'. The following directions "
-                    + "are recognized: " + Space.listValidDirections();
+                    + "are recognized: " + validDirs;
             d.addNotificationEvent(p.getWriter(), oops);
         } catch (NoSuchExitException e) {
             String oops = "That's not an exit. Try 'exits' for a list of ways "
@@ -431,7 +449,7 @@ public class DungeonProtocol {
                 name = DungeonNarrator.toString(thisPlayer);
 
             lines[i++] = String.format(fmt, name,
-                    n.timeSinceLastAction(thisPlayer));
+                    DungeonNarrator.timeSinceLastAction(thisPlayer));
         }
 
         for (String line : lines)
