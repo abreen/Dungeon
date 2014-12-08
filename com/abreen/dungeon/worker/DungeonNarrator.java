@@ -2,6 +2,7 @@ package com.abreen.dungeon.worker;
 
 import java.util.*;
 import java.util.regex.*;
+
 import com.abreen.dungeon.model.*;
 
 /*
@@ -164,6 +165,44 @@ public class DungeonNarrator {
         return String.valueOf(buffer);
     }
 
+    /**
+     * Returns a string expressing the amount of time since the player last
+     * interacted with the universe.
+     * 
+     * @return A time string
+     */
+    public static String timeSinceLastAction(Player p) {
+        long diff = p.getNumberOfSecondsIdle();
+        long mins, secs;
+
+        if (diff < 60) {
+            if (diff < 5) {
+                return "a moment ago";
+            } else {
+                if (diff == 1)
+                    return "1 second ago";
+                else
+                    return diff + " seconds ago";
+            }
+        } else {
+            String str = "";
+            mins = diff / 60;
+            secs = diff % 60;
+            
+            if (mins == 1)
+                str += "1 minute, ";
+            else
+                str += mins + " minutes, ";
+
+            if (secs == 1)
+                str += "1 second ";
+            else
+                str += secs + " seconds ";
+            
+            return str + "ago";
+        }
+    }
+    
     /**
      * Given a describable ingame object, the method will return a string
      * containing the ingame object or item's description.

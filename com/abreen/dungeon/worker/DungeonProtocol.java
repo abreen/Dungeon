@@ -431,7 +431,7 @@ public class DungeonProtocol {
                 name = DungeonNarrator.toString(thisPlayer);
 
             lines[i++] = String.format(fmt, name,
-                    thisPlayer.getTimeSinceLastAction());
+                    n.timeSinceLastAction(thisPlayer));
         }
 
         for (String line : lines)

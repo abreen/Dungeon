@@ -31,32 +31,6 @@ public class Player extends Describable implements Serializable {
     }
 
     /**
-     * Returns a string expressing the amount of time since the player last
-     * interacted with the universe.
-     * 
-     * @return A time string
-     */
-    public String getTimeSinceLastAction() {
-        long diff = this.getNumberOfSecondsIdle();
-
-        if (diff < 60) {
-            if (diff < 5)
-                return "a moment ago";
-            else
-                return diff + " seconds ago";
-        } else {
-            String str = "";
-
-            if (diff / 60 == 1)
-                str += "1 minute, ";
-            else
-                str += diff / 60 + " minute, ";
-
-            return str + diff % 60 + " seconds ago";
-        }
-    }
-
-    /**
      * Sets the last action timestamp of the player to right now.
      */
     public void updateLastAction() {
