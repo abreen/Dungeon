@@ -182,9 +182,10 @@ public class DungeonProtocol {
     public static void process(Player p, String input)
             throws PlayerIsQuittingException
     {
-
         if (input.isEmpty())
             return;
+        
+        System.out.printf("[%s] %s\n", p.toString(), input);
 
         p.updateLastAction();
 

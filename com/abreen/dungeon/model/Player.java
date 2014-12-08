@@ -38,8 +38,8 @@ public class Player extends Describable implements Serializable {
     }
 
     private void readObject(ObjectInputStream in) throws IOException,
-            ClassNotFoundException {
-
+            ClassNotFoundException
+    {
         in.defaultReadObject();
         this.updateLastAction();
     }
@@ -54,6 +54,10 @@ public class Player extends Describable implements Serializable {
     public Player(String name, Room spawn, PrintWriter out) {
         this(name, spawn);
         this.setWriter(out);
+    }
+    
+    public String toString() {
+        return this.name + "@" + this.here;
     }
 
     public int getInventorySize() {

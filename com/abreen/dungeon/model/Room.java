@@ -133,4 +133,8 @@ public class Room extends Space {
         this(n, d);
         this.isOutside = o;
     }
+    
+    public String toString() {
+        return this.getName();
+    }
 }

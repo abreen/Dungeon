@@ -5,8 +5,6 @@ The following is a list of outstanding bugs that need fixing.
 
 High priority
 -------------
-*   Fully implement actions by implementing and using new concurrent methods
-    in `DungeonUniverse`
 
 
 Low priority
@@ -40,7 +38,6 @@ Planned features
 *   Player states should be saved between logins
 *   Players should be able to author descriptions of their character
 *   "look" action should respond to requests to describe a player in the room
-*   Add server logging features
 *   Add sentence analysis techniques to choose say-verbs based on vocabulary
     in sentence (e.g., 'think' should choose from 'suggests' or 'surmises')
 *   'continues' should be used when a player continues speaking, or the verb

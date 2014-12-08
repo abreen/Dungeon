@@ -285,6 +285,8 @@ public class DungeonDispatcher extends Thread {
         while (true)
             try {
                 Event event = this.eventQueue.take();
+                logEvent(event);
+                
                 PrintWriter[] writers = event.getWriters();
                 for (PrintWriter writer : writers) {
                     // println() should automatically flush
@@ -296,6 +298,16 @@ public class DungeonDispatcher extends Thread {
                 System.out.println("event queue got interrupt");
                 return;
             }
+    }
+    
+    private static void logEvent(Event e) {
+        String cls = e.getClass().getSimpleName();
+        String s = e.toString();
+        
+        if (!(e instanceof NarrationEvent))
+            s = s.substring(0, Math.min(60, s.length()));
+        
+        System.out.println("[" + cls + "] " + s);
     }
 
 }
