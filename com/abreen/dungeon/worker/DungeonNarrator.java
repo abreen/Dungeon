@@ -504,7 +504,7 @@ public class DungeonNarrator {
         String str = "";
 
         if (size == 0)
-            return "Nothing.";
+            return "None.";
 
         if (capitalizeFirst)
             str += capitalize(a[0].toString());

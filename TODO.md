@@ -51,6 +51,7 @@ Planned features
     compasses, or two-way radios
     -   Clocks that reflect real time (but not necessarily set) and whose
         batteries can die
+*   Functionality for hidden exits
 
 
 Feature wishlist

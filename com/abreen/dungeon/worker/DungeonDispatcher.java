@@ -18,18 +18,19 @@ public class DungeonDispatcher extends Thread {
     public static final String ASTERISKS = "*** "; // used for server notices
     public static final String BANGS = "!!! "; // used for server errors
 
-    private static final String SERVER_CLOSING_MESSAGE = "Server closing...";
-    private static final String SERVER_RESTART_MESSAGE = "Server restarting...";
+    private static final StringBuffer SERVER_CLOSING_MESSAGE =
+            new StringBuffer("Server closing...");
+    
+    private static final StringBuffer SERVER_RESTART_MESSAGE =
+            new StringBuffer("Server restarting...");
 
     /**
      * Converts a player iterator (usually produced by methods from
      * DungeonUniverse) to an array containing the player's writers (an ideal
      * form for the inner classes of DungeonDispatcher).
      * 
-     * @param it
-     *            The player iterator with which to select players
-     * @param size
-     *            The number of players over which to iterate
+     * @param it The player iterator with which to select players
+     * @param size The number of players over which to iterate
      * @return An array containing all the players' writers
      */
     public static PrintWriter[] playerIteratorToWriterArray(
@@ -49,15 +50,15 @@ public class DungeonDispatcher extends Thread {
      */
     private abstract class Event {
         protected PrintWriter[] writers;
-        protected String output;
+        protected StringBuffer output;
 
-        public Event(PrintWriter[] w, String s) {
+        public Event(PrintWriter[] w, StringBuffer buf) {
             this.writers = w;
-            this.output = s;
+            this.output = buf;
         }
 
         public String toString() {
-            return this.output;
+            return this.output.toString();
         }
 
         public PrintWriter[] getWriters() {
@@ -71,8 +72,8 @@ public class DungeonDispatcher extends Thread {
      * strings.
      */
     private class NarrationEvent extends Event {
-        public NarrationEvent(PrintWriter[] w, String s) {
-            super(w, s);
+        public NarrationEvent(PrintWriter[] w, StringBuffer buf) {
+            super(w, buf);
         }
     }
 
@@ -80,27 +81,50 @@ public class DungeonDispatcher extends Thread {
      * Adds a narration event to the specified writers with the specified
      * message.
      * 
-     * @param w
-     *            The array of PrintWriters to which to send the message
-     * @param s
-     *            The event message
+     * @param w The array of PrintWriters to which to send the message
+     * @param s The event message (in a StringBuffer)
+     */
+    public void addNarrationEvent(PrintWriter[] w, StringBuffer buf) {
+        this.addEvent(new NarrationEvent(w, buf));
+    }
+    
+    /**
+     * Adds a narration event to the specified writers with the specified
+     * message.
+     * 
+     * @deprecated Use the StringBuffer version instead
+     * 
+     * @param w The array of PrintWriters to which to send the message
+     * @param s The event message (as a string)
      */
     public void addNarrationEvent(PrintWriter[] w, String s) {
-        this.addEvent(new NarrationEvent(w, s));
+        StringBuffer tempBuf = new StringBuffer(s);
+        this.addEvent(new NarrationEvent(w, tempBuf));
     }
 
     /**
      * Adds a narration event to just one writer with the specified message.
      * 
-     * @param w
-     *            The PrintWriter to which to send the message
-     * @param s
-     *            The event message
+     * @param w The PrintWriter to which to send the message
+     * @param s The event message (in a StringBuffer)
+     */
+    public void addNarrationEvent(PrintWriter w, StringBuffer buf) {
+        PrintWriter[] tempWriter = { w };
+        this.addNarrationEvent(tempWriter, buf);
+    }
+    
+    /**
+     * Adds a narration event to just one writer with the specified message.
+     * 
+     * @deprecated Use the StringBuffer version instead
+     * 
+     * @param w The PrintWriter to which to send the message
+     * @param s The event message (as a String)
      */
     public void addNarrationEvent(PrintWriter w, String s) {
-        PrintWriter[] temp = new PrintWriter[1];
-        temp[0] = w;
-        this.addNarrationEvent(temp, s);
+        PrintWriter[] tempWriter = { w };
+        StringBuffer tempBuf = new StringBuffer(s);
+        this.addNarrationEvent(tempWriter, tempBuf);
     }
 
     /**
@@ -111,8 +135,8 @@ public class DungeonDispatcher extends Thread {
      * @see DungeonDispatcher.CHEVRONS
      */
     private class NotificationEvent extends Event {
-        public NotificationEvent(PrintWriter[] w, String s) {
-            super(w, s);
+        public NotificationEvent(PrintWriter[] w, StringBuffer buf) {
+            super(w, buf);
         }
 
         public String toString() {
@@ -124,27 +148,50 @@ public class DungeonDispatcher extends Thread {
      * Adds a notification event to the specified writers with the specified
      * message.
      * 
-     * @param w
-     *            The array of PrintWriters to which to send the message
-     * @param s
-     *            The event message
+     * @param w The array of PrintWriters to which to send the message
+     * @param s The event message (in a StringBuffer)
+     */
+    public void addNotificationEvent(PrintWriter[] w, StringBuffer buf) {
+        this.addEvent(new NotificationEvent(w, buf));
+    }
+    
+    /**
+     * Adds a notification event to the specified writers with the specified
+     * message.
+     * 
+     * @deprecated Use the StringBuffer version instead
+     * 
+     * @param w The array of PrintWriters to which to send the message
+     * @param s The event message (as a String)
      */
     public void addNotificationEvent(PrintWriter[] w, String s) {
-        this.addEvent(new NotificationEvent(w, s));
+        StringBuffer tempBuf = new StringBuffer(s);
+        this.addEvent(new NotificationEvent(w, tempBuf));
     }
 
     /**
      * Adds a notification event to just one writer with the specified message.
      * 
-     * @param w
-     *            The PrintWriter to which to send the message
-     * @param s
-     *            The event message
+     * @param w The PrintWriter to which to send the message
+     * @param s The event message (in a StringBuffer)
+     */
+    public void addNotificationEvent(PrintWriter w, StringBuffer buf) {
+        PrintWriter[] temp = { w };
+        this.addNotificationEvent(temp, buf);
+    }
+    
+    /**
+     * Adds a notification event to just one writer with the specified message.
+     * 
+     * @deprecated Use the StringBuffer version instead
+     * 
+     * @param w The PrintWriter to which to send the message
+     * @param s The event message (as a String)
      */
     public void addNotificationEvent(PrintWriter w, String s) {
-        PrintWriter[] temp = new PrintWriter[1];
-        temp[0] = w;
-        this.addNotificationEvent(temp, s);
+        PrintWriter[] temp = { w };
+        StringBuffer tempBuf = new StringBuffer(s);
+        this.addNotificationEvent(temp, tempBuf);
     }
 
     /**
@@ -155,10 +202,10 @@ public class DungeonDispatcher extends Thread {
      * @see DungeonDispatcher.ASTERISKS
      */
     private class ServerNotificationEvent extends Event {
-        public ServerNotificationEvent(String s) {
+        public ServerNotificationEvent(StringBuffer buf) {
             super(playerIteratorToWriterArray(
                     DungeonServer.universe.getPlayers(),
-                    DungeonServer.universe.getNumberOfPlayers()), s);
+                    DungeonServer.universe.getNumberOfPlayers()), buf);
         }
 
         public String toString() {
@@ -169,11 +216,22 @@ public class DungeonDispatcher extends Thread {
     /**
      * Adds a server notification event with the specified message.
      * 
-     * @param s
-     *            The event message
+     * @param s The event message (in a StringBuffer)
+     */
+    public void addServerNotificationEvent(StringBuffer buf) {
+        this.addEvent(new ServerNotificationEvent(buf));
+    }
+    
+    /**
+     * Adds a server notification event with the specified message.
+     * 
+     * @deprecated Use the StringBuffer version instead
+     * 
+     * @param s The event message (as a String)
      */
     public void addServerNotificationEvent(String s) {
-        this.addEvent(new ServerNotificationEvent(s));
+        StringBuffer tempBuf = new StringBuffer(s);
+        this.addEvent(new ServerNotificationEvent(tempBuf));
     }
 
     /**
@@ -185,23 +243,34 @@ public class DungeonDispatcher extends Thread {
      * @see DungeonDispatcher.BANGS
      */
     private class ServerErrorEvent extends ServerNotificationEvent {
-        public ServerErrorEvent(String s) {
-            super(s);
+        public ServerErrorEvent(StringBuffer buf) {
+            super(buf);
         }
 
         public String toString() {
-            return BANGS + this.output;
+            return BANGS + super.toString();
         }
+    }
+    
+    /**
+     * Adds a server error event with the specified message.
+     * 
+     * @param s The event message (in a StringBuffer)
+     */
+    public void addServerErrorEvent(StringBuffer buf) {
+        this.addEvent(new ServerErrorEvent(buf));
     }
 
     /**
      * Adds a server error event with the specified message.
      * 
-     * @param s
-     *            The event message
+     * @deprecated Use the StringBuffer version instead
+     * 
+     * @param s The event message (as a String)
      */
     public void addServerErrorEvent(String s) {
-        this.addEvent(new ServerErrorEvent(s));
+        StringBuffer tempBuf = new StringBuffer(s);
+        this.addEvent(new ServerErrorEvent(tempBuf));
     }
 
     /**

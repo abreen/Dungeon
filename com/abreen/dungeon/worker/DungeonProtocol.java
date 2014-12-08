@@ -1,8 +1,10 @@
 package com.abreen.dungeon.worker;
 
 import java.util.*;
+
 import com.abreen.dungeon.exceptions.*;
 import com.abreen.dungeon.model.*;
+import com.abreen.dungeon.util.*;
 import com.abreen.dungeon.DungeonServer;
 
 public class DungeonProtocol {
@@ -11,19 +13,19 @@ public class DungeonProtocol {
         /**
          * The action a player issues to move from one room to another.
          */
-        MOVE("m", "move", "go", "walk"),
+        MOVE("<direction>", "move", "m", "go", "walk"),
 
         /**
          * The action a player issues to take an item from the room. The item is
          * then removed from the room and placed in the player's inventory.
          */
-        TAKE("t", "take", "get"),
+        TAKE("<item name>", "take", "t"),
 
         /**
          * The action a player issues to drop an item from the player's
          * inventory. The item is then placed in the room.
          */
-        DROP("d", "drop"),
+        DROP("<item name>", "drop"),
 
         /**
          * The action a player issues to give an item to another player. The two
@@ -31,44 +33,44 @@ public class DungeonProtocol {
          * player's inventory and then placed in the receiving player's
          * inventory.
          */
-        GIVE("g", "give"),
+        GIVE("<item name> to <player name>", "give"),
 
         /**
          * The action a player issues to be sent a description of the current
          * room or an item in the room or the player's inventory.
          */
-        LOOK("l", "look", "describe"),
+        LOOK("[<space, item, or player name>]", "look", "l"),
 
         /**
          * The action a player issues to be sent a list of items currently in
          * the player's inventory.
          */
-        INVENTORY("i", "inventory"),
+        INVENTORY("", "inventory", "i"),
 
         /**
          * The action a player issues to be sent a list of exits out of the
          * current room.
          */
-        EXITS("e", "exits"),
+        EXITS("", "exits", "e"),
 
         /**
          * The action a player issues to speak. The message is then sent to
          * other players in the current room.
          */
-        SAY("s", "say", "talk"),
+        SAY("[<message>]", "say", "s"),
 
         /**
          * The action a player issues to yell. The message is sent to players in
          * the current room and adjacent rooms.
          */
-        YELL("y", "yell", "shout"),
+        YELL("<message>", "yell", "y", "shout"),
 
         /**
          * The action a player issues to whisper to another player. The other
          * player must be in the same room. The message is only seen by the
          * receiving player.
          */
-        WHISPER("w", "whisper"),
+        WHISPER("<message> to <player name>", "whisper", "w"),
 
         /**
          * The action a player issues to use an item in the room or in the
@@ -76,34 +78,42 @@ public class DungeonProtocol {
          * 
          * @see UseableItem
          */
-        USE("u", "use"),
+        USE("<item name>", "use", "u"),
 
         /**
          * The command a player issues to get a listing of acceptable commands.
          */
-        HELP("help"),
+        HELP("", "help"),
 
         /**
          * The command a player issues to get a listing of currently connected
          * players.
          */
-        WHO("who"),
+        WHO("", "who"),
 
         /**
          * The command a player issues to disconnect.
          */
-        QUIT("quit");
+        QUIT("", "quit");
 
-        private String[] keys;
+        private String usage;           // usage printed in help message
+        private String name;            // e.g., "move"
+        private String[] otherNames;    // other synonyms or abbreviations
 
-        Action(String... keys) {
-            this.keys = keys;
+        Action(String usage, String name, String... otherNames) {
+            this.usage = usage;
+            this.name = name;
+            this.otherNames = otherNames;
         }
 
         public boolean isThisAction(String str) {
-            for (String key : keys)
-                if (key.equalsIgnoreCase(str))
+            if (str.equalsIgnoreCase(name))
+                return true;
+            
+            for (String other : otherNames)
+                if (str.equalsIgnoreCase(other))
                     return true;
+            
             return false;
         }
     }
@@ -213,11 +223,9 @@ public class DungeonProtocol {
             return;
         case HELP:
         default:
-            for (String s : usage())
-                d.addNotificationEvent(p.getWriter(), s);
+            processHelp(p);
             return;
         }
-
     }
 
     private static void processDrop(Player p, String[] tokens) {
@@ -469,6 +477,22 @@ public class DungeonProtocol {
         u.yell(p, tokensAfter);
     }
     
+    private static void processHelp(Player p) {
+        StringBuffer buf = new StringBuffer(1024);
+        String fmt = "%-16s%-36s%s\n";
+        int numChevrons = DungeonDispatcher.CHEVRONS.length();
+        String fmt2 = Strings.repeat(" ", numChevrons) + fmt;
+        
+        buf.append(String.format(fmt, "COMMAND", "USAGE", "SYNONYMS"));
+        
+        for (Action a : Action.values()) {
+            String synonyms = Strings.join(a.otherNames, ", ");
+            buf.append(String.format(fmt2, a.name, a.usage, synonyms));
+        }
+        
+        d.addNotificationEvent(p.getWriter(), buf);
+    }
+    
     private static String getTokensAfterAction(String[] tokens) {
         return getTokensAfterAction(tokens, true);
     }
@@ -498,19 +522,5 @@ public class DungeonProtocol {
         }
 
         return obj;
-    }
-
-    private static String[] usage() {
-        String[] z = { "ACTION               OBJECT        INDIRECT OBJECT",
-                "[{m,move,go,walk}]   <direction>",
-                "{t,take,get}         <object>", "{d,drop}",
-                "{g,give}             <object>      to <player>",
-                "{l,look,describe}    [<object>]", "{i,inventory}",
-                "{e,exits}", "{s,say,talk}         [<string>]",
-                "{y,yell,shout}       <string>",
-                "{w,whisper}          <string>      to <player>",
-                "{u,use}              <object in inventory>", "SERVER ACTION",
-                "help", "who", "quit" };
-        return z;
     }
 }
