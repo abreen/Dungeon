@@ -307,7 +307,7 @@ public class DungeonDispatcher extends Thread {
         if (!(e instanceof NarrationEvent))
             s = s.substring(0, Math.min(60, s.length()));
         
-        System.out.println("[" + cls + "] " + s);
+        System.out.printf("← %s (%s)\n", s, cls);
     }
 
 }

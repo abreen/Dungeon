@@ -185,7 +185,7 @@ public class DungeonProtocol {
         if (input.isEmpty())
             return;
         
-        System.out.printf("[%s] %s\n", p.toString(), input);
+        System.out.printf("%s → %s\n", p.toString(), input);
 
         p.updateLastAction();
 
@@ -458,7 +458,7 @@ public class DungeonProtocol {
         int indirectIndex = s.lastIndexOf(" to ");
 
         if (indirectIndex == -1) {
-            String oops = "You didn't specify a recipient, so you whipsered to "
+            String oops = "You didn't specify a recipient, so you whispered to "
                     + "yourself.";
             d.addNotificationEvent(p.getWriter(), oops);
             return;

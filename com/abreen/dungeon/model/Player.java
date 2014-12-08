@@ -57,7 +57,7 @@ public class Player extends Describable implements Serializable {
     }
     
     public String toString() {
-        return this.name + "@" + this.here;
+        return this.name + " (in " + this.here.getName() + ")";
     }
 
     public int getInventorySize() {
