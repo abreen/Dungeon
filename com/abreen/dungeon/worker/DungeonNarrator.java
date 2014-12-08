@@ -28,30 +28,6 @@ public class DungeonNarrator {
         this.r = new Random(seed);
     }
 
-    public static void main(String[] args) {
-        DungeonNarrator n = new DungeonNarrator();
-        System.out.println(n.narrateMoveToRoom("James", "the hallway"));
-        System.out.println(n.narrateMoveInDirection("Sana", "northeast"));
-        System.out.println(n.narrateTake("Jeffery", "the key"));
-        System.out.println(n.narrateDrop("Karl", "the notebook"));
-        System.out.println(n.narrateGive("Moritz", "the pen", "Georg"));
-        System.out.println(n.narrateSay("Jason", "I like pancakes."));
-        System.out.println(n.narrateSay("Amalia",
-                "I'd like some water, because I'm thirsty."));
-        System.out.println(n.narrateSay("Chris",
-                "Either we leave now, or we leave in a couple minutes."));
-        System.out.println(n.narrateSay("Tomas",
-                "If I were to stay behind, would you guys wait for me?"));
-        System.out.println(n.narrateSay("Tomas",
-                "Would you guys wait for me if I were to stay behind?"));
-        System.out.println(n.narrateSay("Alex", ""));
-        System.out.println(n.narrateYell("Rachel", "Help me!"));
-        System.out.println(n.narrateDistantYell("This is outrageous!"));
-        
-        System.out.println(n.prettify("\"Hello, there!\""));
-        System.out.println(n.prettify("\"John said, \'What's wrong?\'\""));
-    }
-
     public static enum StringType {
         WITH_ARTICLE,
         WITH_DEFINITE_ARTICLE,
@@ -1149,4 +1125,27 @@ public class DungeonNarrator {
             new Phrase("\"%s\", from a distance.", PhraseElement.QUOTATION)
     };
 
+    public static void main(String[] args) {
+        DungeonNarrator n = new DungeonNarrator();
+        System.out.println(n.narrateMoveToRoom("James", "the hallway"));
+        System.out.println(n.narrateMoveInDirection("Sana", "northeast"));
+        System.out.println(n.narrateTake("Jeffery", "the key"));
+        System.out.println(n.narrateDrop("Karl", "the notebook"));
+        System.out.println(n.narrateGive("Moritz", "the pen", "Georg"));
+        System.out.println(n.narrateSay("Jason", "I like pancakes."));
+        System.out.println(n.narrateSay("Amalia",
+                "I'd like some water, because I'm thirsty."));
+        System.out.println(n.narrateSay("Chris",
+                "Either we leave now, or we leave in a couple minutes."));
+        System.out.println(n.narrateSay("Tomas",
+                "If I were to stay behind, would you guys wait for me?"));
+        System.out.println(n.narrateSay("Tomas",
+                "Would you guys wait for me if I were to stay behind?"));
+        System.out.println(n.narrateSay("Alex", ""));
+        System.out.println(n.narrateYell("Rachel", "Help me!"));
+        System.out.println(n.narrateDistantYell("This is outrageous!"));
+        
+        System.out.println(n.prettify("\"Hello, there!\""));
+        System.out.println(n.prettify("\"John said, \'What's wrong?\'\""));
+    }
 }
