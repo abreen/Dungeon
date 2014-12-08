@@ -17,6 +17,11 @@ public abstract class Space extends Describable {
         DOWN("down");
 
         private String fullName;
+        
+        /**
+         * An array of alternate names that may be used for this space
+         * (e.g., abbreviations or alternate spellings of the name).
+         */
         private String[] names;
 
         Direction(String fullName, String... abbreviations) {

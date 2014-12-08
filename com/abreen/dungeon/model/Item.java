@@ -1,7 +1,6 @@
 package com.abreen.dungeon.model;
 
 public class Item extends Describable {
-    public static final char[] VOWELS = { 'a', 'e', 'i', 'o', 'u' };
     public static final boolean DEFAULT_CARRYABILITY = false;
 
     protected boolean carryable;
@@ -20,11 +19,12 @@ public class Item extends Describable {
         this.name = n;
 
         char first = n.charAt(0);
-        for (char element : Item.VOWELS)
+        for (char element : Describable.VOWELS) {
             if (element == first) {
                 this.startsWithVowel = true;
                 break;
             }
+        }
 
         this.description = d;
         this.carryable = DEFAULT_CARRYABILITY;

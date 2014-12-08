@@ -26,6 +26,7 @@ package com.abreen.dungeon.model;
  * @author Alexander Breen <alexander.breen@gmail.com>
  */
 public abstract class Describable {
+    public static final char[] VOWELS = { 'a', 'e', 'i', 'o', 'u' };
 
     /**
      * Specification of possible genders used when formulating string
@@ -48,7 +49,7 @@ public abstract class Describable {
     protected boolean startsWithVowel;
 
     /**
-     * The gender of the object being described.
+     * The grammatical gender of the object being described.
      */
     protected Gender gender;
 

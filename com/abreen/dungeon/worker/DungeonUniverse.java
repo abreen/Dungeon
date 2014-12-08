@@ -252,7 +252,7 @@ public class DungeonUniverse implements Serializable {
             if (desc != null)
                 DungeonServer.events.addNotificationEvent(p.getWriter(), desc);
 
-        } else
+        } else {
             /*
              * The player specified an object in the room or in the player's own
              * inventory
@@ -261,6 +261,7 @@ public class DungeonUniverse implements Serializable {
                 Item item = p.here().getItemByName(s);
                 DungeonServer.events.addNotificationEvent(p.getWriter(),
                         DungeonNarrator.describe(item));
+            
             } catch (NoSuchItemException e) {
                 /*
                  * Try looking in the player's inventory for the item
@@ -270,6 +271,7 @@ public class DungeonUniverse implements Serializable {
                         + DungeonNarrator.describe(item);
                 DungeonServer.events.addNotificationEvent(p.getWriter(), desc);
             }
+        }
     }
 
     public synchronized void say(Player p, String s) {

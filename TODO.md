@@ -11,12 +11,11 @@ High priority
 
 Low priority
 ------------
-*   The `toString` method in the `Item` class should concatenate article
-    and noun
-*   Terminal resizing causes crash
+*   Fix terminal resizing crash
 *   'who' command does not pluralize multiple minutes
 *   No action name should be interpreted as "move" action
 *   Replace lots of string concatenation occurrences with StringBuilder
+*   Special replacements need to be optimized
 
 
 
