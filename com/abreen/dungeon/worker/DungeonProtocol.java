@@ -484,15 +484,15 @@ public class DungeonProtocol {
 
     private static void processWho(Player p, ArrayList<String> tokens) {
         Iterator<Player> ps = u.getPlayers();
-        int numPlayers = u.getNumberOfPlayers();
 
-        String[] lines = new String[numPlayers + 1];
+        StringBuilder buf = new StringBuilder(DEFAULT_BUFFER_SIZE);
         
-        String fmt = "%-32s%s";
+        String fmt = "%-32s%s\n";
+        int numChevrons = DungeonDispatcher.CHEVRONS.length();
+        String fmt2 = Strings.repeat(" ", numChevrons) + fmt;
 
-        lines[0] = String.format(fmt, "PLAYER", "LAST HEARD FROM");
+        buf.append(String.format(fmt, "PLAYER", "LAST HEARD FROM"));
 
-        int i = 1;
         while (ps.hasNext()) {
             Player thisPlayer = ps.next();
 
@@ -502,12 +502,13 @@ public class DungeonProtocol {
             else
                 name = DungeonNarrator.toString(thisPlayer);
 
-            lines[i++] = String.format(fmt, name,
+            String s = String.format(fmt2, name,
                     DungeonNarrator.timeSinceLastAction(thisPlayer));
+            
+            buf.append(s);
         }
-
-        for (String line : lines)
-            d.addNotificationEvent(p.getWriter(), line);
+        
+        d.addNotificationEvent(p.getWriter(), buf);
 
     }
 
@@ -526,6 +527,7 @@ public class DungeonProtocol {
     private static void processHelp(Player p) {
         StringBuilder buf = new StringBuilder(1024);
         String fmt = "%-16s%-36s%s\n";
+        
         int numChevrons = DungeonDispatcher.CHEVRONS.length();
         String fmt2 = Strings.repeat(" ", numChevrons) + fmt;
         
