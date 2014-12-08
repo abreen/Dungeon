@@ -208,9 +208,10 @@ public class DungeonProtocol {
             try {
                 Direction.fromString(first);
             } catch (NoSuchDirectionException e) {
-                String unsure = "Unsure what is meant by '" + first + "'. Try "
-                        + "'help' to get a list of valid actions.";
-                d.addNotificationEvent(p.getWriter(), unsure);
+                String unsure = "Unsure what is meant by \"" + first + "\". " +
+                        "Try \"help\" to get a list of valid actions.";
+                StringBuilder buf = new StringBuilder(unsure);
+                d.addNotificationEvent(p.getWriter(), buf);
                 return;
             }
             

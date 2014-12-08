@@ -11,6 +11,7 @@ import com.abreen.dungeon.model.*;
  */
 public class DungeonNarrator {
     private static final long DEFAULT_RANDOM_SEED = 6;
+    private static final int DEFAULT_BUFFER_SIZE = 2048;
     
     private static final char LEFT_DOUBLE_QUOTE = '\u201c';
     private static final char RIGHT_DOUBLE_QUOTE = '\u201d';
@@ -964,7 +965,7 @@ public class DungeonNarrator {
         public void map(PhraseElement pe, String s) {
             this.mappings.put(pe, s);
         }
-
+        
         public String toString() {
             if (this.elements.length != this.mappings.size())
                 throw new IllegalArgumentException("too few mappings");
