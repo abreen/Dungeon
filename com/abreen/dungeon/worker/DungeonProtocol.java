@@ -478,7 +478,7 @@ public class DungeonProtocol {
     }
     
     private static void processHelp(Player p) {
-        StringBuffer buf = new StringBuffer(1024);
+        StringBuilder buf = new StringBuilder(1024);
         String fmt = "%-16s%-36s%s\n";
         int numChevrons = DungeonDispatcher.CHEVRONS.length();
         String fmt2 = Strings.repeat(" ", numChevrons) + fmt;
