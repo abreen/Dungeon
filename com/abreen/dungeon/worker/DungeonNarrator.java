@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.regex.*;
 
 import com.abreen.dungeon.model.*;
+import com.abreen.dungeon.state.PlayerState;
 
 /*
  * Provides static methods that provide varied and interesting English
@@ -335,6 +336,71 @@ public class DungeonNarrator {
         }
 
         return str;
+    }
+    
+    /**
+     * Given a player object, this method will return a string describing
+     * the player's current state.
+     * 
+     * @param p The player whose state to check
+     * @return A string describing their state
+     */
+    public static String describePlayerState(Player p) {
+        ArrayList<String> statuses = new ArrayList<String>();
+        
+        switch (p.state.fatigueLevel(4)) {
+        case 4:
+            statuses.add("exhausted");
+            break;
+        case 3:
+            statuses.add("really tired");
+            break;
+        case 2:
+            statuses.add("tired");
+            break;
+        case 1:
+            statuses.add("a bit tired");
+            break;
+        default:
+        case 0:
+            statuses.add("well-rested");
+        }
+        
+        switch (p.state.hungerLevel(4)) {
+        case 4:
+            statuses.add("starving");
+            break;
+        case 3:
+            statuses.add("very hungry");
+            break;
+        case 2:
+            statuses.add("hungry");
+            break;
+        case 1:
+            statuses.add("a bit hungry");
+            break;
+        default:
+        case 0:
+        }
+        
+        switch (p.state.hungerLevel(4)) {
+        case 4:
+            statuses.add("dehydrated");
+            break;
+        case 3:
+            statuses.add("really thirsty");
+            break;
+        case 2:
+            statuses.add("thirsty");
+            break;
+        case 1:
+            statuses.add("a bit thirsty");
+            break;
+        default:
+        case 0:
+        }
+        
+        return toNaturalList(statuses.toArray());
     }
 
     /**

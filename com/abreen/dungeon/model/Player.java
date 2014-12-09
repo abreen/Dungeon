@@ -2,21 +2,24 @@ package com.abreen.dungeon.model;
 
 import java.util.*;
 import java.io.*;
-import com.abreen.dungeon.exceptions.*;
 
-public class Player extends Describable implements Serializable {
+import com.abreen.dungeon.exceptions.*;
+import com.abreen.dungeon.state.*;
+
+public class Player extends Describable implements Serializable, Stateful {
     private static final long serialVersionUID = 1L;
     
     private Room here;
     private Hashtable<String, Item> inventory;
     private PrintWriter out;
+    
+    public final PlayerState state;
 
     /**
      * The Unix timestamp referring to the last time the player made an action.
      */
     private transient long lastActionTimestamp;
 
-    @Override
     public String getDescription() {
         return this.name;
     }
@@ -49,6 +52,8 @@ public class Player extends Describable implements Serializable {
         this.here = spawn;
         this.inventory = new Hashtable<String, Item>();
         this.updateLastAction();
+        
+        this.state = new PlayerState();
     }
 
     public Player(String name, Room spawn, PrintWriter out) {
@@ -131,5 +136,11 @@ public class Player extends Describable implements Serializable {
             throw new RuntimeException("writer already null");
 
         this.out = null;
+    }
+    
+    public void tick() {
+        state.fatigue++;
+        state.hunger++;
+        state.thirst++;
     }
 }

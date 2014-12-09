@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 import java.net.*;
 
+import com.abreen.dungeon.state.DungeonGameTick;
 import com.abreen.dungeon.util.*;
 import com.abreen.dungeon.worker.*;
 import com.abreen.dungeon.model.*;
@@ -19,6 +20,7 @@ public class DungeonServer {
 
     public static DungeonUniverse universe;
     public static DungeonDispatcher events;
+    public static DungeonGameTick tick;
     public static DungeonNarrator narrator;
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -116,6 +118,7 @@ public class DungeonServer {
              */
             boolean doWeather = false;
             String spawnRoomID = null;
+            int timescale = -1;
             try {
                 System.out.println("\treading preamble");
 
@@ -127,6 +130,9 @@ public class DungeonServer {
 
                 spawnRoomID = (String) validateAndGet(preamble, "spawn",
                         String.class);
+                
+                timescale = (Integer) validateAndGet(preamble, "timescale",
+                        Integer.class);
 
             } catch (Exception e) {
                 System.err.println("DungeonServer: failed parsing preamble ("
@@ -268,7 +274,7 @@ public class DungeonServer {
              */
 
             Room spawnRoom = knownRooms.get(spawnRoomID);
-            universe = new DungeonUniverse(spawnRoom, doWeather,
+            universe = new DungeonUniverse(spawnRoom, doWeather, timescale,
                     knownRooms.values());
 
             universeFile.close();
@@ -290,6 +296,17 @@ public class DungeonServer {
         }
 
         System.out.println("started narrator");
+        
+        /* Start the game tick */
+        try {
+            tick = new DungeonGameTick();
+            tick.start();
+        } catch (Exception e) {
+            System.err.println("DungeonServer: failed starting game tick");
+            System.exit(3);
+        }
+
+        System.out.println("started game tick");
 
         /* Start accepting events */
         try {

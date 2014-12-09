@@ -5,6 +5,8 @@ The following is a list of outstanding bugs that need fixing.
 
 High priority
 -------------
+*   Server should serialize/deserialize saved worlds
+*   Player states should be saved between logins
 
 
 Low priority
@@ -12,6 +14,11 @@ Low priority
 *   Fix terminal resizing crash
 *   Replace lots of string concatenation occurrences with StringBuilder
 *   Special replacements need to be optimized
+*   Add player status variables
+    -   Events might be triggered after ticks (e.g., stomach growls)
+    -   Sickness
+        *   condition of each major part (skeleton)
+        *   blood loss level (?)
 
 
 
@@ -24,18 +31,7 @@ Planned features
     -   If client could download and parse world file, then it could present
         room descriptions faster and more reliably to player
 *   Add scenes
-*   Add server ticks to support game time
-    -   Game time multiplier should be variable for testing purposes
-*   Add player status variables
-    -   Fatigue
-    -   Body temperature
-    -   Hunger
-    -   Sickness
-        *   condition of each major part (skeleton)
-        *   blood loss level
 *   Server/client should exchange versions before connecting
-*   Server should serialize/deserialize saved worlds
-*   Player states should be saved between logins
 *   Players should be able to author descriptions of their character
 *   "look" action should respond to requests to describe a player in the room
 *   Add sentence analysis techniques to choose say-verbs based on vocabulary

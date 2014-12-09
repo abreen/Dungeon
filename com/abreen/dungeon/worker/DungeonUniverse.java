@@ -2,17 +2,23 @@ package com.abreen.dungeon.worker;
 
 import java.util.*;
 import java.io.*;
+
 import com.abreen.dungeon.DungeonServer;
 import com.abreen.dungeon.exceptions.*;
 import com.abreen.dungeon.model.*;
+import com.abreen.dungeon.state.Stateful;
+import com.abreen.dungeon.state.TimeOfDay;
 
-public class DungeonUniverse implements Serializable {
+public class DungeonUniverse implements Serializable, Stateful {
     private static final long serialVersionUID = 1L;
 
     private Collection<Room> rooms;
     private Hashtable<String, Player> players;
     private Room spawnPoint;
     private boolean doWeather;
+    private int timescale;
+    
+    private TimeOfDay tod;
 
     /*
      * Loads a boring universe.
@@ -22,11 +28,17 @@ public class DungeonUniverse implements Serializable {
         this.players = new Hashtable<String, Player>();
     }
 
-    public DungeonUniverse(Room spawn, boolean weather, Collection<Room> sps) {
+    public DungeonUniverse(Room spawn, boolean weather, int timescale,
+            Collection<Room> sps)
+    {
         this();
         this.spawnPoint = spawn;
         this.doWeather = weather;
+        this.timescale = timescale;
         this.rooms = sps;
+        
+        // default initial time of day: noon
+        this.tod = new TimeOfDay(12, 0, 0);
     }
 
     public boolean doWeather() {
@@ -35,6 +47,14 @@ public class DungeonUniverse implements Serializable {
 
     public boolean hasSavedState(String name) {
         return false;
+    }
+    
+    public int getTimescale() {
+        return this.timescale;
+    }
+    
+    public void tick() {
+        this.tod.addSeconds(1);
     }
 
     /*

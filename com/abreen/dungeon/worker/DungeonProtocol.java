@@ -81,6 +81,12 @@ public class DungeonProtocol {
          * @see UseableItem
          */
         USE("<item name>", "use", "u"),
+        
+        /**
+         * The action a player issues to determine the player's current state
+         * (e.g. current hunger level).
+         */
+        STATE("", "state"),
 
         /**
          * The command a player issues to get a listing of acceptable commands.
@@ -257,6 +263,9 @@ public class DungeonProtocol {
             return;
         case USE:
             processUse(p, tokens);
+            return;
+        case STATE:
+            processState(p, tokens);
             return;
         case WHO:
             processWho(p, tokens);
@@ -443,6 +452,11 @@ public class DungeonProtocol {
     private static void processUse(Player p, ArrayList<String> tokens) {
         String oops = "That cannot be used.";
         d.addNotificationEvent(p.getWriter(), oops);
+    }
+    
+    private static void processState(Player p, ArrayList<String> tokens) {
+        String state = DungeonNarrator.describePlayerState(p);
+        d.addNotificationEvent(p.getWriter(), state);
     }
 
     private static void processWhisper(Player p, ArrayList<String> tokens) {
