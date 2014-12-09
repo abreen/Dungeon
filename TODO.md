@@ -50,6 +50,3 @@ Planned features
 Feature wishlist
 ================
 *   Servers should have customizable welcome and farewell messages
-*   Servers should have a timer to support time-based actions
-    -   In-game weather
-    -   In-game day and night
