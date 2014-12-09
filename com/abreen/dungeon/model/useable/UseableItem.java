@@ -1,4 +1,6 @@
-package com.abreen.dungeon.model;
+package com.abreen.dungeon.model.useable;
+
+import com.abreen.dungeon.model.Item;
 
 public class UseableItem extends Item implements Useable {
     private Useable useMethodObject;
