@@ -6,11 +6,17 @@ import java.io.*;
 import com.abreen.dungeon.DungeonServer;
 import com.abreen.dungeon.exceptions.*;
 import com.abreen.dungeon.model.*;
+import com.abreen.dungeon.random.*;
+import com.abreen.dungeon.state.DayPart;
 import com.abreen.dungeon.state.Stateful;
 import com.abreen.dungeon.state.TimeOfDay;
+import com.abreen.dungeon.state.Weather;
+import com.abreen.dungeon.util.Strings;
 
 public class DungeonUniverse implements Serializable, Stateful {
     private static final long serialVersionUID = 1L;
+    
+    private static final double WEATHER_INTERVAL = 0.00005;
 
     private Collection<Room> rooms;
     private Hashtable<String, Player> players;
@@ -19,6 +25,9 @@ public class DungeonUniverse implements Serializable, Stateful {
     private int timescale;
     
     public final TimeOfDay tod;
+    
+    public Weather weather;
+    public TimeOfDay weatherChangeTime;
 
     /*
      * Loads a boring universe.
@@ -27,6 +36,8 @@ public class DungeonUniverse implements Serializable, Stateful {
         this.rooms = new ArrayList<Room>();
         this.players = new Hashtable<String, Player>();
         this.tod = new TimeOfDay(12, 0, 0);
+        this.weather = randomWeather();
+        this.weatherChangeTime = randomChangeTime();
     }
 
     public DungeonUniverse(Room spawn, boolean weather, int timescale,
@@ -52,7 +63,45 @@ public class DungeonUniverse implements Serializable, Stateful {
     }
     
     public void tick() {
-        this.tod.addSeconds(1);
+        tod.addSecond();
+        
+        if (doWeather) {
+            if (tod.equals(weatherChangeTime)) {
+                Weather oldWeather = weather;
+                weather = randomWeather();
+                
+                if (weather != oldWeather) {
+                    // send narration of the weather change
+                    String narr = DungeonServer.narrator.narrateWeatherChange(
+                            oldWeather, weather);
+                    Iterator<Player> ps = players.values().iterator();
+                    PrintWriter[] ws =
+                            DungeonDispatcher.playerIteratorToWriterArray(
+                                    ps, players.size());
+                    
+                    DungeonServer.events.addNarrationEvent(ws, narr);
+                }
+                
+                weatherChangeTime = randomChangeTime();
+            }
+        }
+    }
+    
+    private TimeOfDay randomChangeTime() {
+        Exponential e = new Exponential(WEATHER_INTERVAL);
+        int delta = (int)e.next();
+        
+        TimeOfDay tod2 = new TimeOfDay(tod);
+        tod2.addSeconds(delta);
+        
+        return tod2;
+    }
+    
+    private Weather randomWeather() {
+        Weather[] ws = Weather.values();
+        Uniform u = new Uniform(0, ws.length);
+        int index = (int)u.next();
+        return ws[index];
     }
 
     /*
@@ -261,8 +310,20 @@ public class DungeonUniverse implements Serializable, Stateful {
             throw new IllegalArgumentException();
 
         if (s.equals("here")) {
-            String name = DungeonNarrator.toString(p.here()).toUpperCase();
-            String desc = DungeonNarrator.describe(p.here());
+            Room here = p.here();
+            String name = DungeonNarrator.toString(here).toUpperCase();
+            
+            if (tod.getDayPart() == DayPart.NIGHT)
+                name += " (NIGHT)";
+            
+            String desc = DungeonNarrator.describe(here);
+            
+            int numChevrons = DungeonDispatcher.CHEVRONS.length();
+            String indent = Strings.repeat(" ", numChevrons);
+            
+            String detail = here.getDetail(tod.getDayPart(), weather);
+            desc += "\n" + indent + detail;
+            
             DungeonServer.events.addNotificationEvent(p.getWriter(), name);
             DungeonServer.events.addNotificationEvent(p.getWriter(), desc);
 

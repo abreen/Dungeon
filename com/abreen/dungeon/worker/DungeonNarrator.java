@@ -5,6 +5,7 @@ import java.util.regex.*;
 
 import com.abreen.dungeon.model.*;
 import com.abreen.dungeon.state.PlayerState;
+import com.abreen.dungeon.state.Weather;
 
 /*
  * Provides static methods that provide varied and interesting English
@@ -771,6 +772,34 @@ public class DungeonNarrator {
         p.map(PhraseElement.SUBJECT, who);
         p.map(PhraseElement.OBJECT, whom);
         return p.toString();
+    }
+    
+    public String narrateWeatherChange(Weather prev, Weather next) {
+        if (next == Weather.CLEAR) {
+            switch (prev) {
+            case RAIN:
+                return "It stops raining.";
+            case SNOW:
+                return "It stops snowing.";
+            case FOG:
+                return "The fog clears up.";
+            case CLEAR:
+            default:
+                return null;
+            }
+        }
+        
+        switch (next) {
+        case RAIN:
+            return "It starts to rain.";
+        case SNOW:
+            return "It starts to snow.";
+        case FOG:
+            return "The weather turns to fog.";
+        case CLEAR:
+        default:
+            return null;
+        }
     }
 
     /**

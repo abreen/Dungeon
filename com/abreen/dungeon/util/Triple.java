@@ -20,4 +20,20 @@ public class Triple<X, Y, Z> {
         this.second = y;
         this.third = z;
     }
+    
+    public String toString() {
+        return "(" + first + ", " + second + ", " + third + ")";
+    }
+    
+    public boolean equals(Triple<X, Y, Z> other) {
+        return first.equals(other.first) &&
+               second.equals(other.second) &&
+               third.equals(other.third);
+    }
+    
+    public int hashCode() {
+        return (first == null ? 0 : first.hashCode()) ^
+               (second == null ? 0 : second.hashCode()) ^
+               (third == null ? 0 : third.hashCode());
+    }
 }

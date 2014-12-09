@@ -16,9 +16,9 @@ public class TimeOfDay implements Serializable {
     private static final int MINUTES_IN_HOUR = 60;
     private static final int SECONDS_IN_MINUTE = 60;
     
-    private int hour;
-    private int minute;
-    private int second;
+    public int hour;
+    public int minute;
+    public int second;
     
     public TimeOfDay(int h, int m, int s) {
         if (h < 0 || h > HOURS_IN_DAY)
@@ -41,8 +41,12 @@ public class TimeOfDay implements Serializable {
         this.second = t.second;
     }
     
-    public void addSeconds(int s) {
-        second += s;
+    public boolean equals(TimeOfDay t) {
+        return hour == t.hour && minute == t.minute && second == t.second;
+    }
+    
+    public void addSecond() {
+        second++;
         
         if (second >= SECONDS_IN_MINUTE) {
             second = 0;
@@ -57,6 +61,17 @@ public class TimeOfDay implements Serializable {
         if (hour >= HOURS_IN_DAY) {
             hour = 0;
         }
+    }
+    
+    public void addSeconds(int s) {
+        while (s-- > 0) addSecond();
+    }
+    
+    public DayPart getDayPart() {
+        if (hour > 5 && hour < 18)
+            return DayPart.DAY;
+        else
+            return DayPart.NIGHT;
     }
     
     public String to12hString() {

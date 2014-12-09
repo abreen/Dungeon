@@ -1,7 +1,10 @@
 package com.abreen.dungeon.model;
 
 import java.util.*;
+
 import com.abreen.dungeon.exceptions.*;
+import com.abreen.dungeon.state.*;
+import com.abreen.dungeon.util.*;
 
 public class Room extends Space {
     public static final int DEFAULT_ITEMS_SIZE = 11;
@@ -9,16 +12,8 @@ public class Room extends Space {
 
     private Hashtable<String, Item> items;
     private Hashtable<String, Player> players;
-
-    private boolean isOutside;
-
-    public void setOutside(boolean b) {
-        this.isOutside = b;
-    }
-
-    public boolean isOutside() {
-        return this.isOutside;
-    }
+    
+    private Hashtable<Pair<DayPart, Weather>, String> details;
 
     public void addItem(Item i) {
         this.items.put(i.getName().toLowerCase(), i);
@@ -122,16 +117,31 @@ public class Room extends Space {
         return list.iterator();
 
     }
-
-    public Room(String n, String d) {
-        super(n, d);
-        this.players = new Hashtable<String, Player>(Room.DEFAULT_PLAYERS_SIZE);
-        this.items = new Hashtable<String, Item>(Room.DEFAULT_ITEMS_SIZE);
+    
+    public String getDetail(DayPart h, Weather w) {
+        /**
+         * TODO Why can't I just do details.get(new Pair<>(...)) here?!
+         */
+        
+        for (Map.Entry<Pair<DayPart, Weather>, String> e : details.entrySet()) {
+            Pair<DayPart, Weather> pair = e.getKey();
+            String desc = e.getValue();
+            
+            if (pair.first.equals(h) && pair.second.equals(w))
+                return desc;
+        }
+        
+        return null;
     }
 
-    public Room(String n, String d, boolean o) {
-        this(n, d);
-        this.isOutside = o;
+    public Room(String n, String d,
+            Hashtable<Pair<DayPart, Weather>, String> details)
+    {
+        super(n, d);
+        this.details = details;
+        
+        this.players = new Hashtable<String, Player>(Room.DEFAULT_PLAYERS_SIZE);
+        this.items = new Hashtable<String, Item>(Room.DEFAULT_ITEMS_SIZE);
     }
     
     public String toString() {

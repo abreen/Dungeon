@@ -59,7 +59,7 @@ public class Player extends Describable implements Serializable, Stateful {
          * Get your free watches here!
          */
         Watch w = new Watch("watch", "A pretty basic, battery-powered watch.");
-        this.inventory.put(w.getName(), w);
+        this.addToInventory(w);
     }
 
     public Player(String name, Room spawn, PrintWriter out) {

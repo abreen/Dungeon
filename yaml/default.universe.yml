@@ -12,113 +12,90 @@
 
 weather:    true        # Whether to generate weather in the universe
 spawn:      henge       # The string ID of the room in which players start
-timescale:  1           # Multiplier used to determine the game tick speed
+timescale:  6           # Multiplier used to determine the game tick speed
 
 --- # rooms
 
 henge:
-  name:         henge   # The name of the room, used when describing it
-  isOutside:    true    # Whether to print weather (not yet implemented)
-  description:  >
-    You are in the center of a large henge, perhaps as wide as fifty meters in
-    diameter, with a circle of huge, rectangular, stone monoliths standing
-    proudly around you. The stones have the worn, rounded appearance of century-old
-    building material. From what you can see, the henge is perched atop a rocky
-    cliff, whose northern edge overlooks some water. To the south there is
-    a forest. The air is surprisingly still inside the henge.
+  name: henge
   exits:
-    south: forest_edge
     north: henge_cliff
 
-
-forest_edge:
-  name:         forest edge
-  isOutside:    true
   description:  >
-    The cliff slopes into a smooth hill, covered with healthy grasses. A few
-    meters in front of you there stands a tree with a giant, dark trunk.
-    The lowest branches of the tree are moving slightly in the wind, almost
-    as if the tree were taking breaths. Hundreds (thousands?) of trees span
-    your vision to the south.
-  exits:
-    north: henge
-    south: dense_wood
+    You are in the center of a large henge, perhaps as wide as fifty meters
+    in diameter, with a circle of huge, stone monoliths standing proudly around
+    you. The stones have the worn, rounded appearance of centuries-old building
+    material. From what you can see, the henge is perched atop a rocky cliff,
+    whose northern edge overlooks some water. To the south there is a forest.
 
-dense_wood:
-  name:             dense wood
-  neverUseArticle:  true
-  isOutside:        true
-  description:      >
-    Tall trees with dark trunks surround you. At every gust of slight wind,
-    their ancient, knotted branches sigh and squeak quietly. To the north, you
-    can see sky through gaps in the trunks.
-  exits:
-    north: forest_edge
-    south: deep_wood
-    west: butterfly_tree
+  detail:
+    day:
+      clear: >
+        The air is surprisingly still inside the henge.
+      rain: >
+        Rain darkens the monoliths and puddles inside the stone circle.
+      snow: >
+        Snow gathers atop the monoliths and against their wide bases.
+      fog: >
+        The other end of the henge is obscured by fog, turning the distant
+        monoliths into faint, gray shoulders.
 
-butterfly_tree:
-  name:         butterfly tree
-  isOutside:    true
-  description:  >
-    The trees seem to have grown shorter here, or at least their lowest branches
-    are low enough to prevent you from walking through. An ancient tree stands
-    ahead of you, from which no leaves are growing but instead moss. There are
-    an unusual number of blue butterflies in this area. Maybe they've come here
-    to mate.
-  exits:
-    east: dense_wood
+    night:
+      clear: >
+        It is impossibly quiet and still here. The moonlight shines
+        gently on the monoliths.
+      rain: >
+        It is difficult to see the monoliths in the darkness, but you can
+        hear the rain pattering on their stony heads.
+      snow: >
+        In the darkness you can still see snow piling up on the monoliths.
+      fog: >
+        A cold mist hangs just over the ground, pooling in the center
+        of the henge.
 
-deep_wood:
-  name:             more dense wood
-  neverUseArticle:  true
-  isOutside:        true
-  description:      >
-    You are surrounded by dark trunks. The trees have grown so densely that you
-    cannot see more than a few meters before your eyes meet gnarled bark.
-  exits:
-    north: dense_wood
-    south: forest_clearing
-
-forest_clearing:
-  name:         clearing
-  isOutside:    true
-  description:  >
-    You are standing in a circular clearing, where the trees have ceased growing
-    suddenly, and the ground is pale and covered with light dirt. There are a
-    couple of small rocks in a near-circle near the center. It could have been a
-    campfire, but it seems to be decades old. There's a delicate nest in a tree
-    nearby.
-  exits:
-    north: deep_wood
-    east: cave_entrance
-
-cave_entrance:
-  name:         cave entrance
-  isOutside:    true
-  description:  >
-    A hole rises up out of the ground in front of you, its deep, dark mouth tall
-    enough for one person and ominous enough for you to keep your distance.
-    Occasionally you hear an echo rising from the cave.
-  exits:
-    west: forest_clearing
-
-# todo: you are too scared to enter without a light.
 
 henge_cliff:
-  name:         cliff
-  isOutside:    true
-  description:  >
-    You are at the edge of a majestic cliff, too rocky and windy to support
-    the growth of trees, shrubs, or grass. You can't see the base, but
-    it's probably a rocky shore. A dark, choppy ocean extends almost
-    infinitely into the distance, but you can see a small peninsula far
-    in the east, and a small island with tall trees out to the north.
+  name: cliff
   exits:
     south: henge
 
+  description:  >
+    You are at the edge of a majestic cliff, too rocky and windy to support
+    the growth of trees, shrubs, or grass. You can't see the base, but
+    it's probably a rocky shore. A dark green, choppy ocean extends
+    from the base of the cliff.
 
---- # items (not yet implemented)
+  detail:
+    day:
+      clear: >
+        You can also see a peninsula far to the northeast, and a small
+        island with tall trees to the north.
+      rain: >
+        Rain obscures most of your view outwards. Though the ocean is at the
+        base of the cliff, you can hear the rain pattering on its surface.
+      snow: >
+        Snow whirls out and over the cliff. Past the cliff base you can
+        see only white.
+      fog: >
+        The cliff edge is barely visible through the fog. It would be too
+        easy to fall if you were not careful.
+
+    night:
+      clear: >
+        The shores along a peninsula to the northeast are visible in
+        the moonlight. To the north, a small island with tall trees is
+        visible, obscuring reflections of moonlight behind it.
+      rain: >
+        You cannot see much past the cliff, just darkness and rain.
+      snow: >
+        Snow is gathering at the cliff edge, but it is too dark to see
+        very well.
+      fog: >
+        A cold mist is spilling over the cliff edge, illuminated yellow-gray
+        by moonlight.
+
+
+--- # items
 
 skeleton_key:
   name:         skeleton key

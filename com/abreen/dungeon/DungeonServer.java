@@ -5,6 +5,8 @@ import java.util.*;
 import java.net.*;
 
 import com.abreen.dungeon.state.DungeonGameTick;
+import com.abreen.dungeon.state.DayPart;
+import com.abreen.dungeon.state.Weather;
 import com.abreen.dungeon.util.*;
 import com.abreen.dungeon.worker.*;
 import com.abreen.dungeon.model.*;
@@ -187,11 +189,11 @@ public class DungeonServer {
 
                     String description = (String) validateAndGet(thisMap,
                             "description", String.class);
+                    
+                    Hashtable<Pair<DayPart, Weather>, String> details;
+                    details = getDetails(thisMap);
 
-                    boolean isOutside = (Boolean) validateAndGet(thisMap,
-                            "isOutside", Boolean.class);
-
-                    Room r = new Room(roomName, description, isOutside);
+                    Room r = new Room(roomName, description, details);
 
                     if (thisMap.containsKey("neverUseArticle")) {
                         boolean neverUseArticle = (Boolean) validateAndGet(
@@ -379,6 +381,49 @@ public class DungeonServer {
                     .toString());
         else
             return o;
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private static
+    Hashtable<Pair<DayPart, Weather>, String> getDetails(
+            Map<String, Object> map)
+        throws MissingMappingException, UnexpectedTypeException
+    {
+        Hashtable<Pair<DayPart, Weather>, String> details = 
+                new Hashtable<Pair<DayPart, Weather>, String>();
+        
+        Map<String, Map<String, String>> timesOfDay =
+                (Map) validateAndGet(map, "detail", Map.class);
+        
+        // for each mapping in "detail" (e.g., for "day" -> ...)
+        for (Map.Entry<String, Map<String, String>> todMapping :
+            timesOfDay.entrySet())
+        {
+            String key = todMapping.getKey();
+            DayPart half = null;
+            
+            if (key.equals("day"))
+                half = DayPart.DAY;
+            else if (key.equals("night"))
+                half = DayPart.NIGHT;
+            
+            // map of weather strings to descriptions ("fog" -> ...)
+            Map<String, String> weatherMap = todMapping.getValue();
+            
+            for (Map.Entry<String, String> wMapping : weatherMap.entrySet()) {
+                String weatherKey = wMapping.getKey();
+                String description = wMapping.getValue();
+                
+                Weather w = Weather.fromString(weatherKey);
+                
+                Pair<DayPart, Weather> p =
+                        new Pair<DayPart, Weather>(half, w);
+                
+                details.put(p, description);
+            }
+        }
+        
+        return details;
     }
 
     /**
