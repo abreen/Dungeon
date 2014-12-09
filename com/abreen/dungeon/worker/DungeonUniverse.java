@@ -18,7 +18,7 @@ public class DungeonUniverse implements Serializable, Stateful {
     private boolean doWeather;
     private int timescale;
     
-    private TimeOfDay tod;
+    public final TimeOfDay tod;
 
     /*
      * Loads a boring universe.
@@ -26,6 +26,7 @@ public class DungeonUniverse implements Serializable, Stateful {
     public DungeonUniverse() {
         this.rooms = new ArrayList<Room>();
         this.players = new Hashtable<String, Player>();
+        this.tod = new TimeOfDay(12, 0, 0);
     }
 
     public DungeonUniverse(Room spawn, boolean weather, int timescale,
@@ -36,9 +37,6 @@ public class DungeonUniverse implements Serializable, Stateful {
         this.doWeather = weather;
         this.timescale = timescale;
         this.rooms = sps;
-        
-        // default initial time of day: noon
-        this.tod = new TimeOfDay(12, 0, 0);
     }
 
     public boolean doWeather() {

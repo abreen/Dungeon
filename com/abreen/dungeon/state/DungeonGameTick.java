@@ -13,11 +13,17 @@ public class DungeonGameTick extends Thread {
         
         while (running) {
             try {
-                Thread.sleep(scale * 1000);
+                Thread.sleep(1000 / scale);
             } catch (InterruptedException e) {
                 return;
             }
             
+            /*
+             * Skips all object updates if there are no players connected.
+             */
+            if (DungeonServer.universe.getNumberOfPlayers() == 0)
+                continue;
+
             /*
              * Update all game objects, starting with the universe.
              */
