@@ -29,10 +29,39 @@ public class DungeonGameTick extends Thread {
              */
             DungeonServer.universe.tick();
             
-            Iterator<Player> it = DungeonServer.universe.getPlayers();
-            while (it.hasNext())
-                it.next().tick();
+            /*
+             * Update players.
+             */
+            Iterator<Player> players = DungeonServer.universe.getPlayers();
+            while (players.hasNext()) {
+                Player p = players.next();
+                
+                // update the player themselves
+                p.tick();
+                
+                // update all items in player's inventory
+                Iterator<Item> items = p.getInventoryIterator();
+                while (items.hasNext()) {
+                    Item i = items.next();
+                    if (i instanceof Stateful)
+                        ((Stateful) i).tick();
+                }
+            }
             
+            /*
+             * Update items in all rooms.
+             */
+            Iterator<Room> rooms = DungeonServer.universe.getRooms();
+            while (rooms.hasNext()) {
+                Room r = rooms.next();
+                
+                Iterator<Item> items = r.getItems().iterator();
+                while (items.hasNext()) {
+                    Item i = items.next();
+                    if (i instanceof Stateful)
+                        ((Stateful) i).tick();
+                }
+            }
         }
     }
 }

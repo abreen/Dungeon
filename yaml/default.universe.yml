@@ -12,7 +12,7 @@
 
 weather:    true        # Whether to generate weather in the universe
 spawn:      henge       # The string ID of the room in which players start
-timescale:  3           # Multiplier used to determine the game tick speed
+timescale:  1           # Multiplier used to determine the game tick speed
 
 --- # rooms
 

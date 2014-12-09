@@ -90,6 +90,10 @@ public class DungeonUniverse implements Serializable, Stateful {
     public synchronized Iterator<Player> getPlayers() {
         return this.players.values().iterator();
     }
+    
+    public synchronized Iterator<Room> getRooms() {
+        return this.rooms.iterator();
+    }
 
     public synchronized int getNumberOfPlayers() {
         return this.players.size();

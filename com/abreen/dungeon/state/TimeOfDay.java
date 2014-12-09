@@ -35,6 +35,12 @@ public class TimeOfDay implements Serializable {
         this.second = s;
     }
     
+    public TimeOfDay(TimeOfDay t) {
+        this.hour = t.hour;
+        this.minute = t.minute;
+        this.second = t.second;
+    }
+    
     public void addSeconds(int s) {
         second += s;
         
