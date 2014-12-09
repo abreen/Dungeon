@@ -45,6 +45,7 @@ Planned features
     -   Clocks that reflect real time (but not necessarily set) and whose
         batteries can die
 *   Functionality for hidden exits
+*   Support for randomized loot when a game starts
 
 
 Feature wishlist
