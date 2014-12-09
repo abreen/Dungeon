@@ -19,7 +19,7 @@ public class Watch extends Item implements Stateful {
     public String getDescription() {
         StringBuilder buf = new StringBuilder(super.getDescription());
         buf.append(" It currently reads ");
-        buf.append(tod);
+        buf.append(tod.to12hString());
         
         if (battery == 0) {
             buf.append(", but it seems like its battery is dead.");

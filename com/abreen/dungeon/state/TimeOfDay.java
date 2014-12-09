@@ -59,7 +59,17 @@ public class TimeOfDay implements Serializable {
         }
     }
     
-    public String toString() {
+    public String to12hString() {
+        int h = hour % 12;
+        if (h == 0) h = 12;
+        return String.format("%02d:%02d:%02d", h, minute, second);
+    }
+    
+    public String to24hString() {
         return String.format("%02d:%02d:%02d", hour, minute, second);
+    }
+    
+    public String toString() {
+        return to24hString();
     }
 }
